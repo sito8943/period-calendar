@@ -1,0 +1,14 @@
+{
+  "period": {
+    "singular": "Period",
+    "plural": "Periods"
+  },
+  "cycle": {
+    "singular": "Cycle",
+    "plural": "Cycles"
+  },
+  "settings": {
+    "singular": "Settings",
+    "plural": "Settings"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "pages": {
+    "home": "Inicio",
+    "history": "Historial",
+    "period-log": "Registrar"
+  },
+  "home": {
+    "title": "Inicio",
+    "appName": "Calendario Menstrual",
+    "nextPeriod": "Siguiente periodo",
+    "daysUntil": "En {{days}} dias",
+    "daysAgo": "Hace {{days}} dias",
+    "today": "Hoy",
+    "logPeriod": "Registrar periodo",
+    "noData": "Aun no hay datos. Registra tu primer periodo.",
+    "stats": {
+      "avgCycle": "Ciclo promedio",
+      "avgDuration": "Duracion promedio",
+      "days": "{{count}} dias",
+      "noData": "Sin datos"
+    }
+  },
+  "history": {
+    "title": "Historial",
+    "empty": "No hay periodos registrados",
+    "duration": "{{days}} dias",
+    "ongoing": "En curso",
+    "started": "Inicio",
+    "ended": "Fin"
+  },
+  "periodLog": {
+    "title": "Registrar periodo",
+    "editTitle": "Editar periodo",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "optional": "Opcional",
+    "validation": {
+      "startRequired": "La fecha de inicio es obligatoria",
+      "endAfterStart": "La fecha de fin debe ser posterior al inicio",
+      "notFuture": "La fecha no puede ser futura"
+    },
+    "messages": {
+      "saved": "Periodo guardado correctamente",
+      "deleted": "Periodo eliminado correctamente"
+    },
+    "deleteDialog": {
+      "title": "¿Eliminar este periodo?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    }
+  },
+  "footer": {
+    "copyright": "Period Calendar ©"
+  },
+  "notFound": {
+    "title": "No encontrado",
+    "body": "La pagina que buscas no existe"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "calendar": {
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "selectDay": "Select day {{day}}"
+  },
+  "navigation": {
+    "home": "Go to home",
+    "history": "View history",
+    "logPeriod": "Log period"
+  }
+}

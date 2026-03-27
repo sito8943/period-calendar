@@ -22,7 +22,17 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "paths": {
+      "assets": ["./src/assets"],
+      "components": ["./src/components"],
+      "lib": ["./src/lib"],
+      "hooks": ["./src/hooks"],
+      "layouts": ["./src/layouts"],
+      "views": ["./src/views"],
+      "providers": ["./src/providers"],
+      "lang": ["./src/lang"]
+    }
   },
   "include": ["src"]
 }

@@ -1,0 +1,61 @@
+{
+  "pages": {
+    "home": "Home",
+    "history": "History",
+    "period-log": "Log"
+  },
+  "home": {
+    "title": "Home",
+    "appName": "Period Calendar",
+    "nextPeriod": "Next period",
+    "daysUntil": "In {{days}} days",
+    "daysAgo": "{{days}} days ago",
+    "today": "Today",
+    "logPeriod": "Log period",
+    "noData": "No data yet. Log your first period.",
+    "stats": {
+      "avgCycle": "Avg. cycle",
+      "avgDuration": "Avg. duration",
+      "days": "{{count}} days",
+      "noData": "No data"
+    }
+  },
+  "history": {
+    "title": "History",
+    "empty": "No periods recorded",
+    "duration": "{{days}} days",
+    "ongoing": "Ongoing",
+    "started": "Start",
+    "ended": "End"
+  },
+  "periodLog": {
+    "title": "Log period",
+    "editTitle": "Edit period",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "save": "Save",
+    "delete": "Delete",
+    "optional": "Optional",
+    "validation": {
+      "startRequired": "Start date is required",
+      "endAfterStart": "End date must be after start date",
+      "notFuture": "Date cannot be in the future"
+    },
+    "messages": {
+      "saved": "Period saved successfully",
+      "deleted": "Period deleted successfully"
+    },
+    "deleteDialog": {
+      "title": "Delete this period?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    }
+  },
+  "footer": {
+    "copyright": "Period Calendar ©"
+  },
+  "notFound": {
+    "title": "Not found",
+    "body": "The page you are looking for does not exist"
+  }
+}
