@@ -372,7 +372,7 @@ Note:
 - `useFormDialog` is state/core lifecycle only.
 - Use `usePostDialog` and `usePutDialog` for remote CRUD flows.
 
-#### Migration from legacy `useFormDialog` (`v0.0.54+`)
+#### Migration from legacy `useFormDialog` (`v0.0.56+`)
 
 Breaking changes:
 
