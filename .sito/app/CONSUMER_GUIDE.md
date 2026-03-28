@@ -466,6 +466,40 @@ const filtersDialog = useFormDialog<ProductFilters>({
 });
 ```
 
+`openDialog` supports direct open-time hydration:
+
+- `openDialog()`
+- `openDialog(id)`
+- `openDialog({ id?, values? })`
+
+Use it when you want the next opening to reuse known values (for example, the last submitted filters):
+
+```tsx
+const [lastSubmittedFilters, setLastSubmittedFilters] =
+  useState<ProductFilters>({
+    search: "",
+    minPrice: 0,
+  });
+
+const filtersDialog = useFormDialog<ProductFilters>({
+  mode: "state",
+  title: "Filters",
+  defaultValues: { search: "", minPrice: 0 },
+  onSubmit: (values) => {
+    setLastSubmittedFilters(values);
+    setTableFilters(values);
+  },
+});
+
+const reopenFilters = () => {
+  filtersDialog.openDialog({ values: lastSubmittedFilters });
+};
+```
+
+When `openDialog({ values })` is used together with `reinitializeOnOpen`/`mapIn`, the explicit `values` passed to `openDialog` are applied for that opening.
+
+Storybook reference: check `Hooks/Dialogs/FormDialogs` stories `StateModeSetValuesOnOpen` and `StateModeReopenWithSubmittedValues`.
+
 ### 6.3 Form hooks
 
 ```tsx

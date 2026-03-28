@@ -428,6 +428,11 @@ export function ProductDialogs() {
     search: "",
     minPrice: 0,
   });
+  const [lastSubmittedFilters, setLastSubmittedFilters] =
+    useState<ProductFilters>({
+      search: "",
+      minPrice: 0,
+    });
 
   const filtersDialog = useFormDialog<ProductFilters>({
     mode: "state",
@@ -435,8 +440,15 @@ export function ProductDialogs() {
     defaultValues: { search: "", minPrice: 0 },
     reinitializeOnOpen: true,
     mapIn: () => tableFilters,
-    onSubmit: (values) => setTableFilters(values),
+    onSubmit: (values) => {
+      setTableFilters(values);
+      setLastSubmittedFilters(values);
+    },
   });
+
+  const openFiltersWithLastSubmitted = () => {
+    filtersDialog.openDialog({ values: lastSubmittedFilters });
+  };
 
   const createDialog = usePostDialog<
     Omit<ProductDto, "id" | "createdAt" | "updatedAt" | "deletedAt">,
@@ -478,6 +490,10 @@ export function ProductDialogs() {
 
   return (
     <>
+      <button type="button" onClick={openFiltersWithLastSubmitted}>
+        Open filters with last submitted values
+      </button>
+
       <FormDialog<ProductFilters> {...filtersDialog}>
         <Controller
           name="search"
@@ -513,6 +529,8 @@ export function ProductDialogs() {
   );
 }
 ```
+
+Storybook reference: see `Hooks/Dialogs/FormDialogs` -> `StateModeSetValuesOnOpen` and `StateModeReopenWithSubmittedValues`.
 
 ## 7. Base dialog control with `useDialog` + `DialogActions`
 
