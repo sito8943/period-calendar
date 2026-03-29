@@ -335,7 +335,7 @@ const filtersDialog = useFormDialog<ProductFilters>({
   title: "Filters",
   defaultValues: { search: "", minPrice: 0 },
   reinitializeOnOpen: true,
-  mapIn: () => tableFilters,
+  dtoToForm: (data) => ({ ...data, ...tableFilters }),
   onSubmit: (values) => setTableFilters(values),
 });
 
@@ -344,7 +344,7 @@ const createDialog = usePostDialog<CreateProductDto, ProductDto, ProductForm>({
   title: "Create product",
   defaultValues: { name: "", price: 0 },
   mutationFn: (dto) => api.products.insert(dto),
-  mapOut: (values) => ({ name: values.name, price: values.price }),
+  formToDto: (values) => ({ name: values.name, price: values.price }),
   queryKey: ["products"],
 });
 
@@ -360,7 +360,7 @@ const editDialog = usePutDialog<
   getFunction: (id) => api.products.getById(id),
   dtoToForm: (dto) => ({ name: dto.name, price: dto.price }),
   mutationFn: (dto) => api.products.update(dto),
-  mapOut: (values, dto) => ({ id: dto?.id ?? 0, ...values }),
+  formToDto: (values, dto) => ({ id: dto?.id ?? 0, ...values }),
   queryKey: ["products"],
 });
 
@@ -372,7 +372,7 @@ Note:
 - `useFormDialog` is state/core lifecycle only.
 - Use `usePostDialog` and `usePutDialog` for remote CRUD flows.
 
-#### Migration from legacy `useFormDialog` (`v0.0.56+`)
+#### Migration from legacy `useFormDialog` (`v0.0.54+`)
 
 Breaking changes:
 
@@ -409,7 +409,7 @@ const createDialog = usePostDialog<CreateProductDto, ProductDto, ProductForm>({
   title: "Create product",
   defaultValues: { name: "", price: 0 },
   mutationFn: (dto) => api.products.insert(dto),
-  mapOut: (form) => ({ name: form.name, price: form.price }),
+  formToDto: (form) => ({ name: form.name, price: form.price }),
   queryKey: ["products"],
 });
 ```
@@ -447,7 +447,7 @@ const editDialog = usePutDialog<
   getFunction: (id) => api.products.getById(id),
   dtoToForm: (dto) => ({ name: dto.name, price: dto.price }),
   mutationFn: (dto) => api.products.update(dto),
-  mapOut: (form, dto) => ({ id: dto?.id ?? 0, ...form }),
+  formToDto: (form, dto) => ({ id: dto?.id ?? 0, ...form }),
   queryKey: ["products"],
 });
 ```
@@ -496,7 +496,7 @@ const reopenFilters = () => {
 };
 ```
 
-When `openDialog({ values })` is used together with `reinitializeOnOpen`/`mapIn`, the explicit `values` passed to `openDialog` are applied for that opening.
+When `openDialog({ values })` is used together with `reinitializeOnOpen`/`dtoToForm`, the explicit `values` passed to `openDialog` are applied for that opening.
 
 Storybook reference: check `Hooks/Dialogs/FormDialogs` stories `StateModeSetValuesOnOpen` and `StateModeReopenWithSubmittedValues`.
 

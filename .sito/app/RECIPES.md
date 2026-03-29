@@ -439,7 +439,7 @@ export function ProductDialogs() {
     title: "Filters",
     defaultValues: { search: "", minPrice: 0 },
     reinitializeOnOpen: true,
-    mapIn: () => tableFilters,
+    dtoToForm: (data) => ({ ...data, ...tableFilters }),
     onSubmit: (values) => {
       setTableFilters(values);
       setLastSubmittedFilters(values);
@@ -458,7 +458,7 @@ export function ProductDialogs() {
     title: "Create product",
     defaultValues: { name: "", price: 0 },
     mutationFn: (dto) => api.products.insert(dto),
-    mapOut: (form) => ({ name: form.name, price: form.price }),
+    formToDto: (form) => ({ name: form.name, price: form.price }),
     queryKey: ["products"],
   });
 
@@ -473,7 +473,7 @@ export function ProductDialogs() {
     getFunction: (id) => api.products.getById(id),
     dtoToForm: (dto) => ({ name: dto.name, price: dto.price }),
     mutationFn: (dto) => api.products.update(dto),
-    mapOut: (form, dto) => ({ id: dto?.id ?? 0, ...form }),
+    formToDto: (form, dto) => ({ id: dto?.id ?? 0, ...form }),
     queryKey: ["products"],
   });
 
