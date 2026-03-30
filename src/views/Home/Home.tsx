@@ -14,7 +14,7 @@ import { usePeriodsList, useSettings, useCycleStats } from "hooks";
 import { useRegisterBottomNavAction } from "providers";
 
 // lib
-import { getPredictedPeriodDays, DEFAULT_SETTINGS } from "lib";
+import { DEFAULT_SETTINGS } from "lib";
 
 // components
 import { Calendar } from "components";
@@ -26,11 +26,6 @@ export function Home() {
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
 
   const stats = useCycleStats(periods, settings);
-  const predicted = getPredictedPeriodDays(
-    periods,
-    settings.defaultCycleLength,
-    settings.defaultPeriodLength,
-  );
 
   const goToLog = useCallback(() => navigate("/log"), [navigate]);
   useRegisterBottomNavAction(goToLog);
@@ -58,8 +53,8 @@ export function Home() {
       {/* Calendar */}
       <Calendar
         periods={periods}
-        predictedStart={predicted?.start ?? null}
-        predictedEnd={predicted?.end ?? null}
+        defaultCycleLength={settings.defaultCycleLength}
+        defaultPeriodLength={settings.defaultPeriodLength}
       />
 
       {/* Stats row */}

@@ -88,3 +88,79 @@ export function getPredictedPeriodDays(
 
   return { start: nextStart, end };
 }
+
+function getEffectivePeriodEnd(period: Period): Date {
+  const start = parseLocalDate(period.startDate);
+  if (period.endDate) return parseLocalDate(period.endDate);
+
+  const fallbackEnd = new Date(start);
+  fallbackEnd.setDate(fallbackEnd.getDate() + 4);
+  return fallbackEnd;
+}
+
+function rangesOverlap(
+  startA: Date,
+  endA: Date,
+  startB: Date,
+  endB: Date,
+): boolean {
+  return startA <= endB && endA >= startB;
+}
+
+export function getPredictedPeriodDaysForMonth(
+  periods: Period[],
+  defaultCycleLength: number,
+  defaultPeriodLength: number,
+  year: number,
+  month: number,
+): { start: Date; end: Date } | null {
+  if (periods.length === 0) return null;
+
+  const avgCycle = calculateAverageCycleLength(periods) ?? defaultCycleLength;
+  const avgDuration =
+    calculateAveragePeriodDuration(periods) ?? defaultPeriodLength;
+
+  if (avgCycle <= 0 || avgDuration <= 0) return null;
+
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0);
+
+  const hasReportedPeriodInMonth = periods.some((period) => {
+    const periodStart = parseLocalDate(period.startDate);
+    const periodEnd = getEffectivePeriodEnd(period);
+    return rangesOverlap(periodStart, periodEnd, monthStart, monthEnd);
+  });
+
+  if (hasReportedPeriodInMonth) return null;
+
+  const firstPredictedStart = predictNextPeriodStart(periods, defaultCycleLength);
+  if (!firstPredictedStart) return null;
+
+  const predictedStart = new Date(firstPredictedStart);
+  if (predictedStart < monthStart) {
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const daysUntilMonth = Math.floor(
+      (monthStart.getTime() - predictedStart.getTime()) / MS_PER_DAY,
+    );
+    const cyclesToSkip = Math.max(0, Math.floor(daysUntilMonth / avgCycle) - 1);
+    predictedStart.setDate(predictedStart.getDate() + cyclesToSkip * avgCycle);
+  }
+
+  let safetyCounter = 0;
+  while (predictedStart <= monthEnd && safetyCounter < 400) {
+    const predictedEnd = new Date(predictedStart);
+    predictedEnd.setDate(predictedEnd.getDate() + avgDuration - 1);
+
+    if (rangesOverlap(predictedStart, predictedEnd, monthStart, monthEnd)) {
+      return {
+        start: new Date(predictedStart),
+        end: predictedEnd,
+      };
+    }
+
+    predictedStart.setDate(predictedStart.getDate() + avgCycle);
+    safetyCounter++;
+  }
+
+  return null;
+}

@@ -7,7 +7,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 // lib
-import { getMonthDays, isSameDay, isDateInPeriod } from "lib";
+import {
+  getMonthDays,
+  isSameDay,
+  isDateInPeriod,
+  getPredictedPeriodDaysForMonth,
+} from "lib";
 import type { Period } from "lib";
 
 // components
@@ -16,8 +21,8 @@ import type { CalendarDayData } from "./types";
 
 type CalendarProps = {
   periods: Period[];
-  predictedStart: Date | null;
-  predictedEnd: Date | null;
+  defaultCycleLength: number;
+  defaultPeriodLength: number;
 };
 
 const WEEKDAYS_ES = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
@@ -37,7 +42,11 @@ function isDateInRange(date: Date, start: Date, end: Date): boolean {
   return d >= s && d <= e;
 }
 
-export function Calendar({ periods, predictedStart, predictedEnd }: CalendarProps) {
+export function Calendar({
+  periods,
+  defaultCycleLength,
+  defaultPeriodLength,
+}: CalendarProps) {
   const { i18n } = useTranslation();
   const today = useMemo(() => new Date(), []);
 
@@ -45,6 +54,17 @@ export function Calendar({ periods, predictedStart, predictedEnd }: CalendarProp
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
 
   const weekdays = getWeekdays(i18n.language);
+  const monthPrediction = useMemo(
+    () =>
+      getPredictedPeriodDaysForMonth(
+        periods,
+        defaultCycleLength,
+        defaultPeriodLength,
+        currentYear,
+        currentMonth,
+      ),
+    [periods, defaultCycleLength, defaultPeriodLength, currentYear, currentMonth],
+  );
 
   const monthName = new Date(currentYear, currentMonth).toLocaleDateString(
     i18n.language,
@@ -96,9 +116,8 @@ export function Calendar({ periods, predictedStart, predictedEnd }: CalendarProp
       const isPeriodDay = periods.some((p) => isDateInPeriod(date, p));
       const isPredictedDay =
         !isPeriodDay &&
-        predictedStart !== null &&
-        predictedEnd !== null &&
-        isDateInRange(date, predictedStart, predictedEnd);
+        monthPrediction !== null &&
+        isDateInRange(date, monthPrediction.start, monthPrediction.end);
 
       paddedDays.push({
         date,
@@ -127,7 +146,7 @@ export function Calendar({ periods, predictedStart, predictedEnd }: CalendarProp
 
     return paddedDays;
   // eslint-disable-next-line react-hooks/exhaustive-deps -- today is stable for the component's lifetime
-  }, [currentYear, currentMonth, periods, predictedStart, predictedEnd]);
+  }, [currentYear, currentMonth, periods, monthPrediction]);
 
   return (
     <div className="bg-base-light rounded-xl p-4 shadow-sm">
