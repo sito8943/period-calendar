@@ -1,10 +1,7 @@
 import { useState } from "react";
 
 // @sito/dashboard-app
-import { Navbar } from "@sito/dashboard-app";
-
-// components
-import { Drawer } from "components";
+import { Drawer, Navbar } from "@sito/dashboard-app";
 
 // menu
 import { menuMap } from "../../views/menuMap";

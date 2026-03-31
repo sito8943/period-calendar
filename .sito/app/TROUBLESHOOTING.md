@@ -5,7 +5,7 @@ Quick diagnosis guide for common issues in consumer projects.
 ## 1. Quick checklist (60s)
 
 1. Verify peers are installed (`react`, `@sito/dashboard`, `react-hook-form`, `@tanstack/react-query`, FontAwesome).
-2. Verify provider order (`ConfigProvider` > `ManagerProvider` > `AuthProvider` > `NotificationProvider` > `DrawerMenuProvider`).
+2. If your app uses auth/session hooks, verify provider order (`ConfigProvider` > `ManagerProvider` > `AuthProvider` > `NotificationProvider` > `DrawerMenuProvider`).
 3. Ensure imports are only from `@sito/dashboard-app`.
 4. Ensure `AuthProvider` and `IManager` use the same storage keys.
 5. If Tailwind is used in the consumer app: `preflight: false` and `content` includes `node_modules/@sito/dashboard-app/dist/**/*.js`.
@@ -55,6 +55,7 @@ Quick diagnosis guide for common issues in consumer projects.
 **Fix**
 
 - Mount `AuthProvider` below `ManagerProvider`.
+- For auth-optional wrappers (`Drawer`, `Onboarding`), `AuthProvider` is no longer required unless your app itself calls `useAuth()`.
 
 ### 2.4 `"NotificationContext must be used within a Provider"`
 
