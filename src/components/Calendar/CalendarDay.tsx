@@ -1,5 +1,10 @@
 import type { CalendarDayProps } from "./types";
 
+/**
+ * CalendarDay component that represents a single day in the calendar.
+ * @param day - Object containing the day data, including date, current month status, today status, period day status, and predicted day status.
+ * @returns A styled div representing the calendar day, with different styles based on its status (current month, today, period day, predicted day).
+ */
 export function CalendarDay({ day }: CalendarDayProps) {
   const { date, isCurrentMonth, isToday, isPeriodDay, isPredictedDay } = day;
 

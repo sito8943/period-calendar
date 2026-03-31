@@ -5,6 +5,8 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 // lib
 import { formatDate, getPeriodDurationDays } from "lib";
+
+// types
 import type { PeriodCardProps } from "./types";
 
 export function PeriodCard({ period }: PeriodCardProps) {

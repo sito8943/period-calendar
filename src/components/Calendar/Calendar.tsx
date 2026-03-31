@@ -16,11 +16,20 @@ import {
 
 // components
 import { CalendarDay } from "./CalendarDay";
+
+// utils
 import { getWeekdays, isDateInRange } from "./utils";
 
 // types
 import type { CalendarDayData, CalendarProps } from "./types";
 
+/**
+ * Calendar component that displays a monthly view with period days and predictions.
+ * @param periods - Array of period data to display on the calendar.
+ * @param defaultCycleLength - Default cycle length in days for predictions.
+ * @param defaultPeriodLength - Default period length in days for predictions.
+ * @returns A calendar view with navigation and day indicators.
+ */
 export function Calendar({
   periods,
   defaultCycleLength,

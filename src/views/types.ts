@@ -23,10 +23,3 @@ export type MenuItemType<MenuKeys extends string = string> = {
   icon?: ReactNode;
   type?: "menu" | "divider";
 };
-
-export type BottomNavItemType = {
-  page: string;
-  path: string;
-  icon: ReactNode;
-  position: "left" | "right";
-};
