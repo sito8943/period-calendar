@@ -160,6 +160,7 @@ const supabase = createClient(
 | `ImportDialog<TPreview>` | `fileProcessor`, `onFileProcessed`, `renderCustomPreview`, `onOverrideChange`, `extraActions` | Import with preview + override                     |
 | `Drawer<MenuKeys>`       | `open`, `onClose`, `menuMap`, `logo`                                                          | Side navigation                                    |
 | `Navbar`                 | `openDrawer`, `menuButtonProps`, `showSearch`                                                 | Top bar with dynamic title/actions                 |
+| `BottomNavigation<TId>`  | `items`, `centerAction`, `isItemActive`, `className`                                          | Mobile fixed navigation with optional center CTA   |
 | `ToTop`                  | `threshold`, `tooltip`, `scrollOnClick`, `className`                                          | Floating scroll-to-top button                      |
 | `IconButton`             | `icon: IconDefinition` + visual props                                                         | FontAwesome-only icon contract                     |
 
@@ -287,6 +288,61 @@ const extraActions: ButtonPropsType[] = [
 ```
 
 Use `type: "button"` in `FormDialog` extra actions unless you want them to submit the form.
+
+### 5.7 `BottomNavigation`: mobile nav with optional center action
+
+```tsx
+import {
+  BottomNavigation,
+  type BottomNavigationItemType,
+} from "@sito/dashboard-app";
+import {
+  faBox,
+  faHome,
+  faPlus,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+
+type BottomNavId = "home" | "products" | "profile";
+
+const items: BottomNavigationItemType<BottomNavId>[] = [
+  { id: "home", label: "Home", to: "/", icon: faHome, position: "left" },
+  {
+    id: "products",
+    label: "Products",
+    to: "/products",
+    icon: faBox,
+    position: "left",
+  },
+  {
+    id: "profile",
+    label: "Profile",
+    to: "/profile",
+    icon: faUser,
+    position: "right",
+  },
+];
+
+<BottomNavigation
+  items={items}
+  centerAction={{
+    icon: faPlus,
+    to: "/products/new",
+    ariaLabel: "Create product",
+  }}
+  isItemActive={(pathname, item) =>
+    item.id === "products"
+      ? pathname.startsWith("/products")
+      : pathname === item.to
+  }
+/>;
+```
+
+Notes:
+
+- `BottomNavigation` relies on `ConfigProvider` routing primitives (`location`, `navigate`, `linkComponent`).
+- `hidden`/`disabled` in each item control visibility and interaction.
+- `centerAction.onClick` runs before optional `to` navigation; call `event.preventDefault()` to cancel navigation.
 
 ## 6. High-Level Hooks
 

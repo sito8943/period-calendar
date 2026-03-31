@@ -126,6 +126,54 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 }
 ```
 
+### 2.1 Mobile bottom nav with `BottomNavigation`
+
+Use this when you need quick primary navigation on mobile while keeping the desktop drawer/navbar flow.
+
+```tsx
+import {
+  BottomNavigation,
+  type BottomNavigationItemType,
+} from "@sito/dashboard-app";
+import {
+  faBox,
+  faHouse,
+  faPlus,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
+
+type BottomNavId = "home" | "products" | "profile";
+
+const bottomNavItems: BottomNavigationItemType<BottomNavId>[] = [
+  { id: "home", label: "Home", to: "/", icon: faHouse, position: "left" },
+  {
+    id: "products",
+    label: "Products",
+    to: "/products",
+    icon: faBox,
+    position: "left",
+  },
+  {
+    id: "profile",
+    label: "Profile",
+    to: "/profile",
+    icon: faUser,
+    position: "right",
+  },
+];
+
+<BottomNavigation
+  items={bottomNavItems}
+  centerAction={{
+    icon: faPlus,
+    to: "/products/new",
+    ariaLabel: "Create product",
+  }}
+/>;
+```
+
+`BottomNavigation` uses `ConfigProvider` routing primitives under the hood and renders only on mobile by default (`sm:hidden`).
+
 ## 3. Dynamic drawer children with `useDrawerMenu`
 
 ```tsx
