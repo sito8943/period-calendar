@@ -5,5 +5,5 @@ export {
   useUpdatePeriod,
   useDeletePeriod,
   useCycleStats,
-  PeriodQueryKeys,
 } from "./usePeriods";
+export { PeriodQueryKeys } from "./utils";

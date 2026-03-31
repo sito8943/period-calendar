@@ -16,24 +16,10 @@ import {
 
 // components
 import { CalendarDay } from "./CalendarDay";
+import { getWeekdays, isDateInRange } from "./utils";
+
+// types
 import type { CalendarDayData, CalendarProps } from "./types";
-
-const WEEKDAYS_ES = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
-const WEEKDAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-function getWeekdays(locale: string) {
-  return locale.startsWith("es") ? WEEKDAYS_ES : WEEKDAYS_EN;
-}
-
-function isDateInRange(date: Date, start: Date, end: Date): boolean {
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  const s = new Date(start);
-  s.setHours(0, 0, 0, 0);
-  const e = new Date(end);
-  e.setHours(0, 0, 0, 0);
-  return d >= s && d <= e;
-}
 
 export function Calendar({
   periods,

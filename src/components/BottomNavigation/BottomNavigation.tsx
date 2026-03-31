@@ -9,6 +9,7 @@ import { Button } from "@sito/dashboard-app";
 
 // views
 import { bottomMap } from "../../views/bottomMap";
+import { isPathActive } from "./utils";
 
 // types
 import type { BottomNavItemType } from "../../views/types";
@@ -42,11 +43,6 @@ export const BottomNavigation = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isActive = (path: string) =>
-    path === "/"
-      ? location.pathname === "/"
-      : location.pathname.startsWith(path);
-
   const leftItems = useMemo(
     () => bottomMap.filter((item) => item.position === "left"),
     [],
@@ -61,7 +57,11 @@ export const BottomNavigation = () => {
     <nav className="fixed -bottom-1 left-0 right-0 z-20 bg-base border-t border-border sm:hidden">
       <div className="flex items-center justify-around h-16">
         {leftItems.map((item) => (
-          <NavLink key={item.path} item={item} isActive={isActive(item.path)} />
+          <NavLink
+            key={item.path}
+            item={item}
+            isActive={isPathActive(location.pathname, item.path)}
+          />
         ))}
 
         <div className="flex items-center justify-center flex-1">
@@ -77,7 +77,11 @@ export const BottomNavigation = () => {
         </div>
 
         {rightItems.map((item) => (
-          <NavLink key={item.path} item={item} isActive={isActive(item.path)} />
+          <NavLink
+            key={item.path}
+            item={item}
+            isActive={isPathActive(location.pathname, item.path)}
+          />
         ))}
       </div>
     </nav>

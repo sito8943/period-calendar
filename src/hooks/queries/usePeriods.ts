@@ -12,14 +12,7 @@ import {
   predictNextPeriodStart,
 } from "lib";
 import type { Period, AddPeriodDto, UpdatePeriodDto, Settings } from "lib";
-
-export const PeriodQueryKeys = {
-  all: () => ({ queryKey: ["periods"] }),
-  list: () => ({
-    queryKey: [...PeriodQueryKeys.all().queryKey, "list"],
-  }),
-  settings: () => ({ queryKey: ["settings"] }),
-};
+import { PeriodQueryKeys } from "./utils";
 
 export function usePeriodsList() {
   return useQuery({
