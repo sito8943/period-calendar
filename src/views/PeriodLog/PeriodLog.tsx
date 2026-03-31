@@ -18,11 +18,7 @@ import {
 
 // lib
 import { toISODateString } from "lib";
-
-type FormValues = {
-  startDate: string;
-  endDate: string;
-};
+import type { FormValues } from "./types";
 
 export function PeriodLog() {
   const { t } = useTranslation();

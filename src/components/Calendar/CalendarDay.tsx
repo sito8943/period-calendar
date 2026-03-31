@@ -1,8 +1,4 @@
-import type { CalendarDayData } from "./types";
-
-type CalendarDayProps = {
-  day: CalendarDayData;
-};
+import type { CalendarDayProps } from "./types";
 
 export function CalendarDay({ day }: CalendarDayProps) {
   const { date, isCurrentMonth, isToday, isPeriodDay, isPredictedDay } = day;

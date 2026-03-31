@@ -5,11 +5,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 // lib
 import { formatDate, getPeriodDurationDays } from "lib";
-import type { Period } from "lib";
-
-type PeriodCardProps = {
-  period: Period;
-};
+import type { PeriodCardProps } from "./types";
 
 export function PeriodCard({ period }: PeriodCardProps) {
   const { t, i18n } = useTranslation();

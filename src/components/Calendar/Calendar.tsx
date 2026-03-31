@@ -13,17 +13,10 @@ import {
   isDateInPeriod,
   getPredictedPeriodDaysForMonth,
 } from "lib";
-import type { Period } from "lib";
 
 // components
 import { CalendarDay } from "./CalendarDay";
-import type { CalendarDayData } from "./types";
-
-type CalendarProps = {
-  periods: Period[];
-  defaultCycleLength: number;
-  defaultPeriodLength: number;
-};
+import type { CalendarDayData, CalendarProps } from "./types";
 
 const WEEKDAYS_ES = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
 const WEEKDAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
