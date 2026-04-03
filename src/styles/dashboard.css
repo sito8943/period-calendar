@@ -1,1 +1,85 @@
 /* @sito/dashboard-app style overrides */
+
+.onboarding-main {
+  padding: 0.75rem;
+  overflow-y: auto;
+  align-items: flex-start;
+}
+
+.onboarding-main .tabs-layout-main {
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+  min-height: 100%;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 0.5rem 0;
+}
+
+.onboarding-main .tabs-container {
+  margin-bottom: 0;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.step-container {
+  width: min(100%, 32rem);
+  gap: 1rem;
+}
+
+.step-title {
+  font-size: clamp(1.55rem, 7vw, 2.4rem);
+  line-height: 1.2;
+}
+
+.step-body {
+  font-size: clamp(0.95rem, 3.9vw, 1.125rem) !important;
+  line-height: 1.45 !important;
+}
+
+.step-content {
+  gap: 0.75rem;
+}
+
+.step-actions {
+  width: 100%;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.step-button {
+  width: 100%;
+  justify-content: center;
+  padding-inline: 1rem !important;
+}
+
+@media (min-width: 28rem) {
+  .onboarding-main {
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .onboarding-main .tabs-layout-main {
+    gap: 1.5rem;
+    min-height: auto;
+  }
+
+  .step-container {
+    gap: 1.25rem;
+  }
+
+  .step-button {
+    width: auto;
+    min-width: 10rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .onboarding-main .tabs-layout-main {
+    gap: 2rem;
+  }
+
+  .step-container {
+    gap: 1.5rem;
+  }
+}

@@ -80,6 +80,38 @@
       "nameMax": "El nombre debe tener como máximo 120 caracteres"
     }
   },
+  "onboarding": {
+    "profile": {
+      "title": "Antes de empezar",
+      "body": "Elige tu perfil para adaptar el color principal de la app.",
+      "options": {
+        "girl": {
+          "title": "Soy chica",
+          "body": "Tema rosado"
+        },
+        "boy": {
+          "title": "Soy chico",
+          "body": "Tema azul"
+        }
+      }
+    },
+    "calendar": {
+      "title": "Registra tus periodos",
+      "body": "Añade fechas de inicio y fin para construir tu historial."
+    },
+    "predictions": {
+      "title": "Predicciones automáticas",
+      "body": "Con tus datos, la app estima el próximo periodo y tus promedios."
+    },
+    "privacy": {
+      "title": "Privacidad",
+      "body": "Tus datos se guardan en este dispositivo."
+    },
+    "getStarted": {
+      "title": "Todo listo",
+      "body": "Empieza registrando tu primer periodo."
+    }
+  },
   "footer": {
     "copyright": "Period Calendar ©"
   },

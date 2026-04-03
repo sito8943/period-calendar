@@ -4,9 +4,9 @@
   --color-primary: #d4477a;
   --color-bg-primary: #a83560;
   --color-hover-primary: #e06b96;
-  --color-secondary: #7c3aed;
-  --color-bg-secondary: #5b21b6;
-  --color-hover-secondary: #8b5cf6;
+  --color-secondary: #ef7ba7;
+  --color-bg-secondary: #b64372;
+  --color-hover-secondary: #f3a3c2;
   --color-tertiary: #00997b;
   --color-bg-tertiary: #006654;
   --color-hover-tertiary: #1ab89a;
@@ -30,4 +30,22 @@
   --color-bg-error: hsl(0, 50%, 51%);
   --color-error: #fbfbfb;
   --breakpoint-xs: 28rem;
+}
+
+:root[data-period-theme="girl"] {
+  --color-primary: #d4477a;
+  --color-bg-primary: #a83560;
+  --color-hover-primary: #e06b96;
+  --color-secondary: #ef7ba7;
+  --color-bg-secondary: #b64372;
+  --color-hover-secondary: #f3a3c2;
+}
+
+:root[data-period-theme="boy"] {
+  --color-primary: #2d75f0;
+  --color-bg-primary: #1d4faf;
+  --color-hover-primary: #5d96f7;
+  --color-secondary: #5ca6ff;
+  --color-bg-secondary: #2f6fbd;
+  --color-hover-secondary: #86bcff;
 }

@@ -4,5 +4,7 @@ export const config = {
   storage: {
     periods: "period-calendar:periods",
     settings: "period-calendar:settings",
+    onboarding: "period-calendar:onboarding",
+    theme: "period-calendar:theme",
   },
 };

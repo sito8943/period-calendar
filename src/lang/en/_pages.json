@@ -80,6 +80,38 @@
       "nameMax": "Name must be at most 120 characters"
     }
   },
+  "onboarding": {
+    "profile": {
+      "title": "Before you start",
+      "body": "Choose your profile to adapt the app's primary color.",
+      "options": {
+        "girl": {
+          "title": "I'm a girl",
+          "body": "Pink theme"
+        },
+        "boy": {
+          "title": "I'm a boy",
+          "body": "Blue theme"
+        }
+      }
+    },
+    "calendar": {
+      "title": "Log your periods",
+      "body": "Add start and end dates to build your history."
+    },
+    "predictions": {
+      "title": "Automatic predictions",
+      "body": "Using your data, the app estimates your next period and averages."
+    },
+    "privacy": {
+      "title": "Privacy",
+      "body": "Your data is stored on this device."
+    },
+    "getStarted": {
+      "title": "You're ready",
+      "body": "Start by logging your first period."
+    }
+  },
   "footer": {
     "copyright": "Period Calendar ©"
   },

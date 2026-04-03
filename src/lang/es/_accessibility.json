@@ -1,4 +1,16 @@
 {
+  "buttons": {
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "startAsGuest": "Comenzar",
+    "signIn": "Listo"
+  },
+  "ariaLabels": {
+    "skip": "Omitir paso",
+    "next": "Ir al siguiente paso",
+    "startAsGuest": "Comenzar",
+    "signIn": "Finalizar onboarding"
+  },
   "calendar": {
     "previousMonth": "Mes anterior",
     "nextMonth": "Mes siguiente",
