@@ -39,6 +39,7 @@ Recommended order:
 4. `NotificationProvider`
 5. `DrawerMenuProvider`
 6. `NavbarProvider` (if you use dynamic navbar state)
+7. `BottomNavActionProvider` (optional; when you use dynamic mobile center actions)
 
 `ManagerProvider` already mounts an internal `QueryClientProvider`.
 By default, each `ManagerProvider` instance creates its own isolated `QueryClient`.
@@ -49,6 +50,7 @@ import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AuthProvider,
+  BottomNavActionProvider,
   ConfigProvider,
   DrawerMenuProvider,
   IManager,
@@ -96,7 +98,10 @@ export function AppProviders({ children }: { children: ReactNode }) {
         >
           <NotificationProvider>
             <DrawerMenuProvider>
-              <NavbarProvider>{children}</NavbarProvider>
+              <NavbarProvider>
+                {/* Optional: only if your pages register dynamic BottomNavigation center actions */}
+                <BottomNavActionProvider>{children}</BottomNavActionProvider>
+              </NavbarProvider>
             </DrawerMenuProvider>
           </NotificationProvider>
         </AuthProvider>
@@ -110,7 +115,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
 
 For Supabase, keep the same outer providers and replace manager/auth pair:
 
-`ConfigProvider` -> `SupabaseManagerProvider` -> `SupabaseAuthProvider` -> `NotificationProvider` -> `DrawerMenuProvider` -> `NavbarProvider`
+`ConfigProvider` -> `SupabaseManagerProvider` -> `SupabaseAuthProvider` -> `NotificationProvider` -> `DrawerMenuProvider` -> `NavbarProvider` -> `BottomNavActionProvider` (optional)
 
 The consumer app must provide `.env` values and instantiate client itself:
 
@@ -338,11 +343,39 @@ const items: BottomNavigationItemType<BottomNavId>[] = [
 />;
 ```
 
+Dynamic center-action override from page scope:
+
+```tsx
+import {
+  BottomNavActionProvider,
+  BottomNavigation,
+  useRegisterBottomNavAction,
+  type BottomNavigationItemType,
+} from "@sito/dashboard-app";
+import { faTags } from "@fortawesome/free-solid-svg-icons";
+
+function CategoriesCenterAction() {
+  useRegisterBottomNavAction({
+    icon: faTags,
+    ariaLabel: "Create category",
+    to: "/categories/new",
+    color: "secondary",
+  });
+  return null;
+}
+
+<BottomNavActionProvider>
+  <CategoriesCenterAction />
+  <BottomNavigation items={items} centerAction={{ to: "/products/new" }} />
+</BottomNavActionProvider>;
+```
+
 Notes:
 
 - `BottomNavigation` relies on `ConfigProvider` routing primitives (`location`, `navigate`, `linkComponent`).
 - `hidden`/`disabled` in each item control visibility and interaction.
 - `centerAction.onClick` runs before optional `to` navigation; call `event.preventDefault()` to cancel navigation.
+- `BottomNavActionProvider` is optional. If mounted, `useRegisterBottomNavAction` lets active pages override center-action fields at runtime.
 
 ## 6. High-Level Hooks
 

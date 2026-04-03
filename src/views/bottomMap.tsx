@@ -1,8 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
-
-// types
-import type { BottomNavItemType } from "./types";
+import type { BottomNavItemType } from "../components/BottomNavigation/types";
 
 export const bottomMap: BottomNavItemType[] = [
   {

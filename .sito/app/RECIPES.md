@@ -11,6 +11,7 @@ import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   AuthProvider,
+  BottomNavActionProvider,
   ConfigProvider,
   DrawerMenuProvider,
   IManager,
@@ -60,7 +61,10 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <NotificationProvider>
             <DrawerMenuProvider>
               {/* Optional unless you use Navbar/useNavbar */}
-              <NavbarProvider>{children}</NavbarProvider>
+              <NavbarProvider>
+                {/* Optional: only when pages register dynamic BottomNavigation center actions */}
+                <BottomNavActionProvider>{children}</BottomNavActionProvider>
+              </NavbarProvider>
             </DrawerMenuProvider>
           </NotificationProvider>
         </AuthProvider>
@@ -170,6 +174,35 @@ const bottomNavItems: BottomNavigationItemType<BottomNavId>[] = [
     ariaLabel: "Create product",
   }}
 />;
+```
+
+Dynamic center-action override (optional provider):
+
+```tsx
+import {
+  BottomNavActionProvider,
+  BottomNavigation,
+  useRegisterBottomNavAction,
+  type BottomNavigationItemType,
+} from "@sito/dashboard-app";
+import { faTags } from "@fortawesome/free-solid-svg-icons";
+
+function CategoriesCenterAction() {
+  useRegisterBottomNavAction({
+    icon: faTags,
+    ariaLabel: "Create category",
+    to: "/categories/new",
+  });
+  return null;
+}
+
+<BottomNavActionProvider>
+  <CategoriesCenterAction />
+  <BottomNavigation
+    items={bottomNavItems}
+    centerAction={{ ariaLabel: "Create product", to: "/products/new" }}
+  />
+</BottomNavActionProvider>;
 ```
 
 `BottomNavigation` uses `ConfigProvider` routing primitives under the hood and renders only on mobile by default (`sm:hidden`).
