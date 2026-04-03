@@ -22,7 +22,21 @@ export interface Settings {
   defaultPeriodLength: number;
 }
 
+export type ProfileLanguage = "es" | "en";
+
+export interface ProfileSettings {
+  name: string;
+  language: ProfileLanguage;
+  updatedAt: string;
+}
+
 export const DEFAULT_SETTINGS: Settings = {
   defaultCycleLength: 28,
   defaultPeriodLength: 5,
+};
+
+export const DEFAULT_PROFILE_SETTINGS: ProfileSettings = {
+  name: "",
+  language: "es",
+  updatedAt: "",
 };

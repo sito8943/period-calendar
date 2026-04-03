@@ -7,6 +7,7 @@ export const PageId = {
   Home: "home",
   PeriodLog: "period-log",
   History: "history",
+  Profile: "profile",
   NotFound: "not-found",
 } as const;
 
@@ -24,6 +25,10 @@ export const sitemap: ViewPageType[] = [
   {
     key: PageId.History,
     path: "/history",
+  },
+  {
+    key: PageId.Profile,
+    path: "/profile",
   },
   {
     key: PageId.NotFound,

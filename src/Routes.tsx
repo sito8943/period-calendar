@@ -20,6 +20,11 @@ const History = loadable(() =>
     default: module.History,
   })),
 );
+const Profile = loadable(() =>
+  import("views").then((module) => ({
+    default: module.Profile,
+  })),
+);
 const NotFound = loadable(() =>
   import("views").then((module) => ({
     default: module.NotFound,
@@ -35,6 +40,7 @@ export const Routes = () => {
           <Route path="/log" element={<PeriodLog />} />
           <Route path="/log/:id" element={<PeriodLog />} />
           <Route path="/history" element={<History />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </ReactRoutes>

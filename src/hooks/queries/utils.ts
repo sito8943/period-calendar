@@ -4,4 +4,5 @@ export const PeriodQueryKeys = {
     queryKey: [...PeriodQueryKeys.all().queryKey, "list"],
   }),
   settings: () => ({ queryKey: ["settings"] }),
+  profile: () => ({ queryKey: ["profile"] }),
 };

@@ -5,6 +5,7 @@ import {
   faHome,
   faClockRotateLeft,
   faCalendarPlus,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 // types
@@ -14,6 +15,7 @@ export const MenuKeys = {
   Home: "home",
   History: "history",
   PeriodLog: "period-log",
+  Profile: "profile",
 } as const;
 
 export type MenuKeys = (typeof MenuKeys)[keyof typeof MenuKeys];
@@ -34,5 +36,10 @@ export const menuMap: MenuItemType<MenuKeys>[] = [
     page: MenuKeys.PeriodLog,
     path: "/log",
     icon: <FontAwesomeIcon icon={faCalendarPlus} />,
+  },
+  {
+    page: MenuKeys.Profile,
+    path: "/profile",
+    icon: <FontAwesomeIcon icon={faUser} />,
   },
 ];

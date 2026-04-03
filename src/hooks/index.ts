@@ -5,5 +5,7 @@ export {
   useUpdatePeriod,
   useDeletePeriod,
   useCycleStats,
+  useProfileSettings,
+  useUpdateProfileSettings,
   PeriodQueryKeys,
 } from "./queries";

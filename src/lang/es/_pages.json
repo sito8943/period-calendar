@@ -2,7 +2,8 @@
   "pages": {
     "home": "Inicio",
     "history": "Historial",
-    "period-log": "Registrar"
+    "period-log": "Registrar",
+    "profile": "Perfil"
   },
   "home": {
     "title": "Inicio",
@@ -49,6 +50,34 @@
       "title": "¿Eliminar este periodo?",
       "confirm": "Eliminar",
       "cancel": "Cancelar"
+    }
+  },
+  "profile": {
+    "title": "Perfil",
+    "sections": {
+      "personal": "Personal"
+    },
+    "actions": {
+      "save": "Guardar cambios"
+    },
+    "labels": {
+      "name": "Nombre",
+      "language": "Idioma"
+    },
+    "helper": {
+      "language": "Elige el idioma de la aplicacion para tu perfil."
+    },
+    "messages": {
+      "updated": "Perfil actualizado correctamente",
+      "updateError": "No se pudo actualizar el perfil"
+    },
+    "values": {
+      "languageSpanish": "Español",
+      "languageEnglish": "Ingles"
+    },
+    "errors": {
+      "nameRequired": "El nombre es requerido",
+      "nameMax": "El nombre debe tener como máximo 120 caracteres"
     }
   },
   "footer": {

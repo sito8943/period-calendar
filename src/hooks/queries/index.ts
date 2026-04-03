@@ -6,4 +6,5 @@ export {
   useDeletePeriod,
   useCycleStats,
 } from "./usePeriods";
+export { useProfileSettings, useUpdateProfileSettings } from "./useProfile";
 export { PeriodQueryKeys } from "./utils";
