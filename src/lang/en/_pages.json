@@ -62,10 +62,12 @@
     },
     "labels": {
       "name": "Name",
-      "language": "Language"
+      "language": "Language",
+      "theme": "Profile"
     },
     "helper": {
-      "language": "Choose the app language for your profile."
+      "language": "Choose the app language for your profile.",
+      "theme": "Choose whether you want the girl or boy profile."
     },
     "messages": {
       "updated": "Profile updated successfully",
@@ -73,7 +75,9 @@
     },
     "values": {
       "languageSpanish": "Spanish",
-      "languageEnglish": "English"
+      "languageEnglish": "English",
+      "themeGirl": "Girl",
+      "themeBoy": "Boy"
     },
     "errors": {
       "nameRequired": "Name is required",

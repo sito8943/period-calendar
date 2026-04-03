@@ -1,12 +1,21 @@
 import { config } from "../config";
 
 export type PeriodTheme = "girl" | "boy";
+export type BaseAppLanguage = "es" | "en";
 
 const PERIOD_THEME_DATA_ATTRIBUTE = "data-period-theme";
 const DEFAULT_THEME: PeriodTheme = "girl";
 
 const isPeriodTheme = (value: unknown): value is PeriodTheme =>
   value === "girl" || value === "boy";
+
+export const toBaseAppLanguage = (value?: string | null): BaseAppLanguage =>
+  value?.toLowerCase().startsWith("en") ? "en" : "es";
+
+export const getThemedLanguage = (
+  baseLanguage: BaseAppLanguage,
+  theme: PeriodTheme,
+): string => (theme === "boy" ? `${baseLanguage}-x-boy` : baseLanguage);
 
 export const getStoredPeriodTheme = (): PeriodTheme => {
   if (typeof window === "undefined") return DEFAULT_THEME;

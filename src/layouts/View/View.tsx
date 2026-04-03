@@ -25,10 +25,15 @@ import Footer from "./Footer";
 // providers
 import { BottomNavActionProvider } from "providers";
 import { config } from "../../config";
-import { getStoredPeriodTheme, setPeriodTheme } from "lib";
+import {
+  getStoredPeriodTheme,
+  getThemedLanguage,
+  setPeriodTheme,
+  toBaseAppLanguage,
+} from "lib";
 
 export function View() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [showOnboarding, setShowOnboarding] = useState(
@@ -41,10 +46,24 @@ export function View() {
     toLocal(config.storage.onboarding, true);
   }, [showOnboarding]);
 
+  useEffect(() => {
+    const theme = getStoredPeriodTheme();
+    const baseLanguage = toBaseAppLanguage(
+      i18n.resolvedLanguage ?? i18n.language,
+    );
+    const themedLanguage = getThemedLanguage(baseLanguage, theme);
+
+    if (i18n.language !== themedLanguage) {
+      void i18n.changeLanguage(themedLanguage);
+    }
+  }, [i18n, i18n.language, i18n.resolvedLanguage]);
+
   const handleThemeSelect = useCallback((theme: "girl" | "boy") => {
     setSelectedTheme(theme);
     setPeriodTheme(theme);
-  }, []);
+    const baseLanguage = toBaseAppLanguage(i18n.resolvedLanguage ?? i18n.language);
+    void i18n.changeLanguage(getThemedLanguage(baseLanguage, theme));
+  }, [i18n]);
 
   const closeOnboarding = useCallback(() => {
     setShowOnboarding(false);

@@ -1,0 +1,27 @@
+{
+  "home": {
+    "appName": "Tracking Calendar",
+    "nextPeriod": "Next period (tracking)",
+    "logPeriod": "Log period to track",
+    "noData": "No data yet. Log the first period for tracking."
+  },
+  "history": {
+    "empty": "No periods recorded for tracking"
+  },
+  "periodLog": {
+    "title": "Log period to track",
+    "editTitle": "Edit tracked period"
+  },
+  "onboarding": {
+    "calendar": {
+      "title": "Log periods for tracking",
+      "body": "Add start and end dates to build the tracking history."
+    },
+    "predictions": {
+      "body": "With that data, the app estimates the next period and averages."
+    },
+    "getStarted": {
+      "body": "Start by logging the first period to track."
+    }
+  }
+}

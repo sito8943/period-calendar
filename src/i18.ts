@@ -7,10 +7,12 @@ import { namespaces } from "./lang/nameSpaces.ts";
 // es
 import esAccessibility from "./lang/es/_accessibility.json";
 import esPages from "./lang/es/_pages.json";
+import esPagesBoy from "./lang/es/_pages_boy.json";
 import esEntities from "./lang/es/_entities.json";
 // en
 import enAccessibility from "./lang/en/_accessibility.json";
 import enPages from "./lang/en/_pages.json";
+import enPagesBoy from "./lang/en/_pages_boy.json";
 import enEntities from "./lang/en/_entities.json";
 
 i18n
@@ -18,7 +20,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "es",
-    supportedLngs: ["es", "en"],
+    supportedLngs: ["es", "en", "es-x-boy", "en-x-boy"],
     ns: namespaces,
     defaultNS: "_pages",
     resources: {
@@ -31,6 +33,12 @@ i18n
         _accessibility: enAccessibility,
         _pages: enPages,
         _entities: enEntities,
+      },
+      "es-x-boy": {
+        _pages: esPagesBoy,
+      },
+      "en-x-boy": {
+        _pages: enPagesBoy,
       },
     },
   });

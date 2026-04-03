@@ -16,15 +16,23 @@ import type { Option } from "@sito/dashboard-app";
 import { useProfileSettings, useUpdateProfileSettings } from "hooks";
 
 // lib
-import type { ProfileLanguage } from "lib";
+import {
+  getStoredPeriodTheme,
+  getThemedLanguage,
+  toBaseAppLanguage,
+  setPeriodTheme,
+  type PeriodTheme,
+  type ProfileLanguage,
+} from "lib";
 
 type ProfileFormType = {
   name: string;
   language: ProfileLanguage;
+  theme: PeriodTheme;
 };
 
 const normalizeProfileLanguage = (value?: string | null): ProfileLanguage =>
-  value === "en" ? "en" : "es";
+  toBaseAppLanguage(value);
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
   if (error instanceof Error) return error.message;
@@ -46,6 +54,7 @@ export function Profile() {
     defaultValues: {
       name: "",
       language: normalizeProfileLanguage(i18n.resolvedLanguage ?? i18n.language),
+      theme: getStoredPeriodTheme(),
     },
   });
 
@@ -61,6 +70,7 @@ export function Profile() {
     reset({
       name: profileQuery.data.name ?? "",
       language: profileLanguage,
+      theme: getStoredPeriodTheme(),
     });
   }, [i18n.language, i18n.resolvedLanguage, profileQuery.data, reset]);
 
@@ -74,6 +84,21 @@ export function Profile() {
         {
           id: "es",
           name: t("_pages:profile.values.languageSpanish"),
+        },
+      ] as Option[],
+    [t],
+  );
+
+  const themeOptions = useMemo(
+    () =>
+      [
+        {
+          id: "girl",
+          name: t("_pages:profile.values.themeGirl"),
+        },
+        {
+          id: "boy",
+          name: t("_pages:profile.values.themeBoy"),
         },
       ] as Option[],
     [t],
@@ -97,14 +122,16 @@ export function Profile() {
     try {
       await updateProfile.mutateAsync(payload);
 
-      const currentLanguage = normalizeProfileLanguage(
-        i18n.resolvedLanguage ?? i18n.language,
+      setPeriodTheme(values.theme);
+      const themedLanguage = getThemedLanguage(
+        payload.language,
+        values.theme,
       );
-      if (payload.language !== currentLanguage) {
-        await i18n.changeLanguage(payload.language);
+      if (i18n.language !== themedLanguage) {
+        await i18n.changeLanguage(themedLanguage);
       }
 
-      reset(payload);
+      reset({ ...payload, theme: values.theme });
       showSuccessNotification({
         message: t("_pages:profile.messages.updated"),
       });
@@ -173,6 +200,31 @@ export function Profile() {
                 />
               )}
             />
+
+            <Controller
+              control={control}
+              name="theme"
+              disabled={formDisabled}
+              render={({ field }) => (
+                <SelectInput
+                  id="profile-theme"
+                  required
+                  label={t("_pages:profile.labels.theme")}
+                  options={themeOptions}
+                  value={field.value}
+                  disabled={formDisabled}
+                  onBlur={field.onBlur}
+                  onChange={(event) =>
+                    field.onChange(
+                      (event.target as HTMLSelectElement).value as PeriodTheme,
+                    )
+                  }
+                />
+              )}
+            />
+            <p className="text-sm text-text-muted">
+              {t("_pages:profile.helper.theme")}
+            </p>
 
             <Controller
               control={control}

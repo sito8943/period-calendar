@@ -1,0 +1,27 @@
+{
+  "home": {
+    "appName": "Calendario de Seguimiento",
+    "nextPeriod": "Proximo periodo (seguimiento)",
+    "logPeriod": "Registrar periodo a seguir",
+    "noData": "Aun no hay datos. Registra el primer periodo para seguimiento."
+  },
+  "history": {
+    "empty": "No hay periodos registrados para seguimiento"
+  },
+  "periodLog": {
+    "title": "Registrar periodo a seguir",
+    "editTitle": "Editar periodo a seguir"
+  },
+  "onboarding": {
+    "calendar": {
+      "title": "Registra periodos para seguimiento",
+      "body": "Añade fechas de inicio y fin para construir el historial de seguimiento."
+    },
+    "predictions": {
+      "body": "Con esos datos, la app estima el proximo periodo y los promedios."
+    },
+    "getStarted": {
+      "body": "Empieza registrando el primer periodo a seguir."
+    }
+  }
+}
