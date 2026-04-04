@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
-import { Button, useNotification } from "@sito/dashboard-app";
+import { Button, State, TextInput, useNotification } from "@sito/dashboard-app";
 
 // hooks
 import {
@@ -38,10 +38,9 @@ export function PeriodLog() {
   const todayStr = toISODateString(new Date());
 
   const {
-    register,
+    control,
     handleSubmit,
     reset,
-    formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
       startDate: "",
@@ -110,61 +109,76 @@ export function PeriodLog() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         {/* Start date */}
-        <div className="flex flex-col gap-1">
-          <label
-            htmlFor="startDate"
-            className="text-sm font-medium text-text"
-          >
-            {t("_pages:periodLog.startDate")}
-          </label>
-          <input
-            id="startDate"
-            type="date"
-            max={todayStr}
-            className="border border-border rounded-lg px-3 py-2 bg-base-light text-text focus:outline-none focus:ring-2 focus:ring-primary"
-            {...register("startDate", {
-              required: t("_pages:periodLog.validation.startRequired"),
-            })}
-          />
-          {errors.startDate && (
-            <span className="text-sm text-error">
-              {errors.startDate.message}
-            </span>
+        <Controller
+          control={control}
+          name="startDate"
+          rules={{
+            required: t("_pages:periodLog.validation.startRequired"),
+          }}
+          render={({ field, fieldState }) => (
+            <TextInput
+              id="startDate"
+              type="date"
+              max={todayStr}
+              label={t("_pages:periodLog.startDate")}
+              value={field.value ?? ""}
+              state={fieldState.error ? State.error : State.default}
+              helperText={
+                typeof fieldState.error?.message === "string"
+                  ? fieldState.error.message
+                  : ""
+              }
+              onBlur={field.onBlur}
+              onChange={(event) =>
+                field.onChange((event.target as HTMLInputElement).value)
+              }
+            />
           )}
-        </div>
+        />
 
         {/* End date */}
-        <div className="flex flex-col gap-1">
-          <label htmlFor="endDate" className="text-sm font-medium text-text">
-            {t("_pages:periodLog.endDate")}{" "}
-            <span className="text-text-muted text-xs">
-              ({t("_pages:periodLog.optional")})
-            </span>
-          </label>
-          <input
-            id="endDate"
-            type="date"
-            max={todayStr}
-            className="border border-border rounded-lg px-3 py-2 bg-base-light text-text focus:outline-none focus:ring-2 focus:ring-primary"
-            {...register("endDate", {
-              validate: (value, formValues) => {
-                if (!value) return true;
-                if (value <= formValues.startDate) {
-                  return t("_pages:periodLog.validation.endAfterStart");
-                }
-                return true;
-              },
-            })}
-          />
-          {errors.endDate && (
-            <span className="text-sm text-error">
-              {errors.endDate.message}
-            </span>
+        <Controller
+          control={control}
+          name="endDate"
+          rules={{
+            validate: (value, formValues) => {
+              if (!value) return true;
+              if (value <= formValues.startDate) {
+                return t("_pages:periodLog.validation.endAfterStart");
+              }
+              return true;
+            },
+          }}
+          render={({ field, fieldState }) => (
+            <TextInput
+              id="endDate"
+              type="date"
+              max={todayStr}
+              label={
+                <>
+                  {t("_pages:periodLog.endDate")}{" "}
+                  <span className="text-text-muted text-xs">
+                    ({t("_pages:periodLog.optional")})
+                  </span>
+                </>
+              }
+              value={field.value ?? ""}
+              state={fieldState.error ? State.error : State.default}
+              helperText={
+                typeof fieldState.error?.message === "string"
+                  ? fieldState.error.message
+                  : ""
+              }
+              onBlur={field.onBlur}
+              onChange={(event) =>
+                field.onChange((event.target as HTMLInputElement).value)
+              }
+            />
           )}
-        </div>
+        />
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 mt-4">
+        <div className="flex gap-3 mt-4">
           <Button
             type="submit"
             variant="submit"

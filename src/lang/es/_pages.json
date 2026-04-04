@@ -13,6 +13,7 @@
     "daysAgo": "Hace {{days}} dias",
     "today": "Hoy",
     "logPeriod": "Registrar periodo",
+    "logToday": "Registrar hoy",
     "noData": "Aun no hay datos. Registra tu primer periodo.",
     "stats": {
       "avgCycle": "Ciclo promedio",
@@ -51,6 +52,90 @@
       "confirm": "Eliminar",
       "cancel": "Cancelar"
     }
+  },
+  "dailyLog": {
+    "title": "Registro diario",
+    "editTitle": "Editar registro diario",
+    "date": "Fecha",
+    "flow": "Flujo",
+    "symptoms": "Sintomas",
+    "sexualActivity": "Relaciones sexuales",
+    "hadSex": "Tuve relaciones sexuales",
+    "protection": "Proteccion",
+    "mood": "Estado de animo",
+    "sleepHours": "Horas de sueño",
+    "sleepQuality": "Calidad de sueño",
+    "notes": "Notas",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "optional": "Opcional",
+    "noFlow": "Sin dato",
+    "noMood": "Sin dato",
+    "noSleepQuality": "Sin dato",
+    "flowOptions": {
+      "none": "Sin sangrado",
+      "light": "Ligero",
+      "medium": "Medio",
+      "heavy": "Abundante"
+    },
+    "symptomOptions": {
+      "cramps": "Dolor abdominal",
+      "mood_swings": "Cambios de humor",
+      "acne": "Acne",
+      "headache": "Dolor de cabeza",
+      "bloating": "Hinchazon",
+      "back_pain": "Dolor lumbar",
+      "fatigue": "Fatiga"
+    },
+    "protectionOptions": {
+      "unknown": "No especificado",
+      "none": "Sin proteccion",
+      "condom": "Condon",
+      "pill": "Pildora",
+      "iud": "DIU",
+      "other": "Otro"
+    },
+    "moodOptions": {
+      "1": "Muy bajo",
+      "2": "Bajo",
+      "3": "Normal",
+      "4": "Bien",
+      "5": "Muy bien"
+    },
+    "sleepQualityOptions": {
+      "1": "Muy mala",
+      "2": "Mala",
+      "3": "Normal",
+      "4": "Buena",
+      "5": "Excelente"
+    },
+    "errors": {
+      "dateRequired": "La fecha es obligatoria",
+      "dateInvalid": "Formato de fecha invalido",
+      "notFuture": "La fecha no puede ser futura",
+      "sleepHoursRange": "Las horas de sueño deben estar entre 0 y 24",
+      "duplicateDate": "Ya existe un registro diario para esta fecha"
+    },
+    "messages": {
+      "saved": "Registro diario guardado correctamente",
+      "deleted": "Registro diario eliminado correctamente",
+      "saveError": "No se pudo guardar el registro diario",
+      "deleteError": "No se pudo eliminar el registro diario"
+    },
+    "deleteDialog": {
+      "title": "¿Eliminar este registro diario?",
+      "confirm": "Eliminar",
+      "cancel": "Cancelar"
+    },
+    "discardDialog": {
+      "title": "Tienes cambios sin guardar. ¿Deseas salir?"
+    }
+  },
+  "calendar": {
+    "period": "Periodo",
+    "prediction": "Prediccion",
+    "dailyLog": "Registro diario"
   },
   "profile": {
     "title": "Perfil",

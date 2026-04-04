@@ -8,13 +8,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@sito/dashboard-app";
 
 // hooks
-import { usePeriodsList, useSettings, useCycleStats } from "hooks";
+import { usePeriodsList, useSettings, useCycleStats, useDailyLogsList } from "hooks";
 
 // providers
 import { useRegisterBottomNavAction } from "providers";
 
 // lib
-import { DEFAULT_SETTINGS } from "lib";
+import { DEFAULT_SETTINGS, toISODateString } from "lib";
 
 // components
 import { Calendar } from "components";
@@ -23,11 +23,20 @@ export function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: periods = [] } = usePeriodsList();
+  const { data: dailyLogs = [] } = useDailyLogsList();
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
 
   const stats = useCycleStats(periods, settings);
 
   const goToLog = useCallback(() => navigate("/log"), [navigate]);
+  const goToDailyLog = useCallback(
+    (date: string) => navigate(`/daily-log/${date}`),
+    [navigate],
+  );
+  const goToTodayDailyLog = useCallback(
+    () => goToDailyLog(toISODateString(new Date())),
+    [goToDailyLog],
+  );
   useRegisterBottomNavAction(goToLog);
 
   return (
@@ -53,8 +62,10 @@ export function Home() {
       {/* Calendar */}
       <Calendar
         periods={periods}
+        dailyLogs={dailyLogs}
         defaultCycleLength={settings.defaultCycleLength}
         defaultPeriodLength={settings.defaultPeriodLength}
+        onDayClick={goToDailyLog}
       />
 
       {/* Stats row */}
@@ -84,7 +95,7 @@ export function Home() {
       )}
 
       {/* Log period button (desktop) */}
-      <div className="hidden sm:flex justify-center mt-2">
+      <div className="hidden sm:flex justify-center gap-2 mt-2">
         <Button
           variant="submit"
           color="primary"
@@ -93,6 +104,14 @@ export function Home() {
         >
           <FontAwesomeIcon icon={faPlus} className="mr-2" />
           {t("_pages:home.logPeriod")}
+        </Button>
+        <Button
+          variant="submit"
+          color="primary"
+          onClick={goToTodayDailyLog}
+          className="!px-6"
+        >
+          {t("_pages:home.logToday")}
         </Button>
       </div>
     </main>

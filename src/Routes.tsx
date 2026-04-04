@@ -15,6 +15,11 @@ const PeriodLog = loadable(() =>
     default: module.PeriodLog,
   })),
 );
+const DailyLog = loadable(() =>
+  import("views").then((module) => ({
+    default: module.DailyLog,
+  })),
+);
 const History = loadable(() =>
   import("views").then((module) => ({
     default: module.History,
@@ -39,6 +44,7 @@ export const Routes = () => {
           <Route index element={<Home />} />
           <Route path="/log" element={<PeriodLog />} />
           <Route path="/log/:id" element={<PeriodLog />} />
+          <Route path="/daily-log/:date" element={<DailyLog />} />
           <Route path="/history" element={<History />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />

@@ -12,6 +12,7 @@ import {
   isSameDay,
   isDateInPeriod,
   getPredictedPeriodDaysForMonth,
+  toISODateString,
 } from "lib";
 
 // components
@@ -32,11 +33,17 @@ import type { CalendarDayData, CalendarProps } from "./types";
  */
 export function Calendar({
   periods,
+  dailyLogs,
   defaultCycleLength,
   defaultPeriodLength,
+  onDayClick,
 }: CalendarProps) {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const today = useMemo(() => new Date(), []);
+  const dailyLogDateSet = useMemo(
+    () => new Set(dailyLogs.map((item) => item.date)),
+    [dailyLogs],
+  );
 
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
@@ -51,7 +58,13 @@ export function Calendar({
         currentYear,
         currentMonth,
       ),
-    [periods, defaultCycleLength, defaultPeriodLength, currentYear, currentMonth],
+    [
+      periods,
+      defaultCycleLength,
+      defaultPeriodLength,
+      currentYear,
+      currentMonth,
+    ],
   );
 
   const monthName = new Date(currentYear, currentMonth).toLocaleDateString(
@@ -96,6 +109,7 @@ export function Calendar({
         isToday: false,
         isPeriodDay: false,
         isPredictedDay: false,
+        hasDailyLog: dailyLogDateSet.has(toISODateString(d)),
       });
     }
 
@@ -113,6 +127,7 @@ export function Calendar({
         isToday: isSameDay(date, today),
         isPeriodDay,
         isPredictedDay,
+        hasDailyLog: dailyLogDateSet.has(toISODateString(date)),
       });
     }
 
@@ -128,13 +143,14 @@ export function Calendar({
           isToday: false,
           isPeriodDay: false,
           isPredictedDay: false,
+          hasDailyLog: dailyLogDateSet.has(toISODateString(d)),
         });
       }
     }
 
     return paddedDays;
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- today is stable for the component's lifetime
-  }, [currentYear, currentMonth, periods, monthPrediction]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- today is stable for the component's lifetime
+  }, [currentYear, currentMonth, periods, monthPrediction, dailyLogDateSet]);
 
   return (
     <div className="bg-base-light rounded-xl p-4 shadow-sm">
@@ -143,7 +159,7 @@ export function Calendar({
         <button
           onClick={goToPreviousMonth}
           className="p-2 rounded-full hover:bg-base-dark transition-colors"
-          aria-label="Previous month"
+          aria-label={t("_accessibility:calendar.previousMonth")}
         >
           <FontAwesomeIcon icon={faChevronLeft} className="text-text-muted" />
         </button>
@@ -153,7 +169,7 @@ export function Calendar({
         <button
           onClick={goToNextMonth}
           className="p-2 rounded-full hover:bg-base-dark transition-colors"
-          aria-label="Next month"
+          aria-label={t("_accessibility:calendar.nextMonth")}
         >
           <FontAwesomeIcon icon={faChevronRight} className="text-text-muted" />
         </button>
@@ -175,7 +191,17 @@ export function Calendar({
       <div className="grid grid-cols-7 gap-1">
         {calendarDays.map((day, index) => (
           <div key={index} className="flex items-center justify-center">
-            <CalendarDay day={day} />
+            <CalendarDay
+              day={day}
+              onClick={
+                onDayClick
+                  ? () => onDayClick(toISODateString(day.date))
+                  : undefined
+              }
+              ariaLabel={t("_accessibility:calendar.selectDay", {
+                day: day.date.toLocaleDateString(i18n.language),
+              })}
+            />
           </div>
         ))}
       </div>
@@ -184,11 +210,15 @@ export function Calendar({
       <div className="flex items-center gap-4 mt-4 text-xs text-text-muted">
         <div className="flex items-center gap-1">
           <span className="w-3 h-3 rounded-full bg-primary inline-block" />
-          <span>Periodo</span>
+          <span>{t("_pages:calendar.period")}</span>
         </div>
         <div className="flex items-center gap-1">
           <span className="w-3 h-3 rounded-full bg-secondary opacity-60 inline-block" />
-          <span>Prediccion</span>
+          <span>{t("_pages:calendar.prediction")}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+          <span>{t("_pages:calendar.dailyLog")}</span>
         </div>
       </div>
     </div>

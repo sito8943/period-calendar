@@ -1,8 +1,9 @@
-import type { Period, ProfileSettings, Settings } from "./types";
+import type { DailyLog, Period, ProfileSettings, Settings } from "./types";
 import { DEFAULT_PROFILE_SETTINGS, DEFAULT_SETTINGS } from "./types";
 
 const STORAGE_KEYS = {
   periods: "period-calendar:periods",
+  dailyLogs: "period-calendar:daily-logs",
   settings: "period-calendar:settings",
   profile: "period-calendar:profile",
 } as const;
@@ -30,6 +31,34 @@ export function savePeriod(period: Period): void {
 export function deletePeriod(id: string): void {
   const periods = getPeriods().filter((p) => p.id !== id);
   localStorage.setItem(STORAGE_KEYS.periods, JSON.stringify(periods));
+}
+
+export function getDailyLogs(): DailyLog[] {
+  const raw = localStorage.getItem(STORAGE_KEYS.dailyLogs);
+  if (!raw) return [];
+  const dailyLogs: DailyLog[] = JSON.parse(raw);
+  return dailyLogs.sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export function saveDailyLog(dailyLog: DailyLog): void {
+  const dailyLogs = getDailyLogs();
+  const byIdIndex = dailyLogs.findIndex((item) => item.id === dailyLog.id);
+  if (byIdIndex >= 0) {
+    dailyLogs[byIdIndex] = dailyLog;
+  } else {
+    const byDateIndex = dailyLogs.findIndex((item) => item.date === dailyLog.date);
+    if (byDateIndex >= 0) {
+      dailyLogs[byDateIndex] = dailyLog;
+    } else {
+      dailyLogs.push(dailyLog);
+    }
+  }
+  localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
+}
+
+export function deleteDailyLog(id: string): void {
+  const dailyLogs = getDailyLogs().filter((item) => item.id !== id);
+  localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
 }
 
 export function getSettings(): Settings {

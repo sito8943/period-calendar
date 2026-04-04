@@ -1,4 +1,4 @@
-import type { Period } from "lib";
+import type { DailyLog, Period } from "lib";
 
 export type CalendarDayData = {
   date: Date;
@@ -6,14 +6,19 @@ export type CalendarDayData = {
   isToday: boolean;
   isPeriodDay: boolean;
   isPredictedDay: boolean;
+  hasDailyLog: boolean;
 };
 
 export type CalendarProps = {
   periods: Period[];
+  dailyLogs: DailyLog[];
   defaultCycleLength: number;
   defaultPeriodLength: number;
+  onDayClick?: (date: string) => void;
 };
 
 export type CalendarDayProps = {
   day: CalendarDayData;
+  onClick?: () => void;
+  ariaLabel?: string;
 };

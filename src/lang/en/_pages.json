@@ -13,6 +13,7 @@
     "daysAgo": "{{days}} days ago",
     "today": "Today",
     "logPeriod": "Log period",
+    "logToday": "Log today",
     "noData": "No data yet. Log your first period.",
     "stats": {
       "avgCycle": "Avg. cycle",
@@ -51,6 +52,90 @@
       "confirm": "Delete",
       "cancel": "Cancel"
     }
+  },
+  "dailyLog": {
+    "title": "Daily log",
+    "editTitle": "Edit daily log",
+    "date": "Date",
+    "flow": "Flow",
+    "symptoms": "Symptoms",
+    "sexualActivity": "Sexual activity",
+    "hadSex": "I had sex",
+    "protection": "Protection",
+    "mood": "Mood",
+    "sleepHours": "Sleep hours",
+    "sleepQuality": "Sleep quality",
+    "notes": "Notes",
+    "save": "Save",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "optional": "Optional",
+    "noFlow": "No data",
+    "noMood": "No data",
+    "noSleepQuality": "No data",
+    "flowOptions": {
+      "none": "No bleeding",
+      "light": "Light",
+      "medium": "Medium",
+      "heavy": "Heavy"
+    },
+    "symptomOptions": {
+      "cramps": "Cramps",
+      "mood_swings": "Mood swings",
+      "acne": "Acne",
+      "headache": "Headache",
+      "bloating": "Bloating",
+      "back_pain": "Back pain",
+      "fatigue": "Fatigue"
+    },
+    "protectionOptions": {
+      "unknown": "Not specified",
+      "none": "No protection",
+      "condom": "Condom",
+      "pill": "Pill",
+      "iud": "IUD",
+      "other": "Other"
+    },
+    "moodOptions": {
+      "1": "Very low",
+      "2": "Low",
+      "3": "Neutral",
+      "4": "Good",
+      "5": "Very good"
+    },
+    "sleepQualityOptions": {
+      "1": "Very poor",
+      "2": "Poor",
+      "3": "Average",
+      "4": "Good",
+      "5": "Excellent"
+    },
+    "errors": {
+      "dateRequired": "Date is required",
+      "dateInvalid": "Invalid date format",
+      "notFuture": "Date cannot be in the future",
+      "sleepHoursRange": "Sleep hours must be between 0 and 24",
+      "duplicateDate": "A daily log already exists for this date"
+    },
+    "messages": {
+      "saved": "Daily log saved successfully",
+      "deleted": "Daily log deleted successfully",
+      "saveError": "Failed to save daily log",
+      "deleteError": "Failed to delete daily log"
+    },
+    "deleteDialog": {
+      "title": "Delete this daily log?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "discardDialog": {
+      "title": "You have unsaved changes. Do you want to leave?"
+    }
+  },
+  "calendar": {
+    "period": "Period",
+    "prediction": "Prediction",
+    "dailyLog": "Daily log"
   },
   "profile": {
     "title": "Profile",
