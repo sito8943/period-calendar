@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faClockRotateLeft,
-  faCalendarPlus,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -32,11 +31,6 @@ export const menuMap: MenuItemType<MenuKeys>[] = [
     icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
   },
   { type: "divider" },
-  {
-    page: MenuKeys.PeriodLog,
-    path: "/log",
-    icon: <FontAwesomeIcon icon={faCalendarPlus} />,
-  },
   {
     page: MenuKeys.Profile,
     path: "/profile",
