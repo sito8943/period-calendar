@@ -1,73 +1,98 @@
-# React + TypeScript + Vite
+# period-calendar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicacion web para registrar periodos, llevar un diario diario y visualizar predicciones del ciclo. Esta app esta construida con React, TypeScript y Vite, con persistencia local en `localStorage`.
 
-Currently, two official plugins are available:
+## Caracteristicas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Registro y edicion de periodos (`inicio` y `fin`).
+- Diario por fecha con flujo, sintomas, actividad sexual, estado de animo, sueno y notas.
+- Calendario mensual con estado por dia y prediccion del siguiente periodo.
+- Estadisticas de ciclo: promedio, variacion y duracion.
+- Historial de periodos con acceso a edicion.
+- Perfil con nombre, idioma (`es`/`en`) y tema (`girl`/`boy`).
+- Onboarding inicial con seleccion de tema.
+- Interfaz responsive con navegacion inferior para mobile.
 
-## React Compiler
+## Stack Tecnico
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- React 19 + TypeScript
+- Vite 7
+- Tailwind CSS v4
+- React Router 7
+- TanStack Query 5
+- i18next + react-i18next
+- `@sito/dashboard-app` para componentes base (UI, notificaciones, onboarding, providers)
 
-## Expanding the ESLint configuration
+## Requisitos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js 18 o superior (recomendado 20+)
+- npm 9 o superior
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Inicio Rapido
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Servidor local por defecto: `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `npm run dev`: inicia el servidor de desarrollo.
+- `npm run build`: compila TypeScript y genera build de produccion.
+- `npm run preview`: sirve localmente la build de produccion.
+- `npm run lint`: ejecuta ESLint.
+
+## Rutas Principales
+
+- `/`: dashboard con calendario y resumen del ciclo.
+- `/log`: alta de periodo.
+- `/log/:id`: edicion de periodo existente.
+- `/daily-log/:date`: diario de una fecha (`YYYY-MM-DD`).
+- `/history`: historial de periodos.
+- `/profile`: datos de perfil, idioma y tema.
+
+## Persistencia de Datos
+
+No requiere backend para funcionar. La app guarda informacion en `localStorage`:
+
+- `period-calendar:periods`
+- `period-calendar:daily-logs`
+- `period-calendar:settings`
+- `period-calendar:profile`
+- `period-calendar:onboarding`
+- `period-calendar:theme`
+
+## Internacionalizacion
+
+Idiomas soportados:
+
+- `es`
+- `en`
+- variantes tematicas: `es-x-boy`, `en-x-boy`
+
+Recursos en `src/lang/**`.
+
+## Estructura del Proyecto
+
+```text
+period-calendar/
+├─ src/
+│  ├─ components/       # Calendar, PeriodCard, BottomNavigation
+│  ├─ hooks/queries/    # Mutaciones y queries con TanStack Query
+│  ├─ layouts/          # Layout principal (header/footer/onboarding)
+│  ├─ lib/              # Logica de fechas, ciclo, tipos y storage
+│  ├─ providers/        # Providers de app y accion de nav inferior
+│  ├─ views/            # Home, PeriodLog, DailyLog, History, Profile
+│  ├─ i18.ts            # Configuracion i18n
+│  └─ main.tsx          # Entrada principal
+├─ vite.config.ts       # Alias y optimizacion de chunks
+└─ package.json
 ```
+
+## Notas de Desarrollo
+
+- El estado de datos se maneja con TanStack Query y fuentes locales.
+- El calculo de predicciones/estadisticas vive en `src/lib/cycle.ts`.
+- El formulario de diario valida fechas ISO y evita duplicados por fecha.
