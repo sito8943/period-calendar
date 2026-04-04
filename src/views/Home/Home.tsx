@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,6 +27,40 @@ export function Home() {
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
 
   const stats = useCycleStats(periods, settings);
+  const cycleVariationMessage = useMemo(() => {
+    const variation = stats.latestCycleVariation;
+    if (!variation) return null;
+
+    if (variation.deltaVsPrevious !== null) {
+      if (variation.deltaVsPrevious > 0) {
+        return t("_pages:home.variation.longerThanPrevious", {
+          days: variation.deltaVsPrevious,
+        });
+      }
+      if (variation.deltaVsPrevious < 0) {
+        return t("_pages:home.variation.shorterThanPrevious", {
+          days: Math.abs(variation.deltaVsPrevious),
+        });
+      }
+      return t("_pages:home.variation.sameAsPrevious");
+    }
+
+    if (variation.deltaVsBaseline !== null) {
+      if (variation.deltaVsBaseline > 0) {
+        return t("_pages:home.variation.longerThanBaseline", {
+          days: variation.deltaVsBaseline,
+        });
+      }
+      if (variation.deltaVsBaseline < 0) {
+        return t("_pages:home.variation.shorterThanBaseline", {
+          days: Math.abs(variation.deltaVsBaseline),
+        });
+      }
+      return t("_pages:home.variation.sameAsBaseline");
+    }
+
+    return t("_pages:home.variation.notEnoughData");
+  }, [stats.latestCycleVariation, t]);
 
   const goToLog = useCallback(() => navigate("/log"), [navigate]);
   const goToDailyLog = useCallback(
@@ -91,6 +125,25 @@ export function Home() {
                 : t("_pages:home.stats.noData")}
             </p>
           </div>
+        </div>
+      )}
+
+      {stats.latestCycleVariation && cycleVariationMessage && (
+        <div className="bg-base-light rounded-xl p-3 shadow-sm">
+          <p className="text-xs text-text-muted">{t("_pages:home.variation.title")}</p>
+          <p className="text-lg font-semibold text-text">
+            {t("_pages:home.variation.latestCycle", {
+              days: stats.latestCycleVariation.latestCycleLength,
+            })}
+          </p>
+          <p className="text-sm text-text-muted">{cycleVariationMessage}</p>
+          {stats.cycleLengthStdDev !== null && (
+            <p className="text-xs text-text-muted mt-1">
+              {t("_pages:home.variation.variability", {
+                value: stats.cycleLengthStdDev,
+              })}
+            </p>
+          )}
         </div>
       )}
 

@@ -7,8 +7,10 @@ import {
   savePeriod,
   deletePeriod as deletePeriodFromStorage,
   getSettings,
+  calculateCycleLengthStdDev,
   calculateAverageCycleLength,
   calculateAveragePeriodDuration,
+  getLatestCycleVariation,
   predictNextPeriodStart,
 } from "lib";
 import type { Period, AddPeriodDto, UpdatePeriodDto, Settings } from "lib";
@@ -92,6 +94,8 @@ export function useCycleStats(periods: Period[], settings: Settings) {
   return useMemo(() => {
     const avgCycleLength = calculateAverageCycleLength(periods);
     const avgPeriodDuration = calculateAveragePeriodDuration(periods);
+    const cycleLengthStdDev = calculateCycleLengthStdDev(periods);
+    const latestCycleVariation = getLatestCycleVariation(periods);
     const nextPeriodStart = predictNextPeriodStart(
       periods,
       settings.defaultCycleLength,
@@ -109,6 +113,8 @@ export function useCycleStats(periods: Period[], settings: Settings) {
     return {
       avgCycleLength,
       avgPeriodDuration,
+      cycleLengthStdDev,
+      latestCycleVariation,
       nextPeriodStart,
       daysUntilNext,
     };

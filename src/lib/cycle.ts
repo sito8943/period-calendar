@@ -1,32 +1,102 @@
 import type { Period } from "./types";
 import { diffInDays, parseLocalDate } from "./dates";
 
+export type CycleTrend = "longer" | "shorter" | "stable";
+
+export interface CycleVariation {
+  latestCycleLength: number;
+  previousCycleLength: number | null;
+  baselineCycleLength: number | null;
+  deltaVsPrevious: number | null;
+  deltaVsBaseline: number | null;
+  trend: CycleTrend;
+}
+
 export function getPeriodDurationDays(period: Period): number | null {
   if (!period.endDate) return null;
   return diffInDays(period.startDate, period.endDate) + 1;
 }
 
-export function calculateAverageCycleLength(periods: Period[]): number | null {
-  if (periods.length < 2) return null;
-
+export function getCycleLengths(periods: Period[]): number[] {
+  if (periods.length < 2) return [];
   const sorted = [...periods].sort(
     (a, b) =>
       parseLocalDate(a.startDate).getTime() -
       parseLocalDate(b.startDate).getTime(),
   );
 
-  let totalDays = 0;
-  let count = 0;
+  const cycleLengths: number[] = [];
 
   for (let i = 1; i < sorted.length; i++) {
     const days = diffInDays(sorted[i - 1].startDate, sorted[i].startDate);
     if (days > 0) {
-      totalDays += days;
-      count++;
+      cycleLengths.push(days);
     }
   }
 
-  return count > 0 ? Math.round(totalDays / count) : null;
+  return cycleLengths;
+}
+
+export function calculateAverageCycleLength(periods: Period[]): number | null {
+  const cycleLengths = getCycleLengths(periods);
+  if (cycleLengths.length === 0) return null;
+
+  const totalDays = cycleLengths.reduce((sum, value) => sum + value, 0);
+  return Math.round(totalDays / cycleLengths.length);
+}
+
+export function calculateCycleLengthStdDev(periods: Period[]): number | null {
+  const cycleLengths = getCycleLengths(periods);
+  if (cycleLengths.length < 2) return null;
+
+  const mean = cycleLengths.reduce((sum, value) => sum + value, 0) / cycleLengths.length;
+  const variance =
+    cycleLengths.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
+    cycleLengths.length;
+
+  return Math.round(Math.sqrt(variance) * 10) / 10;
+}
+
+export function getLatestCycleVariation(periods: Period[]): CycleVariation | null {
+  const cycleLengths = getCycleLengths(periods);
+  if (cycleLengths.length === 0) return null;
+
+  const latestCycleLength = cycleLengths[cycleLengths.length - 1];
+  const previousCycleLength =
+    cycleLengths.length >= 2 ? cycleLengths[cycleLengths.length - 2] : null;
+  const baselineCycles = cycleLengths.slice(0, -1);
+  const baselineCycleLength =
+    baselineCycles.length > 0
+      ? Math.round(
+          baselineCycles.reduce((sum, value) => sum + value, 0) /
+            baselineCycles.length,
+        )
+      : null;
+
+  const deltaVsPrevious =
+    previousCycleLength !== null
+      ? latestCycleLength - previousCycleLength
+      : null;
+  const deltaVsBaseline =
+    baselineCycleLength !== null
+      ? latestCycleLength - baselineCycleLength
+      : null;
+
+  let trend: CycleTrend = "stable";
+  const referenceDelta = deltaVsPrevious ?? deltaVsBaseline;
+  if (referenceDelta !== null) {
+    if (referenceDelta > 0) trend = "longer";
+    else if (referenceDelta < 0) trend = "shorter";
+  }
+
+  return {
+    latestCycleLength,
+    previousCycleLength,
+    baselineCycleLength,
+    deltaVsPrevious,
+    deltaVsBaseline,
+    trend,
+  };
 }
 
 export function calculateAveragePeriodDuration(

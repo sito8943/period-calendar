@@ -20,6 +20,18 @@
       "avgDuration": "Avg. duration",
       "days": "{{count}} days",
       "noData": "No data"
+    },
+    "variation": {
+      "title": "Cycle variation",
+      "latestCycle": "Latest cycle: {{days}} days",
+      "longerThanPrevious": "{{days}} days longer than previous cycle",
+      "shorterThanPrevious": "{{days}} days shorter than previous cycle",
+      "sameAsPrevious": "Same as previous cycle",
+      "longerThanBaseline": "{{days}} days above your prior average",
+      "shorterThanBaseline": "{{days}} days below your prior average",
+      "sameAsBaseline": "Same as your prior average",
+      "notEnoughData": "You need more cycles to compare variations",
+      "variability": "Estimated variability: +/-{{value}} days"
     }
   },
   "history": {
