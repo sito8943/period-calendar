@@ -19,7 +19,7 @@ import { PeriodQueryKeys } from "./utils";
 export function usePeriodsList() {
   return useQuery({
     ...PeriodQueryKeys.list(),
-    queryFn: () => getPeriods(),
+    queryFn: async () => getPeriods(),
   });
 }
 
@@ -34,7 +34,7 @@ export function useAddPeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: AddPeriodDto) => {
+    mutationFn: async (dto: AddPeriodDto) => {
       const now = new Date().toISOString();
       const period: Period = {
         id: crypto.randomUUID(),
@@ -43,8 +43,8 @@ export function useAddPeriod() {
         createdAt: now,
         updatedAt: now,
       };
-      savePeriod(period);
-      return Promise.resolve(period);
+      await savePeriod(period);
+      return period;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all());
@@ -56,8 +56,8 @@ export function useUpdatePeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: UpdatePeriodDto) => {
-      const periods = getPeriods();
+    mutationFn: async (dto: UpdatePeriodDto) => {
+      const periods = await getPeriods();
       const existing = periods.find((p) => p.id === dto.id);
       if (!existing) throw new Error("Period not found");
 
@@ -67,8 +67,8 @@ export function useUpdatePeriod() {
         endDate: dto.endDate ?? null,
         updatedAt: new Date().toISOString(),
       };
-      savePeriod(updated);
-      return Promise.resolve(updated);
+      await savePeriod(updated);
+      return updated;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all());
@@ -80,9 +80,8 @@ export function useDeletePeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => {
-      deletePeriodFromStorage(id);
-      return Promise.resolve();
+    mutationFn: async (id: string) => {
+      await deletePeriodFromStorage(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all());

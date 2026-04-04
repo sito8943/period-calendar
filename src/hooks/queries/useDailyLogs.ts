@@ -15,7 +15,7 @@ import { PeriodQueryKeys } from "./utils";
 export function useDailyLogsList() {
   return useQuery({
     ...PeriodQueryKeys.dailyLogsList(),
-    queryFn: () => getDailyLogs(),
+    queryFn: async () => getDailyLogs(),
   });
 }
 
@@ -32,8 +32,8 @@ export function useAddDailyLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: AddDailyLogDto) => {
-      const dailyLogs = getDailyLogs();
+    mutationFn: async (dto: AddDailyLogDto) => {
+      const dailyLogs = await getDailyLogs();
       const duplicateDate = dailyLogs.find((item) => item.date === dto.date);
       if (duplicateDate) {
         throw new Error("A daily log already exists for this date");
@@ -47,8 +47,8 @@ export function useAddDailyLog() {
         updatedAt: now,
       };
 
-      saveDailyLog(dailyLog);
-      return Promise.resolve(dailyLog);
+      await saveDailyLog(dailyLog);
+      return dailyLog;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());
@@ -60,8 +60,8 @@ export function useUpdateDailyLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (dto: UpdateDailyLogDto) => {
-      const dailyLogs = getDailyLogs();
+    mutationFn: async (dto: UpdateDailyLogDto) => {
+      const dailyLogs = await getDailyLogs();
       const existing = dailyLogs.find((item) => item.id === dto.id);
       if (!existing) throw new Error("Daily log not found");
 
@@ -78,8 +78,8 @@ export function useUpdateDailyLog() {
         updatedAt: new Date().toISOString(),
       };
 
-      saveDailyLog(updated);
-      return Promise.resolve(updated);
+      await saveDailyLog(updated);
+      return updated;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());
@@ -91,9 +91,8 @@ export function useDeleteDailyLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => {
-      deleteDailyLogFromStorage(id);
-      return Promise.resolve();
+    mutationFn: async (id: string) => {
+      await deleteDailyLogFromStorage(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());

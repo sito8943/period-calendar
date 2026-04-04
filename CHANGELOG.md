@@ -10,6 +10,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y
 - Documentacion inicial de proyecto en `README.md`.
 - Registro historico inicial en `CHANGELOG.md`.
 
+### Changed
+- Migracion de persistencia de `periods` y `daily-logs` de `localStorage` a IndexedDB.
+- Migracion automatica de datos existentes en primera carga con fallback a `localStorage` si IndexedDB no esta disponible.
+
 ## [0.0.0] - 2026-04-04
 
 ### Added

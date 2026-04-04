@@ -66,7 +66,7 @@ export interface UpdatePeriodDto {
   endDate?: string | null;
 }
 
-export interface AddDailyLogDto extends DailyLogInput {}
+export type AddDailyLogDto = DailyLogInput;
 
 export interface UpdateDailyLogDto extends DailyLogInput {
   id: string;

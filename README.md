@@ -1,6 +1,6 @@
 # period-calendar
 
-Aplicacion web para registrar periodos, llevar un diario diario y visualizar predicciones del ciclo. Esta app esta construida con React, TypeScript y Vite, con persistencia local en `localStorage`.
+Aplicacion web para registrar periodos, llevar un diario diario y visualizar predicciones del ciclo. Esta app esta construida con React, TypeScript y Vite, con persistencia en IndexedDB (datos principales) y `localStorage` (preferencias).
 
 ## Caracteristicas
 
@@ -55,14 +55,20 @@ Servidor local por defecto: `http://localhost:5173`.
 
 ## Persistencia de Datos
 
-No requiere backend para funcionar. La app guarda informacion en `localStorage`:
+No requiere backend para funcionar.
 
-- `period-calendar:periods`
-- `period-calendar:daily-logs`
+Datos funcionales (IndexedDB):
+
+- Base: `period-calendar-db`
+- Stores: `periods`, `dailyLogs`
+
+Preferencias y estado liviano (`localStorage`):
+
 - `period-calendar:settings`
 - `period-calendar:profile`
 - `period-calendar:onboarding`
 - `period-calendar:theme`
+- `period-calendar:indexeddb-migrated:v1` (marca de migracion)
 
 ## Internacionalizacion
 
@@ -94,5 +100,6 @@ period-calendar/
 ## Notas de Desarrollo
 
 - El estado de datos se maneja con TanStack Query y fuentes locales.
+- `periods` y `daily-logs` migran automaticamente de `localStorage` a IndexedDB en la primera carga.
 - El calculo de predicciones/estadisticas vive en `src/lib/cycle.ts`.
 - El formulario de diario valida fechas ISO y evita duplicados por fecha.
