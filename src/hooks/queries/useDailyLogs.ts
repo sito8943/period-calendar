@@ -4,10 +4,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // lib
 import {
   getDailyLogs,
-  saveDailyLog,
+  addDailyLog,
+  updateDailyLog,
   deleteDailyLog as deleteDailyLogFromStorage,
 } from "lib";
-import type { AddDailyLogDto, DailyLog, UpdateDailyLogDto } from "lib";
+import type { AddDailyLogDto, UpdateDailyLogDto } from "lib";
 
 // utils
 import { PeriodQueryKeys } from "./utils";
@@ -32,24 +33,7 @@ export function useAddDailyLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: AddDailyLogDto) => {
-      const dailyLogs = await getDailyLogs();
-      const duplicateDate = dailyLogs.find((item) => item.date === dto.date);
-      if (duplicateDate) {
-        throw new Error("A daily log already exists for this date");
-      }
-
-      const now = new Date().toISOString();
-      const dailyLog: DailyLog = {
-        id: crypto.randomUUID(),
-        ...dto,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      await saveDailyLog(dailyLog);
-      return dailyLog;
-    },
+    mutationFn: async (dto: AddDailyLogDto) => addDailyLog(dto),
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());
     },
@@ -60,27 +44,7 @@ export function useUpdateDailyLog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: UpdateDailyLogDto) => {
-      const dailyLogs = await getDailyLogs();
-      const existing = dailyLogs.find((item) => item.id === dto.id);
-      if (!existing) throw new Error("Daily log not found");
-
-      const duplicateDate = dailyLogs.find(
-        (item) => item.date === dto.date && item.id !== dto.id,
-      );
-      if (duplicateDate) {
-        throw new Error("A daily log already exists for this date");
-      }
-
-      const updated: DailyLog = {
-        ...existing,
-        ...dto,
-        updatedAt: new Date().toISOString(),
-      };
-
-      await saveDailyLog(updated);
-      return updated;
-    },
+    mutationFn: async (dto: UpdateDailyLogDto) => updateDailyLog(dto),
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());
     },

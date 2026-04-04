@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 // lib
 import {
   getPeriods,
-  savePeriod,
+  addPeriod,
+  updatePeriod,
   deletePeriod as deletePeriodFromStorage,
   getSettings,
   calculateCycleLengthStdDev,
@@ -34,18 +35,7 @@ export function useAddPeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: AddPeriodDto) => {
-      const now = new Date().toISOString();
-      const period: Period = {
-        id: crypto.randomUUID(),
-        startDate: dto.startDate,
-        endDate: dto.endDate ?? null,
-        createdAt: now,
-        updatedAt: now,
-      };
-      await savePeriod(period);
-      return period;
-    },
+    mutationFn: async (dto: AddPeriodDto) => addPeriod(dto),
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all());
     },
@@ -56,20 +46,7 @@ export function useUpdatePeriod() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (dto: UpdatePeriodDto) => {
-      const periods = await getPeriods();
-      const existing = periods.find((p) => p.id === dto.id);
-      if (!existing) throw new Error("Period not found");
-
-      const updated: Period = {
-        ...existing,
-        startDate: dto.startDate,
-        endDate: dto.endDate ?? null,
-        updatedAt: new Date().toISOString(),
-      };
-      await savePeriod(updated);
-      return updated;
-    },
+    mutationFn: async (dto: UpdatePeriodDto) => updatePeriod(dto),
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all());
     },

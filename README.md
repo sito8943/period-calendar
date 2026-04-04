@@ -59,8 +59,9 @@ No requiere backend para funcionar.
 
 Datos funcionales (IndexedDB):
 
-- Base: `period-calendar-db`
+- Base: `period-calendar-offline-db`
 - Stores: `periods`, `dailyLogs`
+- Implementacion: `IndexedDBClient` de `@sito/dashboard-app`
 
 Preferencias y estado liviano (`localStorage`):
 
@@ -68,7 +69,7 @@ Preferencias y estado liviano (`localStorage`):
 - `period-calendar:profile`
 - `period-calendar:onboarding`
 - `period-calendar:theme`
-- `period-calendar:indexeddb-migrated:v1` (marca de migracion)
+- `period-calendar:indexeddb-client-migrated:v2` (marca de migracion)
 
 ## Internacionalizacion
 
@@ -100,6 +101,7 @@ period-calendar/
 ## Notas de Desarrollo
 
 - El estado de datos se maneja con TanStack Query y fuentes locales.
-- `periods` y `daily-logs` migran automaticamente de `localStorage` a IndexedDB en la primera carga.
+- `periods` y `daily-logs` usan clientes offline sobre `IndexedDBClient`.
+- La migracion inicial combina datos legados de `localStorage` y de la base IndexedDB anterior.
 - El calculo de predicciones/estadisticas vive en `src/lib/cycle.ts`.
 - El formulario de diario valida fechas ISO y evita duplicados por fecha.

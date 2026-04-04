@@ -1,37 +1,149 @@
-import type { DailyLog, Period, ProfileSettings, Settings } from "./types";
-import { DEFAULT_PROFILE_SETTINGS, DEFAULT_SETTINGS } from "./types";
+import { IndexedDBClient } from "@sito/dashboard-app";
+import type { BaseEntityDto, BaseFilterDto } from "@sito/dashboard-app";
+
+import type {
+  AddDailyLogDto,
+  AddPeriodDto,
+  DailyLog,
+  FlowLevel,
+  MoodLevel,
+  Period,
+  ProfileSettings,
+  Settings,
+  SexualActivity,
+  SexualProtection,
+  SleepQuality,
+  SymptomKey,
+  UpdateDailyLogDto,
+  UpdatePeriodDto,
+} from "./types";
+import {
+  DEFAULT_PROFILE_SETTINGS,
+  DEFAULT_SETTINGS,
+  FLOW_LEVELS,
+  SEXUAL_PROTECTION_OPTIONS,
+  SYMPTOM_KEYS,
+} from "./types";
 
 const STORAGE_KEYS = {
   periods: "period-calendar:periods",
   dailyLogs: "period-calendar:daily-logs",
   settings: "period-calendar:settings",
   profile: "period-calendar:profile",
-  indexedDbMigration: "period-calendar:indexeddb-migrated:v1",
+  migrationV2: "period-calendar:indexeddb-client-migrated:v2",
 } as const;
 
-const DB_NAME = "period-calendar-db";
-const DB_VERSION = 1;
-const MIGRATION_DONE_VALUE = "done";
+const OFFLINE_DB_NAME = "period-calendar-offline-db";
+const OFFLINE_DB_VERSION = 1;
 
-const STORES = {
+const LEGACY_DB_NAME = "period-calendar-db";
+const LEGACY_STORES = {
   periods: "periods",
   dailyLogs: "dailyLogs",
 } as const;
 
-type IndexedDbStoreName = (typeof STORES)[keyof typeof STORES];
+const MIGRATION_DONE_VALUE = "done";
 
-let databasePromise: Promise<IDBDatabase> | null = null;
+type OfflineFilterDto = BaseFilterDto;
+
+type PeriodEntityDto = BaseEntityDto & {
+  startDate: string;
+  endDate: string | null;
+};
+
+type PeriodEntityAddDto = Omit<PeriodEntityDto, "id">;
+type PeriodImportPreviewDto = { existing?: boolean };
+
+type DailyLogEntityDto = BaseEntityDto & {
+  date: string;
+  flow: FlowLevel | null;
+  symptoms: SymptomKey[];
+  sexualActivity: SexualActivity | null;
+  mood: MoodLevel | null;
+  sleepHours: number | null;
+  sleepQuality: SleepQuality | null;
+  notes: string;
+};
+
+type DailyLogEntityAddDto = Omit<DailyLogEntityDto, "id">;
+type DailyLogImportPreviewDto = { existing?: boolean };
+
+class PeriodsIndexedDbClient extends IndexedDBClient<
+  "periods",
+  PeriodEntityDto,
+  PeriodEntityDto,
+  PeriodEntityAddDto,
+  PeriodEntityDto,
+  OfflineFilterDto,
+  PeriodImportPreviewDto
+> {
+  constructor() {
+    super("periods", OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+  }
+}
+
+class DailyLogsIndexedDbClient extends IndexedDBClient<
+  "dailyLogs",
+  DailyLogEntityDto,
+  DailyLogEntityDto,
+  DailyLogEntityAddDto,
+  DailyLogEntityDto,
+  OfflineFilterDto,
+  DailyLogImportPreviewDto
+> {
+  constructor() {
+    super("dailyLogs", OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+  }
+}
+
+const periodsClient = new PeriodsIndexedDbClient();
+const dailyLogsClient = new DailyLogsIndexedDbClient();
+
 let migrationPromise: Promise<void> | null = null;
+
+const flowSet = new Set<FlowLevel>(FLOW_LEVELS);
+const symptomKeySet = new Set<SymptomKey>(SYMPTOM_KEYS);
+const protectionSet = new Set<SexualProtection>(SEXUAL_PROTECTION_OPTIONS);
 
 const isBrowser = (): boolean => typeof window !== "undefined";
 
 const isIndexedDbSupported = (): boolean =>
   isBrowser() && typeof window.indexedDB !== "undefined";
 
-const isValidStoredEntity = (value: unknown): value is { id: string } => {
-  if (typeof value !== "object" || value === null) return false;
-  const candidate = value as { id?: unknown };
-  return typeof candidate.id === "string" && candidate.id.length > 0;
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null;
+
+const toIsoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+
+const isIsoDate = (value: unknown): value is string =>
+  typeof value === "string" && toIsoDatePattern.test(value);
+
+const parseDateOrFallback = (value: unknown, fallback: Date): Date => {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value;
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+
+  return fallback;
+};
+
+const parseNullableDate = (value: unknown): Date | null => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = parseDateOrFallback(value, new Date(Number.NaN));
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const parseNumericId = (id: string): number => {
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) {
+    throw new Error("Invalid entity id");
+  }
+  return numericId;
 };
 
 const byPeriodStartDateDesc = (a: Period, b: Period): number =>
@@ -54,254 +166,485 @@ function readJsonArrayFromLocalStorage<T>(key: string): T[] {
   }
 }
 
-function getPeriodsFromLocalStorage(): Period[] {
-  return readJsonArrayFromLocalStorage<Period>(STORAGE_KEYS.periods)
-    .filter(isValidStoredEntity)
-    .sort(byPeriodStartDateDesc);
-}
+const normalizeFlowLevel = (value: unknown): FlowLevel | null => {
+  if (typeof value !== "string") return null;
+  return flowSet.has(value as FlowLevel) ? (value as FlowLevel) : null;
+};
 
-function savePeriodToLocalStorage(period: Period): void {
-  if (!isBrowser()) return;
+const normalizeSymptomKeys = (value: unknown): SymptomKey[] => {
+  if (!Array.isArray(value)) return [];
 
-  const periods = readJsonArrayFromLocalStorage<Period>(STORAGE_KEYS.periods).filter(
-    isValidStoredEntity,
-  );
-  const existingIndex = periods.findIndex((item) => item.id === period.id);
-
-  if (existingIndex >= 0) {
-    periods[existingIndex] = period;
-  } else {
-    periods.push(period);
-  }
-
-  window.localStorage.setItem(STORAGE_KEYS.periods, JSON.stringify(periods));
-}
-
-function deletePeriodFromLocalStorage(id: string): void {
-  if (!isBrowser()) return;
-
-  const periods = readJsonArrayFromLocalStorage<Period>(STORAGE_KEYS.periods)
-    .filter(isValidStoredEntity)
-    .filter((period) => period.id !== id);
-
-  window.localStorage.setItem(STORAGE_KEYS.periods, JSON.stringify(periods));
-}
-
-function getDailyLogsFromLocalStorage(): DailyLog[] {
-  return readJsonArrayFromLocalStorage<DailyLog>(STORAGE_KEYS.dailyLogs)
-    .filter(isValidStoredEntity)
-    .sort(byDailyLogDateDesc);
-}
-
-function saveDailyLogToLocalStorage(dailyLog: DailyLog): void {
-  if (!isBrowser()) return;
-
-  const dailyLogs = readJsonArrayFromLocalStorage<DailyLog>(
-    STORAGE_KEYS.dailyLogs,
-  ).filter(isValidStoredEntity);
-
-  const byIdIndex = dailyLogs.findIndex((item) => item.id === dailyLog.id);
-  if (byIdIndex >= 0) {
-    dailyLogs[byIdIndex] = dailyLog;
-  } else {
-    const byDateIndex = dailyLogs.findIndex((item) => item.date === dailyLog.date);
-    if (byDateIndex >= 0) {
-      dailyLogs[byDateIndex] = dailyLog;
-    } else {
-      dailyLogs.push(dailyLog);
+  const normalized = new Set<SymptomKey>();
+  for (const item of value) {
+    if (typeof item === "string" && symptomKeySet.has(item as SymptomKey)) {
+      normalized.add(item as SymptomKey);
     }
   }
 
-  window.localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
-}
+  return [...normalized];
+};
 
-function deleteDailyLogFromLocalStorage(id: string): void {
-  if (!isBrowser()) return;
+const normalizeSexualActivity = (value: unknown): SexualActivity | null => {
+  if (!isRecord(value)) return null;
 
-  const dailyLogs = readJsonArrayFromLocalStorage<DailyLog>(STORAGE_KEYS.dailyLogs)
-    .filter(isValidStoredEntity)
-    .filter((dailyLog) => dailyLog.id !== id);
+  const hadSex = Boolean(value.hadSex);
+  if (!hadSex) return null;
 
-  window.localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
-}
+  const protection =
+    typeof value.protection === "string" &&
+    protectionSet.has(value.protection as SexualProtection)
+      ? (value.protection as SexualProtection)
+      : "unknown";
 
-function requestToPromise<T>(request: IDBRequest<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    request.onsuccess = () => {
-      resolve(request.result);
-    };
-    request.onerror = () => {
-      reject(request.error ?? new Error("IndexedDB request failed"));
-    };
-  });
-}
+  return {
+    hadSex: true,
+    protection,
+  };
+};
 
-function transactionToPromise(transaction: IDBTransaction): Promise<void> {
-  return new Promise((resolve, reject) => {
-    transaction.oncomplete = () => {
-      resolve();
-    };
-    transaction.onabort = () => {
-      reject(transaction.error ?? new Error("IndexedDB transaction aborted"));
-    };
-    transaction.onerror = () => {
-      reject(transaction.error ?? new Error("IndexedDB transaction failed"));
-    };
-  });
-}
+const normalizeMoodLevel = (value: unknown): MoodLevel | null => {
+  if (typeof value !== "number") return null;
+  if (!Number.isInteger(value)) return null;
+  if (value < 1 || value > 5) return null;
+  return value as MoodLevel;
+};
 
-function openDatabase(): Promise<IDBDatabase> {
-  if (!isIndexedDbSupported()) {
-    return Promise.reject(new Error("IndexedDB is not supported"));
+const normalizeSleepQuality = (value: unknown): SleepQuality | null => {
+  if (typeof value !== "number") return null;
+  if (!Number.isInteger(value)) return null;
+  if (value < 1 || value > 5) return null;
+  return value as SleepQuality;
+};
+
+const normalizeSleepHours = (value: unknown): number | null => {
+  if (typeof value !== "number") return null;
+  if (!Number.isFinite(value)) return null;
+  return value;
+};
+
+const normalizeString = (value: unknown): string =>
+  typeof value === "string" ? value : "";
+
+const toPeriodModel = (entity: PeriodEntityDto): Period => ({
+  id: String(entity.id),
+  startDate: entity.startDate,
+  endDate: entity.endDate,
+  createdAt: entity.createdAt.toISOString(),
+  updatedAt: entity.updatedAt.toISOString(),
+});
+
+const toDailyLogModel = (entity: DailyLogEntityDto): DailyLog => ({
+  id: String(entity.id),
+  date: entity.date,
+  flow: entity.flow,
+  symptoms: entity.symptoms,
+  sexualActivity: entity.sexualActivity,
+  mood: entity.mood,
+  sleepHours: entity.sleepHours,
+  sleepQuality: entity.sleepQuality,
+  notes: entity.notes,
+  createdAt: entity.createdAt.toISOString(),
+  updatedAt: entity.updatedAt.toISOString(),
+});
+
+const toPeriodEntityAddDto = (payload: {
+  startDate: string;
+  endDate?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
+}): PeriodEntityAddDto | null => {
+  if (!isIsoDate(payload.startDate)) return null;
+
+  const now = new Date();
+  const createdAt = parseDateOrFallback(payload.createdAt, now);
+  const updatedAt = parseDateOrFallback(payload.updatedAt, createdAt);
+
+  return {
+    startDate: payload.startDate,
+    endDate: isIsoDate(payload.endDate) ? payload.endDate : null,
+    createdAt,
+    updatedAt,
+    deletedAt: parseNullableDate(payload.deletedAt),
+  };
+};
+
+const toDailyLogEntityAddDto = (payload: {
+  date: string;
+  flow: unknown;
+  symptoms: unknown;
+  sexualActivity: unknown;
+  mood: unknown;
+  sleepHours: unknown;
+  sleepQuality: unknown;
+  notes: unknown;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedAt?: string | null;
+}): DailyLogEntityAddDto | null => {
+  if (!isIsoDate(payload.date)) return null;
+
+  const now = new Date();
+  const createdAt = parseDateOrFallback(payload.createdAt, now);
+  const updatedAt = parseDateOrFallback(payload.updatedAt, createdAt);
+
+  return {
+    date: payload.date,
+    flow: normalizeFlowLevel(payload.flow),
+    symptoms: normalizeSymptomKeys(payload.symptoms),
+    sexualActivity: normalizeSexualActivity(payload.sexualActivity),
+    mood: normalizeMoodLevel(payload.mood),
+    sleepHours: normalizeSleepHours(payload.sleepHours),
+    sleepQuality: normalizeSleepQuality(payload.sleepQuality),
+    notes: normalizeString(payload.notes),
+    createdAt,
+    updatedAt,
+    deletedAt: parseNullableDate(payload.deletedAt),
+  };
+};
+
+function getPeriodsFromLocalStorage(): Period[] {
+  const rows = readJsonArrayFromLocalStorage<unknown>(STORAGE_KEYS.periods);
+  const periods: Period[] = [];
+
+  for (const row of rows) {
+    if (!isRecord(row)) continue;
+    if (typeof row.id !== "string" || !row.id.length) continue;
+    if (!isIsoDate(row.startDate)) continue;
+
+    const createdAt = parseDateOrFallback(row.createdAt, new Date()).toISOString();
+    const updatedAt = parseDateOrFallback(row.updatedAt, new Date(createdAt)).toISOString();
+
+    periods.push({
+      id: row.id,
+      startDate: row.startDate,
+      endDate: isIsoDate(row.endDate) ? row.endDate : null,
+      createdAt,
+      updatedAt,
+    });
   }
 
-  if (databasePromise) return databasePromise;
+  return periods.sort(byPeriodStartDateDesc);
+}
 
-  databasePromise = new Promise((resolve, reject) => {
-    const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+function getDailyLogsFromLocalStorage(): DailyLog[] {
+  const rows = readJsonArrayFromLocalStorage<unknown>(STORAGE_KEYS.dailyLogs);
+  const dailyLogs: DailyLog[] = [];
 
-    request.onupgradeneeded = () => {
-      const database = request.result;
+  for (const row of rows) {
+    if (!isRecord(row)) continue;
+    if (typeof row.id !== "string" || !row.id.length) continue;
+    if (!isIsoDate(row.date)) continue;
 
-      if (!database.objectStoreNames.contains(STORES.periods)) {
-        const periodsStore = database.createObjectStore(STORES.periods, {
-          keyPath: "id",
-        });
-        periodsStore.createIndex("startDate", "startDate", { unique: false });
-      }
+    const createdAt = parseDateOrFallback(row.createdAt, new Date()).toISOString();
+    const updatedAt = parseDateOrFallback(row.updatedAt, new Date(createdAt)).toISOString();
 
-      if (!database.objectStoreNames.contains(STORES.dailyLogs)) {
-        const dailyLogsStore = database.createObjectStore(STORES.dailyLogs, {
-          keyPath: "id",
-        });
-        dailyLogsStore.createIndex("date", "date", { unique: false });
-      }
-    };
+    dailyLogs.push({
+      id: row.id,
+      date: row.date,
+      flow: normalizeFlowLevel(row.flow),
+      symptoms: normalizeSymptomKeys(row.symptoms),
+      sexualActivity: normalizeSexualActivity(row.sexualActivity),
+      mood: normalizeMoodLevel(row.mood),
+      sleepHours: normalizeSleepHours(row.sleepHours),
+      sleepQuality: normalizeSleepQuality(row.sleepQuality),
+      notes: normalizeString(row.notes),
+      createdAt,
+      updatedAt,
+    });
+  }
 
-    request.onsuccess = () => {
-      const database = request.result;
-      database.onversionchange = () => {
-        database.close();
-        databasePromise = null;
-      };
-      resolve(database);
+  return dailyLogs.sort(byDailyLogDateDesc);
+}
+
+function savePeriodsToLocalStorage(periods: Period[]): void {
+  if (!isBrowser()) return;
+  window.localStorage.setItem(STORAGE_KEYS.periods, JSON.stringify(periods));
+}
+
+function saveDailyLogsToLocalStorage(dailyLogs: DailyLog[]): void {
+  if (!isBrowser()) return;
+  window.localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
+}
+
+function addPeriodInLocalStorage(dto: AddPeriodDto): Period {
+  const periods = getPeriodsFromLocalStorage();
+  const now = new Date().toISOString();
+
+  const period: Period = {
+    id: crypto.randomUUID(),
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  periods.push(period);
+  savePeriodsToLocalStorage(periods);
+
+  return period;
+}
+
+function updatePeriodInLocalStorage(dto: UpdatePeriodDto): Period {
+  const periods = getPeriodsFromLocalStorage();
+  const index = periods.findIndex((item) => item.id === dto.id);
+  if (index < 0) throw new Error("Period not found");
+
+  const updated: Period = {
+    ...periods[index],
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    updatedAt: new Date().toISOString(),
+  };
+
+  periods[index] = updated;
+  savePeriodsToLocalStorage(periods);
+
+  return updated;
+}
+
+function deletePeriodInLocalStorage(id: string): void {
+  const periods = getPeriodsFromLocalStorage().filter((item) => item.id !== id);
+  savePeriodsToLocalStorage(periods);
+}
+
+function addDailyLogInLocalStorage(dto: AddDailyLogDto): DailyLog {
+  const dailyLogs = getDailyLogsFromLocalStorage();
+  const duplicateDate = dailyLogs.find((item) => item.date === dto.date);
+  if (duplicateDate) throw new Error("A daily log already exists for this date");
+
+  const now = new Date().toISOString();
+  const dailyLog: DailyLog = {
+    id: crypto.randomUUID(),
+    ...dto,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  dailyLogs.push(dailyLog);
+  saveDailyLogsToLocalStorage(dailyLogs);
+
+  return dailyLog;
+}
+
+function updateDailyLogInLocalStorage(dto: UpdateDailyLogDto): DailyLog {
+  const dailyLogs = getDailyLogsFromLocalStorage();
+  const index = dailyLogs.findIndex((item) => item.id === dto.id);
+  if (index < 0) throw new Error("Daily log not found");
+
+  const duplicateDate = dailyLogs.find(
+    (item) => item.date === dto.date && item.id !== dto.id,
+  );
+  if (duplicateDate) throw new Error("A daily log already exists for this date");
+
+  const updated: DailyLog = {
+    ...dailyLogs[index],
+    ...dto,
+    updatedAt: new Date().toISOString(),
+  };
+
+  dailyLogs[index] = updated;
+  saveDailyLogsToLocalStorage(dailyLogs);
+
+  return updated;
+}
+
+function deleteDailyLogInLocalStorage(id: string): void {
+  const dailyLogs = getDailyLogsFromLocalStorage().filter((item) => item.id !== id);
+  saveDailyLogsToLocalStorage(dailyLogs);
+}
+
+async function readLegacyIndexedDbStore<T>(storeName: string): Promise<T[]> {
+  if (!isIndexedDbSupported()) return [];
+
+  return new Promise((resolve) => {
+    const request = window.indexedDB.open(LEGACY_DB_NAME);
+
+    const finalize = (value: T[]): void => {
+      resolve(value);
     };
 
     request.onerror = () => {
-      databasePromise = null;
-      reject(request.error ?? new Error("Unable to open IndexedDB"));
+      finalize([]);
     };
 
-    request.onblocked = () => {
-      databasePromise = null;
-      reject(new Error("IndexedDB open request blocked"));
+    request.onsuccess = () => {
+      const db = request.result;
+
+      if (!db.objectStoreNames.contains(storeName)) {
+        db.close();
+        finalize([]);
+        return;
+      }
+
+      const transaction = db.transaction(storeName, "readonly");
+      const store = transaction.objectStore(storeName);
+      const getAllRequest = store.getAll();
+
+      getAllRequest.onerror = () => {
+        db.close();
+        finalize([]);
+      };
+
+      getAllRequest.onsuccess = () => {
+        const rows = Array.isArray(getAllRequest.result)
+          ? (getAllRequest.result as T[])
+          : [];
+        db.close();
+        finalize(rows);
+      };
+    };
+
+    request.onupgradeneeded = () => {
+      // legacy DB does not exist in this browser profile
     };
   });
-
-  return databasePromise;
 }
 
-async function withStore<T>(
-  storeName: IndexedDbStoreName,
-  mode: IDBTransactionMode,
-  runner: (store: IDBObjectStore) => Promise<T> | T,
-): Promise<T> {
-  const database = await openDatabase();
-  const transaction = database.transaction(storeName, mode);
-  const store = transaction.objectStore(storeName);
+const dedupePeriods = (rows: PeriodEntityAddDto[]): PeriodEntityAddDto[] => {
+  const map = new Map<string, PeriodEntityAddDto>();
 
-  const value = await runner(store);
-  await transactionToPromise(transaction);
+  for (const row of rows) {
+    const key = `${row.startDate}|${row.endDate ?? ""}|${row.createdAt.toISOString()}`;
+    map.set(key, row);
+  }
 
-  return value;
-}
+  return [...map.values()];
+};
 
-async function getAllFromStore<T>(storeName: IndexedDbStoreName): Promise<T[]> {
-  return withStore(storeName, "readonly", async (store) => {
-    const values = await requestToPromise(store.getAll());
-    return values as T[];
-  });
-}
+const dedupeDailyLogs = (rows: DailyLogEntityAddDto[]): DailyLogEntityAddDto[] => {
+  const map = new Map<string, DailyLogEntityAddDto>();
 
-async function putManyInStore<T>(
-  storeName: IndexedDbStoreName,
-  values: T[],
-): Promise<void> {
-  if (values.length === 0) return;
+  for (const row of rows) {
+    const existing = map.get(row.date);
+    if (!existing || existing.updatedAt.getTime() < row.updatedAt.getTime()) {
+      map.set(row.date, row);
+    }
+  }
 
-  await withStore(storeName, "readwrite", async (store) => {
-    await Promise.all(values.map((value) => requestToPromise(store.put(value))));
-  });
-}
+  return [...map.values()];
+};
 
-async function putInStore<T>(
-  storeName: IndexedDbStoreName,
-  value: T,
-): Promise<void> {
-  await withStore(storeName, "readwrite", async (store) => {
-    await requestToPromise(store.put(value));
-  });
-}
+const normalizeLegacyPeriodRows = (rows: unknown[]): PeriodEntityAddDto[] => {
+  const normalized: PeriodEntityAddDto[] = [];
 
-async function deleteFromStore(
-  storeName: IndexedDbStoreName,
-  key: IDBValidKey,
-): Promise<void> {
-  await withStore(storeName, "readwrite", async (store) => {
-    await requestToPromise(store.delete(key));
-  });
-}
+  for (const row of rows) {
+    if (!isRecord(row)) continue;
 
-async function migrateLocalStorageToIndexedDb(): Promise<void> {
-  if (!isBrowser()) return;
+    const dto = toPeriodEntityAddDto({
+      startDate: normalizeString(row.startDate),
+      endDate: row.endDate as string | null | undefined,
+      createdAt: typeof row.createdAt === "string" ? row.createdAt : undefined,
+      updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : undefined,
+      deletedAt:
+        typeof row.deletedAt === "string" || row.deletedAt === null
+          ? (row.deletedAt as string | null)
+          : null,
+    });
 
-  if (
-    window.localStorage.getItem(STORAGE_KEYS.indexedDbMigration) ===
-    MIGRATION_DONE_VALUE
-  ) {
+    if (dto) normalized.push(dto);
+  }
+
+  return normalized;
+};
+
+const normalizeLegacyDailyLogRows = (rows: unknown[]): DailyLogEntityAddDto[] => {
+  const normalized: DailyLogEntityAddDto[] = [];
+
+  for (const row of rows) {
+    if (!isRecord(row)) continue;
+
+    const dto = toDailyLogEntityAddDto({
+      date: normalizeString(row.date),
+      flow: row.flow,
+      symptoms: row.symptoms,
+      sexualActivity: row.sexualActivity,
+      mood: row.mood,
+      sleepHours: row.sleepHours,
+      sleepQuality: row.sleepQuality,
+      notes: row.notes,
+      createdAt: typeof row.createdAt === "string" ? row.createdAt : undefined,
+      updatedAt: typeof row.updatedAt === "string" ? row.updatedAt : undefined,
+      deletedAt:
+        typeof row.deletedAt === "string" || row.deletedAt === null
+          ? (row.deletedAt as string | null)
+          : null,
+    });
+
+    if (dto) normalized.push(dto);
+  }
+
+  return normalized;
+};
+
+async function runOfflineMigration(): Promise<void> {
+  if (!isBrowser() || !isIndexedDbSupported()) return;
+
+  if (window.localStorage.getItem(STORAGE_KEYS.migrationV2) === MIGRATION_DONE_VALUE) {
     return;
   }
 
-  const [storedPeriods, storedDailyLogs] = await Promise.all([
-    getAllFromStore<Period>(STORES.periods),
-    getAllFromStore<DailyLog>(STORES.dailyLogs),
+  const [currentPeriods, currentDailyLogs] = await Promise.all([
+    periodsClient.get(undefined, { softDeleteScope: "ALL" }),
+    dailyLogsClient.get(undefined, { softDeleteScope: "ALL" }),
   ]);
 
-  if (storedPeriods.length === 0) {
-    const legacyPeriods = readJsonArrayFromLocalStorage<Period>(
-      STORAGE_KEYS.periods,
-    ).filter(isValidStoredEntity);
+  const shouldMigratePeriods = currentPeriods.items.length === 0;
+  const shouldMigrateDailyLogs = currentDailyLogs.items.length === 0;
 
-    await putManyInStore(STORES.periods, legacyPeriods);
+  if (!shouldMigratePeriods && !shouldMigrateDailyLogs) {
+    window.localStorage.setItem(STORAGE_KEYS.migrationV2, MIGRATION_DONE_VALUE);
+    return;
   }
 
-  if (storedDailyLogs.length === 0) {
-    const legacyDailyLogs = readJsonArrayFromLocalStorage<DailyLog>(
-      STORAGE_KEYS.dailyLogs,
-    ).filter(isValidStoredEntity);
+  const [
+    localPeriodsRows,
+    localDailyLogRows,
+    legacyIndexedDbPeriodsRows,
+    legacyIndexedDbDailyLogRows,
+  ] = await Promise.all([
+    readJsonArrayFromLocalStorage<unknown>(STORAGE_KEYS.periods),
+    readJsonArrayFromLocalStorage<unknown>(STORAGE_KEYS.dailyLogs),
+    readLegacyIndexedDbStore<unknown>(LEGACY_STORES.periods),
+    readLegacyIndexedDbStore<unknown>(LEGACY_STORES.dailyLogs),
+  ]);
 
-    await putManyInStore(STORES.dailyLogs, legacyDailyLogs);
+  if (shouldMigratePeriods) {
+    const periodsToMigrate = dedupePeriods(
+      normalizeLegacyPeriodRows([...localPeriodsRows, ...legacyIndexedDbPeriodsRows]),
+    );
+
+    for (const period of periodsToMigrate) {
+      await periodsClient.insert(period);
+    }
   }
 
-  window.localStorage.setItem(
-    STORAGE_KEYS.indexedDbMigration,
-    MIGRATION_DONE_VALUE,
-  );
+  if (shouldMigrateDailyLogs) {
+    const dailyLogsToMigrate = dedupeDailyLogs(
+      normalizeLegacyDailyLogRows([
+        ...localDailyLogRows,
+        ...legacyIndexedDbDailyLogRows,
+      ]),
+    );
+
+    for (const dailyLog of dailyLogsToMigrate) {
+      await dailyLogsClient.insert(dailyLog);
+    }
+  }
+
+  window.localStorage.setItem(STORAGE_KEYS.migrationV2, MIGRATION_DONE_VALUE);
 }
 
-async function ensureIndexedDbMigration(): Promise<void> {
+async function ensureOfflineMigration(): Promise<void> {
   if (!isIndexedDbSupported() || !isBrowser()) return;
 
-  if (
-    window.localStorage.getItem(STORAGE_KEYS.indexedDbMigration) ===
-    MIGRATION_DONE_VALUE
-  ) {
+  if (window.localStorage.getItem(STORAGE_KEYS.migrationV2) === MIGRATION_DONE_VALUE) {
     return;
   }
 
   if (!migrationPromise) {
-    migrationPromise = migrateLocalStorageToIndexedDb().catch((error) => {
-      console.error("IndexedDB migration failed, using localStorage fallback", error);
+    migrationPromise = runOfflineMigration().catch((error) => {
+      console.error("Offline migration failed, falling back to localStorage", error);
     });
   }
 
@@ -311,93 +654,151 @@ async function ensureIndexedDbMigration(): Promise<void> {
 export async function getPeriods(): Promise<Period[]> {
   if (!isIndexedDbSupported()) return getPeriodsFromLocalStorage();
 
-  await ensureIndexedDbMigration();
+  await ensureOfflineMigration();
 
   try {
-    const periods = await getAllFromStore<Period>(STORES.periods);
-    return periods.sort(byPeriodStartDateDesc);
+    const result = await periodsClient.get(undefined, { softDeleteScope: "ACTIVE" });
+    return result.items.map(toPeriodModel).sort(byPeriodStartDateDesc);
   } catch (error) {
-    console.error("Failed to read periods from IndexedDB", error);
+    console.error("Failed to read periods from IndexedDBClient", error);
     return getPeriodsFromLocalStorage();
   }
 }
 
-export async function savePeriod(period: Period): Promise<void> {
-  if (!isIndexedDbSupported()) {
-    savePeriodToLocalStorage(period);
-    return;
+export async function addPeriod(dto: AddPeriodDto): Promise<Period> {
+  if (!isIndexedDbSupported()) return addPeriodInLocalStorage(dto);
+
+  await ensureOfflineMigration();
+
+  const addDto = toPeriodEntityAddDto({
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    deletedAt: null,
+  });
+
+  if (!addDto) {
+    throw new Error("Invalid period payload");
   }
 
-  await ensureIndexedDbMigration();
+  const created = await periodsClient.insert(addDto);
+  return toPeriodModel(created);
+}
 
-  try {
-    await putInStore(STORES.periods, period);
-  } catch (error) {
-    console.error("Failed to save period in IndexedDB", error);
-    savePeriodToLocalStorage(period);
-  }
+export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
+  if (!isIndexedDbSupported()) return updatePeriodInLocalStorage(dto);
+
+  await ensureOfflineMigration();
+
+  const id = parseNumericId(dto.id);
+  const existing = await periodsClient.getById(id);
+
+  const updated = await periodsClient.update({
+    ...existing,
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    updatedAt: new Date(),
+  });
+
+  return toPeriodModel(updated);
 }
 
 export async function deletePeriod(id: string): Promise<void> {
   if (!isIndexedDbSupported()) {
-    deletePeriodFromLocalStorage(id);
+    deletePeriodInLocalStorage(id);
     return;
   }
 
-  await ensureIndexedDbMigration();
+  await ensureOfflineMigration();
 
-  try {
-    await deleteFromStore(STORES.periods, id);
-  } catch (error) {
-    console.error("Failed to delete period in IndexedDB", error);
-    deletePeriodFromLocalStorage(id);
-  }
+  const numericId = parseNumericId(id);
+  await periodsClient.softDelete([numericId]);
 }
 
 export async function getDailyLogs(): Promise<DailyLog[]> {
   if (!isIndexedDbSupported()) return getDailyLogsFromLocalStorage();
 
-  await ensureIndexedDbMigration();
+  await ensureOfflineMigration();
 
   try {
-    const dailyLogs = await getAllFromStore<DailyLog>(STORES.dailyLogs);
-    return dailyLogs.sort(byDailyLogDateDesc);
+    const result = await dailyLogsClient.get(undefined, { softDeleteScope: "ACTIVE" });
+    return result.items.map(toDailyLogModel).sort(byDailyLogDateDesc);
   } catch (error) {
-    console.error("Failed to read daily logs from IndexedDB", error);
+    console.error("Failed to read daily logs from IndexedDBClient", error);
     return getDailyLogsFromLocalStorage();
   }
 }
 
-export async function saveDailyLog(dailyLog: DailyLog): Promise<void> {
-  if (!isIndexedDbSupported()) {
-    saveDailyLogToLocalStorage(dailyLog);
-    return;
+export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
+  if (!isIndexedDbSupported()) return addDailyLogInLocalStorage(dto);
+
+  await ensureOfflineMigration();
+
+  const existingDailyLogs = await getDailyLogs();
+  const duplicateDate = existingDailyLogs.find((item) => item.date === dto.date);
+  if (duplicateDate) {
+    throw new Error("A daily log already exists for this date");
   }
 
-  await ensureIndexedDbMigration();
+  const addDto = toDailyLogEntityAddDto({
+    ...dto,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    deletedAt: null,
+  });
 
-  try {
-    await putInStore(STORES.dailyLogs, dailyLog);
-  } catch (error) {
-    console.error("Failed to save daily log in IndexedDB", error);
-    saveDailyLogToLocalStorage(dailyLog);
+  if (!addDto) {
+    throw new Error("Invalid daily log payload");
   }
+
+  const created = await dailyLogsClient.insert(addDto);
+  return toDailyLogModel(created);
+}
+
+export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> {
+  if (!isIndexedDbSupported()) return updateDailyLogInLocalStorage(dto);
+
+  await ensureOfflineMigration();
+
+  const id = parseNumericId(dto.id);
+
+  const existingDailyLogs = await getDailyLogs();
+  const duplicateDate = existingDailyLogs.find(
+    (item) => item.date === dto.date && item.id !== dto.id,
+  );
+  if (duplicateDate) {
+    throw new Error("A daily log already exists for this date");
+  }
+
+  const existing = await dailyLogsClient.getById(id);
+
+  const updated = await dailyLogsClient.update({
+    ...existing,
+    date: dto.date,
+    flow: dto.flow,
+    symptoms: [...new Set(dto.symptoms)],
+    sexualActivity: dto.sexualActivity,
+    mood: dto.mood,
+    sleepHours: dto.sleepHours,
+    sleepQuality: dto.sleepQuality,
+    notes: dto.notes,
+    updatedAt: new Date(),
+  });
+
+  return toDailyLogModel(updated);
 }
 
 export async function deleteDailyLog(id: string): Promise<void> {
   if (!isIndexedDbSupported()) {
-    deleteDailyLogFromLocalStorage(id);
+    deleteDailyLogInLocalStorage(id);
     return;
   }
 
-  await ensureIndexedDbMigration();
+  await ensureOfflineMigration();
 
-  try {
-    await deleteFromStore(STORES.dailyLogs, id);
-  } catch (error) {
-    console.error("Failed to delete daily log in IndexedDB", error);
-    deleteDailyLogFromLocalStorage(id);
-  }
+  const numericId = parseNumericId(id);
+  await dailyLogsClient.softDelete([numericId]);
 }
 
 export function getSettings(): Settings {
@@ -405,7 +806,12 @@ export function getSettings(): Settings {
 
   const raw = window.localStorage.getItem(STORAGE_KEYS.settings);
   if (!raw) return DEFAULT_SETTINGS;
-  return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+
+  try {
+    return { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<Settings>) };
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
 }
 
 export function saveSettings(settings: Settings): void {
@@ -419,7 +825,15 @@ export function getProfileSettings(): ProfileSettings {
 
   const raw = window.localStorage.getItem(STORAGE_KEYS.profile);
   if (!raw) return DEFAULT_PROFILE_SETTINGS;
-  return { ...DEFAULT_PROFILE_SETTINGS, ...JSON.parse(raw) };
+
+  try {
+    return {
+      ...DEFAULT_PROFILE_SETTINGS,
+      ...(JSON.parse(raw) as Partial<ProfileSettings>),
+    };
+  } catch {
+    return DEFAULT_PROFILE_SETTINGS;
+  }
 }
 
 export function saveProfileSettings(profile: ProfileSettings): void {

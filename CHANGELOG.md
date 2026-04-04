@@ -11,8 +11,10 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y
 - Registro historico inicial en `CHANGELOG.md`.
 
 ### Changed
-- Migracion de persistencia de `periods` y `daily-logs` de `localStorage` a IndexedDB.
-- Migracion automatica de datos existentes en primera carga con fallback a `localStorage` si IndexedDB no esta disponible.
+- Migracion de persistencia de `periods` y `daily-logs` a clientes offline basados en `IndexedDBClient` (`@sito/dashboard-app`).
+- Nueva base `period-calendar-offline-db` con stores `periods` y `dailyLogs`.
+- Migracion automatica inicial que combina datos legados desde `localStorage` y desde la base IndexedDB previa (`period-calendar-db`).
+- Fallback operativo a `localStorage` cuando IndexedDB no esta disponible.
 
 ## [0.0.0] - 2026-04-04
 
