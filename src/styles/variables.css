@@ -13,6 +13,16 @@
   --color-quaternary: #d7942e;
   --color-bg-quaternary: #9e6a1f;
   --color-hover-quaternary: #ebb04a;
+  /** Calendar semantic colors (theme-independent) **/
+  --color-period: #ec7fa9;
+  --color-period-hover: #e46897;
+  --color-period-soft: #f7c5d9;
+  --color-fertile: #00997b;
+  --color-fertile-hover: #006654;
+  --color-fertile-soft: #1ab89a;
+  --color-ovulation: #7a1532;
+  --color-ovulation-hover: #651129;
+  --color-ovulation-soft: #c58b9d;
   /** Base colors **/
   --color-base-dark: hsl(0 0% 90%);
   --color-base: hsl(0 0% 95%);

@@ -12,6 +12,7 @@ import {
   isSameDay,
   isDateInPeriod,
   getPredictedPeriodDaysForMonth,
+  getFertilityPredictionForMonth,
   toISODateString,
 } from "lib";
 
@@ -66,6 +67,25 @@ export function Calendar({
       currentMonth,
     ],
   );
+  const monthFertilityPrediction = useMemo(
+    () =>
+      getFertilityPredictionForMonth(
+        periods,
+        defaultCycleLength,
+        currentYear,
+        currentMonth,
+      ),
+    [periods, defaultCycleLength, currentYear, currentMonth],
+  );
+  const ovulationDaySet = useMemo(
+    () =>
+      new Set(
+        (monthFertilityPrediction?.ovulationDays ?? []).map((day) =>
+          toISODateString(day),
+        ),
+      ),
+    [monthFertilityPrediction],
+  );
 
   const monthName = new Date(currentYear, currentMonth).toLocaleDateString(
     i18n.language,
@@ -109,6 +129,8 @@ export function Calendar({
         isToday: false,
         isPeriodDay: false,
         isPredictedDay: false,
+        isFertileDay: false,
+        isOvulationDay: false,
         hasDailyLog: dailyLogDateSet.has(toISODateString(d)),
       });
     }
@@ -116,8 +138,19 @@ export function Calendar({
     // Current month days
     for (const date of days) {
       const isPeriodDay = periods.some((p) => isDateInPeriod(date, p));
+      const isOvulationDay =
+        !isPeriodDay && ovulationDaySet.has(toISODateString(date));
+      const isFertileDay =
+        !isPeriodDay &&
+        !isOvulationDay &&
+        (monthFertilityPrediction?.fertileWindows.some((window) =>
+          isDateInRange(date, window.start, window.end),
+        ) ??
+          false);
       const isPredictedDay =
         !isPeriodDay &&
+        !isOvulationDay &&
+        !isFertileDay &&
         monthPrediction !== null &&
         isDateInRange(date, monthPrediction.start, monthPrediction.end);
 
@@ -127,6 +160,8 @@ export function Calendar({
         isToday: isSameDay(date, today),
         isPeriodDay,
         isPredictedDay,
+        isFertileDay,
+        isOvulationDay,
         hasDailyLog: dailyLogDateSet.has(toISODateString(date)),
       });
     }
@@ -143,6 +178,8 @@ export function Calendar({
           isToday: false,
           isPeriodDay: false,
           isPredictedDay: false,
+          isFertileDay: false,
+          isOvulationDay: false,
           hasDailyLog: dailyLogDateSet.has(toISODateString(d)),
         });
       }
@@ -150,7 +187,15 @@ export function Calendar({
 
     return paddedDays;
     // eslint-disable-next-line react-hooks/exhaustive-deps -- today is stable for the component's lifetime
-  }, [currentYear, currentMonth, periods, monthPrediction, dailyLogDateSet]);
+  }, [
+    currentYear,
+    currentMonth,
+    periods,
+    monthPrediction,
+    monthFertilityPrediction,
+    ovulationDaySet,
+    dailyLogDateSet,
+  ]);
 
   return (
     <div className="bg-base-light rounded-xl p-4 shadow-sm">
@@ -207,13 +252,21 @@ export function Calendar({
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mt-4 text-xs text-text-muted">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-xs text-text-muted">
         <div className="flex items-center gap-1">
-          <span className="w-3 h-3 rounded-full bg-primary inline-block" />
+          <span className="w-3 h-3 legend-dot legend-dot-period" />
           <span>{t("_pages:calendar.period")}</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-3 h-3 rounded-full bg-secondary opacity-60 inline-block" />
+          <span className="w-3 h-3 legend-dot legend-dot-ovulation" />
+          <span>{t("_pages:calendar.ovulation")}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="w-3 h-3 legend-dot legend-dot-fertile" />
+          <span>{t("_pages:calendar.fertileDays")}</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="w-3 h-3 legend-dot legend-dot-prediction" />
           <span>{t("_pages:calendar.prediction")}</span>
         </div>
         <div className="flex items-center gap-1">
@@ -221,6 +274,17 @@ export function Calendar({
           <span>{t("_pages:calendar.dailyLog")}</span>
         </div>
       </div>
+      <p className="mt-2 text-xs text-text-muted">
+        {t("_pages:calendar.fertilityDisclaimer")}
+      </p>
+      {monthFertilityPrediction &&
+        monthFertilityPrediction.variabilityPaddingDays > 0 && (
+          <p className="mt-1 text-xs text-text-muted">
+            {t("_pages:calendar.fertilityWindowWithMargin", {
+              days: monthFertilityPrediction.variabilityPaddingDays,
+            })}
+          </p>
+        )}
     </div>
   );
 }

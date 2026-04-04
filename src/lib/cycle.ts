@@ -12,6 +12,22 @@ export interface CycleVariation {
   trend: CycleTrend;
 }
 
+export interface FertilityPrediction {
+  ovulationDate: Date;
+  fertileStart: Date;
+  fertileEnd: Date;
+}
+
+export interface MonthFertilityPrediction {
+  ovulationDays: Date[];
+  fertileWindows: { start: Date; end: Date }[];
+  variabilityPaddingDays: number;
+}
+
+const OVULATION_DAYS_BEFORE_PERIOD = 14;
+const FERTILE_WINDOW_DAYS_BEFORE_OVULATION = 5;
+const FERTILE_WINDOW_DAYS_AFTER_OVULATION = 1;
+
 export function getPeriodDurationDays(period: Period): number | null {
   if (!period.endDate) return null;
   return diffInDays(period.startDate, period.endDate) + 1;
@@ -175,6 +191,127 @@ function rangesOverlap(
   endB: Date,
 ): boolean {
   return startA <= endB && endA >= startB;
+}
+
+function shiftDays(baseDate: Date, days: number): Date {
+  const shifted = new Date(baseDate);
+  shifted.setDate(shifted.getDate() + days);
+  return shifted;
+}
+
+function getVariabilityPaddingDays(periods: Period[]): number {
+  const stdDev = calculateCycleLengthStdDev(periods);
+  if (stdDev === null) return 0;
+
+  // Add uncertainty for irregular cycles to avoid false precision.
+  return Math.max(0, Math.min(4, Math.round(stdDev / 2)));
+}
+
+export function getFertilityPredictionForPeriodStart(
+  periodStart: Date,
+  variabilityPaddingDays = 0,
+): FertilityPrediction {
+  const ovulationDate = shiftDays(periodStart, -OVULATION_DAYS_BEFORE_PERIOD);
+  const fertileStart = shiftDays(
+    ovulationDate,
+    -(FERTILE_WINDOW_DAYS_BEFORE_OVULATION + variabilityPaddingDays),
+  );
+  const fertileEnd = shiftDays(
+    ovulationDate,
+    FERTILE_WINDOW_DAYS_AFTER_OVULATION + variabilityPaddingDays,
+  );
+
+  return {
+    ovulationDate,
+    fertileStart,
+    fertileEnd,
+  };
+}
+
+export function getFertilityPredictionForMonth(
+  periods: Period[],
+  defaultCycleLength: number,
+  year: number,
+  month: number,
+): MonthFertilityPrediction | null {
+  if (periods.length === 0) return null;
+
+  const avgCycle = calculateAverageCycleLength(periods) ?? defaultCycleLength;
+  if (avgCycle <= 0) return null;
+
+  const firstPredictedStart = predictNextPeriodStart(periods, defaultCycleLength);
+  if (!firstPredictedStart) return null;
+
+  const variabilityPaddingDays = getVariabilityPaddingDays(periods);
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0);
+
+  const maxLeadDays =
+    OVULATION_DAYS_BEFORE_PERIOD +
+    FERTILE_WINDOW_DAYS_BEFORE_OVULATION +
+    variabilityPaddingDays;
+
+  const predictedStart = new Date(firstPredictedStart);
+  if (predictedStart < monthStart) {
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const daysUntilMonth = Math.floor(
+      (monthStart.getTime() - predictedStart.getTime()) / MS_PER_DAY,
+    );
+    const cyclesToSkip = Math.max(
+      0,
+      Math.floor((daysUntilMonth - maxLeadDays) / avgCycle) - 1,
+    );
+    predictedStart.setDate(predictedStart.getDate() + cyclesToSkip * avgCycle);
+  }
+
+  const ovulationDays: Date[] = [];
+  const fertileWindows: { start: Date; end: Date }[] = [];
+
+  let safetyCounter = 0;
+  while (safetyCounter < 400) {
+    const prediction = getFertilityPredictionForPeriodStart(
+      predictedStart,
+      variabilityPaddingDays,
+    );
+
+    if (prediction.fertileStart > monthEnd) break;
+
+    if (
+      rangesOverlap(
+        prediction.fertileStart,
+        prediction.fertileEnd,
+        monthStart,
+        monthEnd,
+      )
+    ) {
+      fertileWindows.push({
+        start: prediction.fertileStart,
+        end: prediction.fertileEnd,
+      });
+
+      if (
+        rangesOverlap(
+          prediction.ovulationDate,
+          prediction.ovulationDate,
+          monthStart,
+          monthEnd,
+        )
+      ) {
+        ovulationDays.push(new Date(prediction.ovulationDate));
+      }
+    }
+
+    predictedStart.setDate(predictedStart.getDate() + avgCycle);
+    safetyCounter++;
+  }
+
+  if (ovulationDays.length === 0 && fertileWindows.length === 0) return null;
+
+  return {
+    ovulationDays,
+    fertileWindows,
+    variabilityPaddingDays,
+  };
 }
 
 export function getPredictedPeriodDaysForMonth(

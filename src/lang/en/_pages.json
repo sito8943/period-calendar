@@ -147,7 +147,11 @@
   "calendar": {
     "period": "Period",
     "prediction": "Prediction",
-    "dailyLog": "Daily log"
+    "dailyLog": "Daily log",
+    "ovulation": "Estimated ovulation",
+    "fertileDays": "Fertile days",
+    "fertilityDisclaimer": "Estimate only: this can vary, especially with irregular cycles.",
+    "fertilityWindowWithMargin": "Fertile window widened by +/-{{days}} days due to cycle variability"
   },
   "profile": {
     "title": "Profile",

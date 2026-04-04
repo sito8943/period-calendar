@@ -12,6 +12,8 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     isToday,
     isPeriodDay,
     isPredictedDay,
+    isFertileDay,
+    isOvulationDay,
     hasDailyLog,
   } = day;
 
@@ -23,6 +25,10 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     colorClasses = "text-text-muted/30";
   } else if (isPeriodDay) {
     colorClasses = "period-day";
+  } else if (isOvulationDay) {
+    colorClasses = "ovulation-day";
+  } else if (isFertileDay) {
+    colorClasses = "fertile-day";
   } else if (isPredictedDay) {
     colorClasses = "predicted-day";
   } else {
@@ -30,10 +36,25 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
   }
 
   const todayClasses =
-    isToday && !isPeriodDay && !isPredictedDay ? "today-marker" : "";
+    isToday && !isPeriodDay && !isPredictedDay && !isFertileDay && !isOvulationDay
+      ? "today-marker"
+      : "";
+  const isSpecialDay =
+    isPeriodDay || isPredictedDay || isFertileDay || isOvulationDay;
   const interactiveClasses = onClick
-    ? "hover:bg-base-dark/60 cursor-pointer"
+    ? isSpecialDay
+      ? "cursor-pointer"
+      : "hover:bg-base-dark/60 cursor-pointer"
     : "cursor-default";
+  const dailyLogDotClass = isPeriodDay
+    ? "bg-white"
+    : isOvulationDay
+      ? "bg-ovulation"
+      : isFertileDay
+        ? "bg-fertile"
+        : isPredictedDay
+          ? "bg-period"
+          : "bg-primary";
 
   return (
     <button
@@ -46,9 +67,7 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
       {date.getDate()}
       {hasDailyLog && (
         <span
-          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${
-            isPeriodDay || isPredictedDay ? "bg-white" : "bg-primary"
-          }`}
+          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${dailyLogDotClass}`}
         />
       )}
     </button>

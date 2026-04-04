@@ -1,16 +1,75 @@
 /* App-specific component styles */
 
 .period-day {
-  background-color: var(--color-primary);
+  background-color: var(--color-period);
+  color: #fff;
+}
+
+.period-day:hover {
+  background-color: var(--color-period-hover);
+}
+
+.period-day-soft {
+  background-color: var(--color-period-soft);
   color: white;
 }
 
 .predicted-day {
-  background-color: var(--color-secondary);
-  color: white;
-  opacity: 0.6;
+  background-color: var(--color-period-soft);
+  border: 1px solid var(--color-period);
+  color: var(--color-bg-primary);
+}
+
+.predicted-day:hover {
+  background-color: color-mix(in srgb, var(--color-period-soft) 72%, white 28%);
+}
+
+.ovulation-day {
+  background-color: transparent;
+  border: 2px solid var(--color-ovulation);
+  color: var(--color-ovulation);
+}
+
+.ovulation-day:hover {
+  background-color: var(--color-ovulation-soft);
+  color: var(--color-ovulation-hover);
+}
+
+.fertile-day {
+  background-color: transparent;
+  border: 2px solid var(--color-fertile);
+  color: var(--color-fertile);
+}
+
+.fertile-day:hover {
+  background-color: var(--color-fertile-soft);
+  color: var(--color-fertile-hover);
 }
 
 .today-marker {
   box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.legend-dot {
+  display: inline-block;
+  border-radius: 9999px;
+}
+
+.legend-dot-period {
+  background-color: var(--color-period);
+}
+
+.legend-dot-prediction {
+  background-color: var(--color-period-soft);
+  border: 1px solid var(--color-period);
+}
+
+.legend-dot-ovulation {
+  background-color: transparent;
+  border: 2px solid var(--color-ovulation);
+}
+
+.legend-dot-fertile {
+  background-color: transparent;
+  border: 2px solid var(--color-fertile);
 }

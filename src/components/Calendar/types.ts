@@ -6,6 +6,8 @@ export type CalendarDayData = {
   isToday: boolean;
   isPeriodDay: boolean;
   isPredictedDay: boolean;
+  isFertileDay: boolean;
+  isOvulationDay: boolean;
   hasDailyLog: boolean;
 };
 
