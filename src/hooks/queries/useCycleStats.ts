@@ -6,6 +6,8 @@ import {
   calculateAverageCycleLength,
   calculateAveragePeriodDuration,
   getLatestCycleVariation,
+  hasReportedPeriodInMonth,
+  isDateInFertileWindow,
   predictNextPeriodStart,
   type Period,
   type Settings,
@@ -31,6 +33,20 @@ export function useCycleStats(periods: Period[], settings: Settings) {
       );
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const isInFertileWindowToday = isDateInFertileWindow(
+      periods,
+      settings.defaultCycleLength,
+      today,
+    );
+    const hasReportedPeriodThisMonth = hasReportedPeriodInMonth(
+      periods,
+      today.getFullYear(),
+      today.getMonth(),
+    );
+
     return {
       avgCycleLength,
       avgPeriodDuration,
@@ -38,6 +54,8 @@ export function useCycleStats(periods: Period[], settings: Settings) {
       latestCycleVariation,
       nextPeriodStart,
       daysUntilNext,
+      isInFertileWindowToday,
+      hasReportedPeriodThisMonth,
     };
   }, [periods, settings.defaultCycleLength]);
 }

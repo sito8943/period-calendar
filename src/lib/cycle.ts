@@ -193,6 +193,12 @@ function rangesOverlap(
   return startA <= endB && endA >= startB;
 }
 
+function normalizeDate(date: Date): Date {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+}
+
 function shiftDays(baseDate: Date, days: number): Date {
   const shifted = new Date(baseDate);
   shifted.setDate(shifted.getDate() + days);
@@ -332,13 +338,7 @@ export function getPredictedPeriodDaysForMonth(
   const monthStart = new Date(year, month, 1);
   const monthEnd = new Date(year, month + 1, 0);
 
-  const hasReportedPeriodInMonth = periods.some((period) => {
-    const periodStart = parseLocalDate(period.startDate);
-    const periodEnd = getEffectivePeriodEnd(period);
-    return rangesOverlap(periodStart, periodEnd, monthStart, monthEnd);
-  });
-
-  if (hasReportedPeriodInMonth) return null;
+  if (hasReportedPeriodInMonth(periods, year, month)) return null;
 
   const firstPredictedStart = predictNextPeriodStart(periods, defaultCycleLength);
   if (!firstPredictedStart) return null;
@@ -370,4 +370,43 @@ export function getPredictedPeriodDaysForMonth(
   }
 
   return null;
+}
+
+export function hasReportedPeriodInMonth(
+  periods: Period[],
+  year: number,
+  month: number,
+): boolean {
+  if (periods.length === 0) return false;
+
+  const monthStart = new Date(year, month, 1);
+  const monthEnd = new Date(year, month + 1, 0);
+
+  return periods.some((period) => {
+    const periodStart = parseLocalDate(period.startDate);
+    const periodEnd = getEffectivePeriodEnd(period);
+    return rangesOverlap(periodStart, periodEnd, monthStart, monthEnd);
+  });
+}
+
+export function isDateInFertileWindow(
+  periods: Period[],
+  defaultCycleLength: number,
+  date: Date,
+): boolean {
+  const targetDate = normalizeDate(date);
+  const prediction = getFertilityPredictionForMonth(
+    periods,
+    defaultCycleLength,
+    targetDate.getFullYear(),
+    targetDate.getMonth(),
+  );
+
+  if (!prediction) return false;
+
+  return prediction.fertileWindows.some((window) => {
+    const start = normalizeDate(window.start);
+    const end = normalizeDate(window.end);
+    return rangesOverlap(targetDate, targetDate, start, end);
+  });
 }

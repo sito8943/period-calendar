@@ -15,6 +15,14 @@
     "logPeriod": "Registrar periodo",
     "logToday": "Registrar hoy",
     "noData": "Aun no hay datos. Registra tu primer periodo.",
+    "alerts": {
+      "periodInDays": "Tu periodo llegara en {{days}} dias",
+      "periodToday": "Tu periodo llega hoy",
+      "fertileTitle": "Fertilidad",
+      "fertileMessage": "Estas en dias fertiles",
+      "missingPeriodTitle": "Recordatorio",
+      "missingPeriodMessage": "No has registrado tu periodo este mes"
+    },
     "stats": {
       "avgCycle": "Ciclo promedio",
       "avgDuration": "Duracion promedio",

@@ -15,6 +15,14 @@
     "logPeriod": "Log period",
     "logToday": "Log today",
     "noData": "No data yet. Log your first period.",
+    "alerts": {
+      "periodInDays": "Your period will arrive in {{days}} days",
+      "periodToday": "Your period arrives today",
+      "fertileTitle": "Fertility",
+      "fertileMessage": "You are in fertile days",
+      "missingPeriodTitle": "Reminder",
+      "missingPeriodMessage": "You have not logged your period this month"
+    },
     "stats": {
       "avgCycle": "Avg. cycle",
       "avgDuration": "Avg. duration",

@@ -17,7 +17,7 @@ import { useRegisterBottomNavAction } from "providers";
 import { DEFAULT_SETTINGS, toISODateString } from "lib";
 
 // components
-import { Calendar } from "components";
+import { Calendar, PredictionCard } from "components";
 
 export function Home() {
   const { t } = useTranslation();
@@ -27,6 +27,16 @@ export function Home() {
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
 
   const stats = useCycleStats(periods, settings);
+  const nextPeriodMessage = useMemo(() => {
+    if (stats.daysUntilNext === null) return t("_pages:home.noData");
+    if (stats.daysUntilNext > 0) {
+      return t("_pages:home.alerts.periodInDays", { days: stats.daysUntilNext });
+    }
+    if (stats.daysUntilNext === 0) return t("_pages:home.alerts.periodToday");
+    return t("_pages:home.daysAgo", { days: Math.abs(stats.daysUntilNext) });
+  }, [stats.daysUntilNext, t]);
+  const showMissingPeriodThisMonthAlert =
+    periods.length > 0 && !stats.hasReportedPeriodThisMonth;
   const cycleVariationMessage = useMemo(() => {
     const variation = stats.latestCycleVariation;
     if (!variation) return null;
@@ -75,22 +85,34 @@ export function Home() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4 home-enter-stagger">
-      {/* Prediction card */}
-      <div className="bg-primary text-white rounded-xl p-4 shadow-md">
-        <h2 className="text-sm font-medium opacity-80">
-          {t("_pages:home.nextPeriod")}
-        </h2>
-        {stats.daysUntilNext !== null ? (
-          <p className="text-2xl max-sm:text-xl font-bold mt-1">
-            {stats.daysUntilNext > 0
-              ? t("_pages:home.daysUntil", { days: stats.daysUntilNext })
-              : stats.daysUntilNext === 0
-                ? t("_pages:home.today")
-                : t("_pages:home.daysAgo", { days: Math.abs(stats.daysUntilNext) })}
-          </p>
-        ) : (
-          <p className="text-lg mt-1 opacity-80">{t("_pages:home.noData")}</p>
-        )}
+      {/* Prediction cards */}
+      <div className="flex flex-col gap-3">
+        <PredictionCard
+          title={t("_pages:home.nextPeriod")}
+          message={nextPeriodMessage}
+          variant="primary"
+          messageClassName={
+            stats.daysUntilNext === null
+              ? "text-lg max-sm:text-base font-medium opacity-85"
+              : undefined
+          }
+        />
+        {stats.isInFertileWindowToday ? (
+          <PredictionCard
+            title={t("_pages:home.alerts.fertileTitle")}
+            message={t("_pages:home.alerts.fertileMessage")}
+            variant="fertile"
+            messageClassName="text-lg max-sm:text-base"
+          />
+        ) : null}
+        {showMissingPeriodThisMonthAlert ? (
+          <PredictionCard
+            title={t("_pages:home.alerts.missingPeriodTitle")}
+            message={t("_pages:home.alerts.missingPeriodMessage")}
+            variant="error"
+            messageClassName="text-lg max-sm:text-base"
+          />
+        ) : null}
       </div>
 
       {/* Calendar */}
