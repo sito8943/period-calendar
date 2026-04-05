@@ -1,17 +1,8 @@
-import type { ReactNode } from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@sito/dashboard-app";
-
-type PageHeaderProps = {
-  title: ReactNode;
-  onBack?: () => void;
-  subtitle?: ReactNode;
-  rightContent?: ReactNode;
-  className?: string;
-};
-
-const joinClasses = (...classes: Array<string | undefined>): string =>
-  classes.filter(Boolean).join(" ");
+import { PAGE_HEADER_CLASSNAMES } from "./constants";
+import type { PageHeaderProps } from "./types";
+import { joinClasses } from "./utils";
 
 export function PageHeader({
   title,
@@ -21,13 +12,15 @@ export function PageHeader({
   className,
 }: PageHeaderProps) {
   return (
-    <div className={joinClasses("mb-6", className)}>
-      <header className="flex items-center gap-3">
+    <div className={joinClasses(PAGE_HEADER_CLASSNAMES.root, className)}>
+      <header className={PAGE_HEADER_CLASSNAMES.header}>
         {onBack ? <IconButton onClick={onBack} icon={faArrowLeft} /> : null}
-        <h1 className="text-xl font-semibold text-text">{title}</h1>
-        {rightContent ? <div className="ml-auto">{rightContent}</div> : null}
+        <h1 className={PAGE_HEADER_CLASSNAMES.title}>{title}</h1>
+        {rightContent ? (
+          <div className={PAGE_HEADER_CLASSNAMES.rightContent}>{rightContent}</div>
+        ) : null}
       </header>
-      {subtitle ? <p className="text-sm text-text-muted mt-1">{subtitle}</p> : null}
+      {subtitle ? <p className={PAGE_HEADER_CLASSNAMES.subtitle}>{subtitle}</p> : null}
     </div>
   );
 }

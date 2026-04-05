@@ -1,5 +1,4 @@
-const WEEKDAYS_ES = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
-const WEEKDAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import { WEEKDAYS_EN, WEEKDAYS_ES } from "./constants";
 
 export function getWeekdays(locale: string) {
   return locale.startsWith("es") ? WEEKDAYS_ES : WEEKDAYS_EN;

@@ -1,19 +1,13 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // lib
 import {
-  getProfileSettings,
   saveProfileSettings,
   type ProfileSettings,
 } from "lib";
-import { PeriodQueryKeys } from "./utils";
 
-export function useProfileSettings() {
-  return useQuery({
-    ...PeriodQueryKeys.profile(),
-    queryFn: () => getProfileSettings(),
-  });
-}
+// constants
+import { PeriodQueryKeys } from "./constants";
 
 export function useUpdateProfileSettings() {
   const queryClient = useQueryClient();
