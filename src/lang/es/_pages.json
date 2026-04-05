@@ -69,6 +69,7 @@
     },
     "messages": {
       "saved": "Periodo guardado correctamente",
+      "saveError": "No se pudo guardar el periodo",
       "deleted": "Periodo eliminado correctamente"
     },
     "deleteDialog": {

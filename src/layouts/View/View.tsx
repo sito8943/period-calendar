@@ -21,6 +21,7 @@ import type { OnboardingStepType } from "@sito/dashboard-app";
 import { BottomNavigation } from "components";
 import Header from "./Header";
 import Footer from "./Footer";
+import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
 
 // providers
 import { BottomNavActionProvider } from "providers";
@@ -102,6 +103,7 @@ export function View() {
       {
         title: t("_pages:onboarding.calendar.title"),
         body: t("_pages:onboarding.calendar.body"),
+        content: <OnboardingPeriodForm />,
       },
       {
         title: t("_pages:onboarding.predictions.title"),

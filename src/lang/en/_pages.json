@@ -69,6 +69,7 @@
     },
     "messages": {
       "saved": "Period saved successfully",
+      "saveError": "Failed to save period",
       "deleted": "Period deleted successfully"
     },
     "deleteDialog": {
