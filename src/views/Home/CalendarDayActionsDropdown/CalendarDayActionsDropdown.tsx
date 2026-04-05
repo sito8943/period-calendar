@@ -51,7 +51,7 @@ export function CalendarDayActionsDropdown({
       {
         id: "log-daily-log",
         icon: <FontAwesomeIcon icon={faClipboardCheck} />,
-        tooltip: t("_pages:home.calendarDayActions.redoDailyLog"),
+        tooltip: t("_pages:home.calendarDayActions.dailyLog"),
         onClick: handleLogDailyLog,
         disabled: selectedDate === null,
       },

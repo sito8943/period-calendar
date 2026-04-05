@@ -25,7 +25,7 @@
     },
     "calendarDayActions": {
       "logPeriod": "Registrar periodo",
-      "redoDailyLog": "Rehacer registro diario"
+      "dailyLog": "Registar registro diario"
     },
     "stats": {
       "avgCycle": "Ciclo promedio",
