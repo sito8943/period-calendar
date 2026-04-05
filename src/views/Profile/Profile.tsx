@@ -11,47 +11,44 @@ import {
   TextInput,
   useNotification,
 } from "@sito/dashboard-app";
-import type { Option } from "@sito/dashboard-app";
 
 // hooks
-import { useProfileSettings, useUpdateProfileSettings } from "hooks";
+import {
+  useCanGoBack,
+  useProfileSettings,
+  useUpdateProfileSettings,
+} from "hooks";
 
 // components
 import { PageHeader } from "components";
 
 // lib
 import {
+  PROFILE_NAME_MAX_LENGTH,
+} from "./constants";
+import type { ProfileFormType } from "./types";
+import {
+  getErrorMessage,
+  getLanguageOptions,
+  getThemeOptions,
+  mapThemeValue,
+  normalizeProfileLanguage,
+  validateProfileName,
+} from "./utils";
+
+// lib
+import {
   getStoredPeriodTheme,
   getThemedLanguage,
-  toBaseAppLanguage,
   setPeriodTheme,
-  type PeriodTheme,
-  type ProfileLanguage,
 } from "lib";
-
-type ProfileFormType = {
-  name: string;
-  language: ProfileLanguage;
-  theme: PeriodTheme;
-};
-
-const normalizeProfileLanguage = (value?: string | null): ProfileLanguage =>
-  toBaseAppLanguage(value);
-
-const getErrorMessage = (error: unknown, fallback: string): string => {
-  if (error instanceof Error) return error.message;
-  if (typeof error === "object" && error !== null) {
-    const maybeError = error as { message?: string };
-    if (typeof maybeError.message === "string") return maybeError.message;
-  }
-  return fallback;
-};
 
 export function Profile() {
   const { t, i18n } = useTranslation();
   const { showSuccessNotification, showErrorNotification } = useNotification();
 
   const navigate = useNavigate();
+  const canGoBack = useCanGoBack();
 
   const profileQuery = useProfileSettings();
   const updateProfile = useUpdateProfileSettings();
@@ -82,35 +79,8 @@ export function Profile() {
     });
   }, [i18n.language, i18n.resolvedLanguage, profileQuery.data, reset]);
 
-  const languageOptions = useMemo(
-    () =>
-      [
-        {
-          id: "en",
-          name: t("_pages:profile.values.languageEnglish"),
-        },
-        {
-          id: "es",
-          name: t("_pages:profile.values.languageSpanish"),
-        },
-      ] as Option[],
-    [t],
-  );
-
-  const themeOptions = useMemo(
-    () =>
-      [
-        {
-          id: "girl",
-          name: t("_pages:profile.values.themeGirl"),
-        },
-        {
-          id: "boy",
-          name: t("_pages:profile.values.themeBoy"),
-        },
-      ] as Option[],
-    [t],
-  );
+  const languageOptions = useMemo(() => getLanguageOptions(t), [t]);
+  const themeOptions = useMemo(() => getThemeOptions(t), [t]);
 
   const currentName = useWatch({ control, name: "name" }) ?? "";
   const normalizedName = currentName.trim();
@@ -119,7 +89,7 @@ export function Profile() {
     formDisabled ||
     !formState.isDirty ||
     !normalizedName.length ||
-    normalizedName.length > 120;
+    normalizedName.length > PROFILE_NAME_MAX_LENGTH;
 
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
@@ -152,7 +122,10 @@ export function Profile() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <PageHeader title={t("_pages:profile.title")} onBack={() => navigate(-1)} />
+      <PageHeader
+        title={t("_pages:profile.title")}
+        onBack={canGoBack ? () => navigate(-1) : undefined}
+      />
 
       <div className="w-full base-border sm:p-6 p-4 rounded-2xl flex flex-col gap-6">
         <form
@@ -174,22 +147,13 @@ export function Profile() {
               name="name"
               disabled={formDisabled}
               rules={{
-                validate: (value: string) => {
-                  const parsedValue = value.trim();
-                  if (!parsedValue.length) {
-                    return t("_pages:profile.errors.nameRequired");
-                  }
-                  if (parsedValue.length > 120) {
-                    return t("_pages:profile.errors.nameMax");
-                  }
-                  return true;
-                },
+                validate: (value: string) => validateProfileName(value, t),
               }}
               render={({ field, fieldState }) => (
                 <TextInput
                   id="profile-name"
                   required
-                  maxLength={120}
+                  maxLength={PROFILE_NAME_MAX_LENGTH}
                   label={t("_pages:profile.labels.name")}
                   value={field.value ?? ""}
                   helperText={
@@ -222,7 +186,7 @@ export function Profile() {
                   onBlur={field.onBlur}
                   onChange={(event) =>
                     field.onChange(
-                      (event.target as HTMLSelectElement).value as PeriodTheme,
+                      mapThemeValue((event.target as HTMLSelectElement).value),
                     )
                   }
                 />

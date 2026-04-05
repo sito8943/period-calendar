@@ -1,4 +1,5 @@
 import type { DailyLog, Period } from "lib";
+import type { MouseEvent } from "react";
 
 export type CalendarDayData = {
   date: Date;
@@ -16,11 +17,11 @@ export type CalendarProps = {
   dailyLogs: DailyLog[];
   defaultCycleLength: number;
   defaultPeriodLength: number;
-  onDayClick?: (date: string) => void;
+  onDayClick?: (date: string, anchorEl: HTMLButtonElement) => void;
 };
 
 export type CalendarDayProps = {
   day: CalendarDayData;
-  onClick?: () => void;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   ariaLabel?: string;
 };

@@ -23,6 +23,7 @@ import {
   useDeleteDailyLog,
   useDailyLogByDate,
   useUpdateDailyLog,
+  useCanGoBack,
 } from "hooks";
 
 // components
@@ -30,10 +31,12 @@ import { PageHeader } from "components";
 
 // lib
 import {
+  AppRoute,
   FLOW_LEVELS,
   SEXUAL_PROTECTION_OPTIONS,
   SYMPTOM_KEYS,
   formatDate,
+  getDailyLogRoute,
   parseLocalDate,
   toISODateString,
 } from "lib";
@@ -76,6 +79,7 @@ export function DailyLog() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { date: routeDate = "" } = useParams<{ date: string }>();
+  const canGoBack = useCanGoBack();
   const { showErrorNotification, showSuccessNotification } = useNotification();
 
   const todayStr = toISODateString(new Date());
@@ -172,7 +176,7 @@ export function DailyLog() {
 
   useEffect(() => {
     if (routeDate && isValidIsoDate(routeDate)) return;
-    navigate(`/daily-log/${todayStr}`, { replace: true });
+    navigate(getDailyLogRoute(todayStr), { replace: true });
   }, [navigate, routeDate, todayStr]);
 
   useEffect(() => {
@@ -260,7 +264,7 @@ export function DailyLog() {
       showSuccessNotification({
         message: t("_pages:dailyLog.messages.saved"),
       });
-      navigate("/");
+      navigate(AppRoute.Home);
     } catch (error) {
       showErrorNotification({
         message: resolveMutationError(
@@ -278,7 +282,7 @@ export function DailyLog() {
       showSuccessNotification({
         message: t("_pages:dailyLog.messages.deleted"),
       });
-      navigate("/");
+      navigate(AppRoute.Home);
     } catch (error) {
       showErrorNotification({
         message: resolveMutationError(
@@ -293,7 +297,7 @@ export function DailyLog() {
     if (isDirty && !window.confirm(t("_pages:dailyLog.discardDialog.title"))) {
       return;
     }
-    navigate("/");
+    navigate(AppRoute.Home);
   };
 
   const displayDate = useMemo(
@@ -309,7 +313,7 @@ export function DailyLog() {
             ? t("_pages:dailyLog.editTitle")
             : t("_pages:dailyLog.title")
         }
-        onBack={() => navigate(-1)}
+        onBack={canGoBack ? () => navigate(-1) : undefined}
         subtitle={displayDate}
       />
 

@@ -3,3 +3,4 @@ export * from "./storage";
 export * from "./dates";
 export * from "./cycle";
 export * from "./theme";
+export * from "./routes";

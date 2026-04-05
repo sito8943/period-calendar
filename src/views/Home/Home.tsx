@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,10 +14,13 @@ import { usePeriodsList, useSettings, useCycleStats, useDailyLogsList } from "ho
 import { useRegisterBottomNavAction } from "providers";
 
 // lib
-import { DEFAULT_SETTINGS, toISODateString } from "lib";
+import { AppRoute, DEFAULT_SETTINGS, getDailyLogRoute, toISODateString } from "lib";
 
 // components
 import { Calendar, PredictionCard } from "components";
+import { CalendarDayActionsDropdown } from "./CalendarDayActionsDropdown";
+
+// constants
 import { HOME_PREDICTION_CARD_DISMISS_KEYS } from "./constants";
 
 export function Home() {
@@ -26,6 +29,11 @@ export function Home() {
   const { data: periods = [] } = usePeriodsList();
   const { data: dailyLogs = [] } = useDailyLogsList();
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(
+    null,
+  );
+  const [calendarActionAnchorEl, setCalendarActionAnchorEl] =
+    useState<HTMLElement | null>(null);
 
   const stats = useCycleStats(periods, settings);
   const closePredictionCardAriaLabel = t(
@@ -76,15 +84,28 @@ export function Home() {
     return t("_pages:home.variation.notEnoughData");
   }, [stats.latestCycleVariation, t]);
 
-  const goToLog = useCallback(() => navigate("/log"), [navigate]);
+  const goToLog = useCallback(() => navigate(AppRoute.PeriodLog), [navigate]);
+  const closeCalendarDayActions = useCallback(() => {
+    setSelectedCalendarDate(null);
+    setCalendarActionAnchorEl(null);
+  }, []);
+  const openCalendarDayActions = useCallback(
+    (date: string, anchorEl: HTMLButtonElement) => {
+      setSelectedCalendarDate(date);
+      setCalendarActionAnchorEl(anchorEl);
+    },
+    [],
+  );
   const goToDailyLog = useCallback(
-    (date: string) => navigate(`/daily-log/${date}`),
+    (date: string) => navigate(getDailyLogRoute(date)),
     [navigate],
   );
   const goToTodayDailyLog = useCallback(
     () => goToDailyLog(toISODateString(new Date())),
     [goToDailyLog],
   );
+  const showCalendarDayActions =
+    selectedCalendarDate !== null && calendarActionAnchorEl !== null;
   useRegisterBottomNavAction(goToLog);
 
   return (
@@ -131,7 +152,13 @@ export function Home() {
         dailyLogs={dailyLogs}
         defaultCycleLength={settings.defaultCycleLength}
         defaultPeriodLength={settings.defaultPeriodLength}
-        onDayClick={goToDailyLog}
+        onDayClick={openCalendarDayActions}
+      />
+      <CalendarDayActionsDropdown
+        open={showCalendarDayActions}
+        anchorEl={calendarActionAnchorEl}
+        selectedDate={selectedCalendarDate}
+        onClose={closeCalendarDayActions}
       />
 
       {/* Stats row */}

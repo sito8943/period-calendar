@@ -3,6 +3,7 @@ import loadable from "@loadable/component";
 // layouts
 import { View } from "./layouts";
 import { BrowserRouter, Routes as ReactRoutes, Route } from "react-router-dom";
+import { AppRoute } from "lib";
 
 // views
 const Home = loadable(() =>
@@ -40,14 +41,14 @@ export const Routes = () => {
   return (
     <BrowserRouter>
       <ReactRoutes>
-        <Route path="/" element={<View />}>
+        <Route path={AppRoute.Home} element={<View />}>
           <Route index element={<Home />} />
-          <Route path="/log" element={<PeriodLog />} />
-          <Route path="/log/:id" element={<PeriodLog />} />
-          <Route path="/daily-log/:date" element={<DailyLog />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path={AppRoute.PeriodLog} element={<PeriodLog />} />
+          <Route path={AppRoute.PeriodLogById} element={<PeriodLog />} />
+          <Route path={AppRoute.DailyLogByDate} element={<DailyLog />} />
+          <Route path={AppRoute.History} element={<History />} />
+          <Route path={AppRoute.Profile} element={<Profile />} />
+          <Route path={AppRoute.NotFound} element={<NotFound />} />
         </Route>
       </ReactRoutes>
     </BrowserRouter>

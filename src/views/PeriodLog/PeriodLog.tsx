@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -20,24 +20,32 @@ import {
   useAddPeriod,
   useUpdatePeriod,
   useDeletePeriod,
+  useCanGoBack,
 } from "hooks";
 
 // components
 import { PageHeader } from "components";
 
 // lib
-import { toISODateString } from "lib";
+import { AppRoute, RouteQueryParam, toISODateString } from "lib";
+
+// types
 import type { FormValues } from "./types";
+
+// constants
+import { ISO_DATE_PATTERN } from "./constants";
 
 export function PeriodLog() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
   const { showSuccessNotification } = useNotification();
   const { data: periods = [] } = usePeriodsList();
   const addPeriod = useAddPeriod();
   const updatePeriod = useUpdatePeriod();
   const deletePeriod = useDeletePeriod();
+  const canGoBack = useCanGoBack();
 
   const isEditing = Boolean(id);
   const existingPeriod = id ? periods.find((p) => p.id === id) : undefined;
@@ -45,10 +53,18 @@ export function PeriodLog() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const todayStr = toISODateString(new Date());
+  const startDateFromSearch = searchParams.get(RouteQueryParam.PeriodStartDate);
+  const preselectedStartDate =
+    !isEditing &&
+    startDateFromSearch &&
+    ISO_DATE_PATTERN.test(startDateFromSearch) &&
+    startDateFromSearch <= todayStr
+      ? startDateFromSearch
+      : "";
 
   const { control, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
-      startDate: "",
+      startDate: preselectedStartDate,
       endDate: "",
     },
   });
@@ -59,8 +75,13 @@ export function PeriodLog() {
         startDate: existingPeriod.startDate,
         endDate: existingPeriod.endDate ?? "",
       });
+      return;
     }
-  }, [existingPeriod, reset]);
+    reset({
+      startDate: preselectedStartDate,
+      endDate: "",
+    });
+  }, [existingPeriod, preselectedStartDate, reset]);
 
   const onSubmit = (data: FormValues) => {
     const payload = {
@@ -76,7 +97,7 @@ export function PeriodLog() {
             showSuccessNotification({
               message: t("_pages:periodLog.messages.saved"),
             });
-            navigate("/");
+            navigate(AppRoute.Home);
           },
         },
       );
@@ -86,7 +107,7 @@ export function PeriodLog() {
           showSuccessNotification({
             message: t("_pages:periodLog.messages.saved"),
           });
-          navigate("/");
+          navigate(AppRoute.Home);
         },
       });
     }
@@ -99,7 +120,7 @@ export function PeriodLog() {
         showSuccessNotification({
           message: t("_pages:periodLog.messages.deleted"),
         });
-        navigate("/");
+        navigate(AppRoute.Home);
       },
     });
   };
@@ -112,7 +133,7 @@ export function PeriodLog() {
             ? t("_pages:periodLog.editTitle")
             : t("_pages:periodLog.title")
         }
-        onBack={() => navigate(-1)}
+        onBack={canGoBack ? () => navigate(-1) : undefined}
       />
 
       <form

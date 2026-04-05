@@ -23,6 +23,10 @@
       "missingPeriodTitle": "Reminder",
       "missingPeriodMessage": "You have not logged your period this month"
     },
+    "calendarDayActions": {
+      "logPeriod": "Log period",
+      "redoDailyLog": "Redo daily log"
+    },
     "stats": {
       "avgCycle": "Avg. cycle",
       "avgDuration": "Avg. duration",

@@ -5,6 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
 import { Button } from "@sito/dashboard-app";
+import { AppRoute } from "lib";
 
 // views
 import { bottomMap } from "../../views/bottomMap";
@@ -44,7 +45,7 @@ export const BottomNavigation = () => {
           <Button
             variant="submit"
             color="primary"
-            onClick={() => navigate("/log")}
+            onClick={() => navigate(AppRoute.PeriodLog)}
             className="rounded-full! w-12! h-12! min-w-0! p-0! flex items-center justify-center shadow-lg -mt-4"
             aria-label="Log period"
           >

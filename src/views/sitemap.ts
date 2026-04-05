@@ -1,4 +1,5 @@
 import { t } from "i18next";
+import { AppRoute } from "lib";
 
 // types
 import type { NamedViewPageType, ViewPageType } from "./types";
@@ -16,23 +17,23 @@ export type PageId = (typeof PageId)[keyof typeof PageId];
 export const sitemap: ViewPageType[] = [
   {
     key: PageId.Home,
-    path: "/",
+    path: AppRoute.Home,
   },
   {
     key: PageId.PeriodLog,
-    path: "/log",
+    path: AppRoute.PeriodLog,
   },
   {
     key: PageId.History,
-    path: "/history",
+    path: AppRoute.History,
   },
   {
     key: PageId.Profile,
-    path: "/profile",
+    path: AppRoute.Profile,
   },
   {
     key: PageId.NotFound,
-    path: "/*",
+    path: `/${AppRoute.NotFound}`,
   },
 ];
 

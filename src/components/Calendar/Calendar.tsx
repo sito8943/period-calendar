@@ -255,7 +255,11 @@ export function Calendar({
                 day={day}
                 onClick={
                   onDayClick
-                    ? () => onDayClick(toISODateString(day.date))
+                    ? (event) =>
+                        onDayClick(
+                          toISODateString(day.date),
+                          event.currentTarget,
+                        )
                     : undefined
                 }
                 ariaLabel={t("_accessibility:calendar.selectDay", {

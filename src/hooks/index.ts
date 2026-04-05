@@ -14,3 +14,4 @@ export {
   useUpdateProfileSettings,
   PeriodQueryKeys,
 } from "./queries";
+export { useCanGoBack } from "./useCanGoBack";

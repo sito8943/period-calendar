@@ -23,6 +23,10 @@
       "missingPeriodTitle": "Recordatorio",
       "missingPeriodMessage": "No has registrado tu periodo este mes"
     },
+    "calendarDayActions": {
+      "logPeriod": "Registrar periodo",
+      "redoDailyLog": "Rehacer registro diario"
+    },
     "stats": {
       "avgCycle": "Ciclo promedio",
       "avgDuration": "Duracion promedio",

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 // lib
-import { formatDate, getPeriodDurationDays } from "lib";
+import { formatDate, getPeriodDurationDays, getPeriodLogDetailRoute } from "lib";
 
 // types
 import type { PeriodCardProps } from "./types";
@@ -15,7 +15,7 @@ export function PeriodCard({ period }: PeriodCardProps) {
 
   return (
     <Link
-      to={`/log/${period.id}`}
+      to={getPeriodLogDetailRoute(period.id)}
       className="flex items-center justify-between p-4 bg-base-light rounded-xl shadow-sm hover:shadow-md transition-shadow"
     >
       <div className="flex flex-col gap-1">
