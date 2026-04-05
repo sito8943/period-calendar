@@ -74,7 +74,7 @@ export function Home() {
   useRegisterBottomNavAction(goToLog);
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4">
+    <main className="flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4 home-enter-stagger">
       {/* Prediction card */}
       <div className="bg-primary text-white rounded-xl p-4 shadow-md">
         <h2 className="text-sm font-medium opacity-80">

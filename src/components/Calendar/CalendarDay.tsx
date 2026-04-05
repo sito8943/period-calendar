@@ -18,7 +18,7 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
   } = day;
 
   const baseClasses =
-    "w-9 h-9 relative flex items-center justify-center rounded-full text-sm transition-colors";
+    "calendar-day-button w-9 h-9 relative flex items-center justify-center rounded-full text-sm transition-colors";
 
   let colorClasses = "";
   if (!isCurrentMonth) {

@@ -193,3 +193,261 @@ main {
 .vertical-center {
   @apply top-1/2 -translate-y-1/2;
 }
+
+input,
+textarea,
+select {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+button {
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.home-enter-stagger > * {
+  opacity: 0;
+  animation: motion-rise-in 520ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.home-enter-stagger > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.home-enter-stagger > *:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.home-enter-stagger > *:nth-child(3) {
+  animation-delay: 140ms;
+}
+
+.home-enter-stagger > *:nth-child(4) {
+  animation-delay: 190ms;
+}
+
+.home-enter-stagger > *:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.home-enter-stagger > *:nth-child(6) {
+  animation-delay: 290ms;
+}
+
+.form-motion-stagger > * {
+  opacity: 0;
+  animation: motion-rise-in 460ms cubic-bezier(0.2, 0.85, 0.2, 1) forwards;
+}
+
+.form-motion-stagger > *:nth-child(1) {
+  animation-delay: 40ms;
+}
+
+.form-motion-stagger > *:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.form-motion-stagger > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.form-motion-stagger > *:nth-child(4) {
+  animation-delay: 160ms;
+}
+
+.form-motion-stagger > *:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.form-motion-stagger > *:nth-child(6) {
+  animation-delay: 240ms;
+}
+
+.form-motion-stagger > *:nth-child(7) {
+  animation-delay: 280ms;
+}
+
+.form-motion-stagger > *:nth-child(8) {
+  animation-delay: 320ms;
+}
+
+.form-motion-stagger > *:nth-child(9) {
+  animation-delay: 360ms;
+}
+
+.motion-inline-appear {
+  animation: motion-pop-in 240ms ease-out both;
+}
+
+.calendar-shell {
+  opacity: 0;
+  animation: motion-rise-in 480ms cubic-bezier(0.2, 0.8, 0.2, 1) 80ms forwards;
+}
+
+.calendar-nav-button:hover {
+  transform: translateY(-1px);
+}
+
+.calendar-nav-button:active {
+  transform: translateY(0) scale(0.96);
+}
+
+.calendar-month-label {
+  animation: motion-pop-in 260ms ease-out both;
+}
+
+.calendar-month-panel {
+  animation-duration: 260ms;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+.calendar-month-next {
+  animation-name: motion-slide-next;
+}
+
+.calendar-month-prev {
+  animation-name: motion-slide-prev;
+}
+
+.calendar-day-button:hover:enabled {
+  transform: scale(1.05);
+}
+
+.calendar-day-button:active:enabled {
+  transform: scale(0.93);
+}
+
+.calendar-day-button:disabled {
+  transform: none;
+}
+
+.onboarding-main .step-title {
+  opacity: 0;
+  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 30ms forwards;
+}
+
+.onboarding-main .step-body {
+  opacity: 0;
+  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 90ms forwards;
+}
+
+.onboarding-main .step-content {
+  opacity: 0;
+  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms forwards;
+}
+
+.onboarding-main .step-actions > * {
+  opacity: 0;
+  animation: motion-pop-in 360ms ease-out forwards;
+}
+
+.onboarding-main .step-actions > *:nth-child(1) {
+  animation-delay: 180ms;
+}
+
+.onboarding-main .step-actions > *:nth-child(2) {
+  animation-delay: 230ms;
+}
+
+.onboarding-theme-grid > * {
+  opacity: 0;
+  animation: motion-pop-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.onboarding-theme-grid > *:nth-child(1) {
+  animation-delay: 170ms;
+}
+
+.onboarding-theme-grid > *:nth-child(2) {
+  animation-delay: 230ms;
+}
+
+.onboarding-theme-option:hover {
+  transform: translateY(-1px);
+}
+
+.onboarding-theme-option:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@keyframes motion-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-slide-next {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes motion-slide-prev {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-enter-stagger > *,
+  .form-motion-stagger > *,
+  .motion-inline-appear,
+  .calendar-shell,
+  .calendar-month-label,
+  .calendar-month-panel,
+  .onboarding-main .step-title,
+  .onboarding-main .step-body,
+  .onboarding-main .step-content,
+  .onboarding-main .step-actions > *,
+  .onboarding-theme-grid > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  button,
+  input,
+  textarea,
+  select,
+  .calendar-day-button,
+  .calendar-nav-button,
+  .onboarding-theme-option {
+    transition-duration: 0ms !important;
+  }
+}

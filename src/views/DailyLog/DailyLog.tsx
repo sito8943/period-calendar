@@ -318,7 +318,7 @@ export function DailyLog() {
           event.preventDefault();
           void onSubmit(event);
         }}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4 form-motion-stagger"
       >
         <Controller
           control={control}
@@ -449,23 +449,25 @@ export function DailyLog() {
           />
 
           {hadSex && (
-            <Controller
-              control={control}
-              name="protection"
-              render={({ field }) => (
-                <SelectInput
-                  id="protection"
-                  label={t("_pages:dailyLog.protection")}
-                  value={field.value ?? ""}
-                  options={protectionOptions}
-                  disabled={formDisabled}
-                  onBlur={field.onBlur}
-                  onChange={(event) =>
-                    field.onChange((event.target as HTMLSelectElement).value)
-                  }
-                />
-              )}
-            />
+            <div className="motion-inline-appear">
+              <Controller
+                control={control}
+                name="protection"
+                render={({ field }) => (
+                  <SelectInput
+                    id="protection"
+                    label={t("_pages:dailyLog.protection")}
+                    value={field.value ?? ""}
+                    options={protectionOptions}
+                    disabled={formDisabled}
+                    onBlur={field.onBlur}
+                    onChange={(event) =>
+                      field.onChange((event.target as HTMLSelectElement).value)
+                    }
+                  />
+                )}
+              />
+            </div>
           )}
         </fieldset>
 

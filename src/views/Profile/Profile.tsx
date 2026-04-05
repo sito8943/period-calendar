@@ -156,7 +156,7 @@ export function Profile() {
 
       <div className="w-full base-border sm:p-6 p-4 rounded-2xl flex flex-col gap-6">
         <form
-          className="flex flex-col gap-6"
+          className="flex flex-col gap-6 form-motion-stagger"
           onSubmit={(event) => {
             event.preventDefault();
             void onSubmit(event);

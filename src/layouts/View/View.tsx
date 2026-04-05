@@ -75,11 +75,11 @@ export function View() {
         title: t("_pages:onboarding.profile.title"),
         body: t("_pages:onboarding.profile.body"),
         content: (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full onboarding-theme-grid">
             <button
               type="button"
               onClick={() => handleThemeSelect("girl")}
-              className={`border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "girl" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
+              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "girl" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
             >
               <strong>{t("_pages:onboarding.profile.options.girl.title")}</strong>
               <p className="text-sm opacity-90">
@@ -89,7 +89,7 @@ export function View() {
             <button
               type="button"
               onClick={() => handleThemeSelect("boy")}
-              className={`border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "boy" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
+              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "boy" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
             >
               <strong>{t("_pages:onboarding.profile.options.boy.title")}</strong>
               <p className="text-sm opacity-90">

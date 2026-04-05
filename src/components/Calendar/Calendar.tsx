@@ -48,6 +48,9 @@ export function Calendar({
 
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [monthTransitionDirection, setMonthTransitionDirection] = useState<
+    "next" | "prev"
+  >("next");
 
   const weekdays = getWeekdays(i18n.language);
   const monthPrediction = useMemo(
@@ -91,8 +94,10 @@ export function Calendar({
     i18n.language,
     { month: "long", year: "numeric" },
   );
+  const monthTransitionKey = `${currentYear}-${currentMonth}`;
 
   const goToPreviousMonth = () => {
+    setMonthTransitionDirection("prev");
     if (currentMonth === 0) {
       setCurrentMonth(11);
       setCurrentYear((y) => y - 1);
@@ -102,6 +107,7 @@ export function Calendar({
   };
 
   const goToNextMonth = () => {
+    setMonthTransitionDirection("next");
     if (currentMonth === 11) {
       setCurrentMonth(0);
       setCurrentYear((y) => y + 1);
@@ -198,57 +204,67 @@ export function Calendar({
   ]);
 
   return (
-    <div className="bg-base-light rounded-xl p-4 shadow-sm">
+    <div className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button
+          type="button"
           onClick={goToPreviousMonth}
-          className="p-2 rounded-full hover:bg-base-dark transition-colors"
+          className="p-2 rounded-full hover:bg-base-dark transition-colors calendar-nav-button"
           aria-label={t("_accessibility:calendar.previousMonth")}
         >
           <FontAwesomeIcon icon={faChevronLeft} className="text-text-muted" />
         </button>
-        <h2 className="text-lg font-semibold capitalize text-text">
+        <h2
+          key={monthName}
+          className="text-lg font-semibold capitalize text-text calendar-month-label"
+        >
           {monthName}
         </h2>
         <button
+          type="button"
           onClick={goToNextMonth}
-          className="p-2 rounded-full hover:bg-base-dark transition-colors"
+          className="p-2 rounded-full hover:bg-base-dark transition-colors calendar-nav-button"
           aria-label={t("_accessibility:calendar.nextMonth")}
         >
           <FontAwesomeIcon icon={faChevronRight} className="text-text-muted" />
         </button>
       </div>
 
-      {/* Weekday headers */}
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {weekdays.map((day) => (
-          <div
-            key={day}
-            className="text-center text-xs font-medium text-text-muted"
-          >
-            {day}
-          </div>
-        ))}
-      </div>
+      <div
+        key={monthTransitionKey}
+        className={`calendar-month-panel ${monthTransitionDirection === "next" ? "calendar-month-next" : "calendar-month-prev"}`}
+      >
+        {/* Weekday headers */}
+        <div className="grid grid-cols-7 gap-1 mb-2">
+          {weekdays.map((day) => (
+            <div
+              key={day}
+              className="text-center text-xs font-medium text-text-muted"
+            >
+              {day}
+            </div>
+          ))}
+        </div>
 
-      {/* Days grid */}
-      <div className="grid grid-cols-7 gap-1">
-        {calendarDays.map((day, index) => (
-          <div key={index} className="flex items-center justify-center">
-            <CalendarDay
-              day={day}
-              onClick={
-                onDayClick
-                  ? () => onDayClick(toISODateString(day.date))
-                  : undefined
-              }
-              ariaLabel={t("_accessibility:calendar.selectDay", {
-                day: day.date.toLocaleDateString(i18n.language),
-              })}
-            />
-          </div>
-        ))}
+        {/* Days grid */}
+        <div className="grid grid-cols-7 gap-1">
+          {calendarDays.map((day, index) => (
+            <div key={index} className="flex items-center justify-center">
+              <CalendarDay
+                day={day}
+                onClick={
+                  onDayClick
+                    ? () => onDayClick(toISODateString(day.date))
+                    : undefined
+                }
+                ariaLabel={t("_accessibility:calendar.selectDay", {
+                  day: day.date.toLocaleDateString(i18n.language),
+                })}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Legend */}

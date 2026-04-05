@@ -6,12 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
-import {
-  Button,
-  State,
-  TextInput,
-  useNotification,
-} from "@sito/dashboard-app";
+import { Button, State, TextInput, useNotification } from "@sito/dashboard-app";
 
 // hooks
 import {
@@ -107,12 +102,17 @@ export function PeriodLog() {
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
       <PageHeader
         title={
-          isEditing ? t("_pages:periodLog.editTitle") : t("_pages:periodLog.title")
+          isEditing
+            ? t("_pages:periodLog.editTitle")
+            : t("_pages:periodLog.title")
         }
         onBack={() => navigate(-1)}
       />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4 form-motion-stagger"
+      >
         {/* Start date */}
         <Controller
           control={control}
@@ -184,12 +184,7 @@ export function PeriodLog() {
 
         {/* Actions */}
         <div className="flex gap-3 mt-4">
-          <Button
-            type="submit"
-            variant="submit"
-            color="primary"
-            className="w-full"
-          >
+          <Button type="submit" variant="submit" color="primary">
             {t("_pages:periodLog.save")}
           </Button>
 
@@ -209,24 +204,21 @@ export function PeriodLog() {
                     >
                       {t("_pages:periodLog.deleteDialog.cancel")}
                     </Button>
-                    <button
-                      type="button"
-                      onClick={handleDelete}
-                      className="flex-1 px-4 py-2 bg-bg-error text-error rounded-lg font-medium hover:opacity-90 transition-opacity"
-                    >
+                    <Button type="button" variant="outlined" color="error">
                       {t("_pages:periodLog.deleteDialog.confirm")}
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ) : (
-                <button
+                <Button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center justify-center gap-2 text-text-muted hover:text-error transition-colors py-2"
+                  variant="outlined"
+                  color="error"
                 >
                   <FontAwesomeIcon icon={faTrash} />
                   {t("_pages:periodLog.delete")}
-                </button>
+                </Button>
               )}
             </>
           )}
