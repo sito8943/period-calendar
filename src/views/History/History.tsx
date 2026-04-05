@@ -1,11 +1,10 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
-import { Button } from "@sito/dashboard-app";
+import { IconButton } from "@sito/dashboard-app";
 
 // hooks
 import { usePeriodsList } from "hooks";
@@ -26,20 +25,12 @@ export function History() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <div className="flex items-center justify-between mb-4">
+      <header className="flex gap-3">
+        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
         <h1 className="text-xl font-semibold text-text">
           {t("_pages:history.title")}
         </h1>
-        <Button
-          variant="submit"
-          color="primary"
-          onClick={goToLog}
-          className="hidden sm:flex !px-4 !py-1.5 !text-sm"
-        >
-          <FontAwesomeIcon icon={faPlus} className="mr-1.5" />
-          {t("_pages:home.logPeriod")}
-        </Button>
-      </div>
+      </header>
 
       {periods.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-text-muted">

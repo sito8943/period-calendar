@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 // @sito/dashboard-app
 import {
   Button,
+  IconButton,
   SelectInput,
   State,
   TextInput,
@@ -24,6 +25,8 @@ import {
   type PeriodTheme,
   type ProfileLanguage,
 } from "lib";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 type ProfileFormType = {
   name: string;
@@ -47,13 +50,17 @@ export function Profile() {
   const { t, i18n } = useTranslation();
   const { showSuccessNotification, showErrorNotification } = useNotification();
 
+  const navigate = useNavigate();
+
   const profileQuery = useProfileSettings();
   const updateProfile = useUpdateProfileSettings();
 
   const { control, formState, handleSubmit, reset } = useForm<ProfileFormType>({
     defaultValues: {
       name: "",
-      language: normalizeProfileLanguage(i18n.resolvedLanguage ?? i18n.language),
+      language: normalizeProfileLanguage(
+        i18n.resolvedLanguage ?? i18n.language,
+      ),
       theme: getStoredPeriodTheme(),
     },
   });
@@ -123,10 +130,7 @@ export function Profile() {
       await updateProfile.mutateAsync(payload);
 
       setPeriodTheme(values.theme);
-      const themedLanguage = getThemedLanguage(
-        payload.language,
-        values.theme,
-      );
+      const themedLanguage = getThemedLanguage(payload.language, values.theme);
       if (i18n.language !== themedLanguage) {
         await i18n.changeLanguage(themedLanguage);
       }
@@ -137,16 +141,22 @@ export function Profile() {
       });
     } catch (error) {
       showErrorNotification({
-        message: getErrorMessage(error, t("_pages:profile.messages.updateError")),
+        message: getErrorMessage(
+          error,
+          t("_pages:profile.messages.updateError"),
+        ),
       });
     }
   });
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <h1 className="text-xl font-semibold text-text mb-6">
-        {t("_pages:profile.title")}
-      </h1>
+      <header className="flex gap-3 mb-6">
+        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
+        <h1 className="text-xl font-semibold text-text">
+          {t("_pages:profile.title")}
+        </h1>
+      </header>
 
       <div className="w-full base-border sm:p-6 p-4 rounded-2xl flex flex-col gap-6">
         <form

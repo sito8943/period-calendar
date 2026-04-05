@@ -3,12 +3,13 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
 import {
   Button,
   CheckInput,
+  IconButton,
   ParagraphInput,
   SelectInput,
   State,
@@ -109,7 +110,9 @@ export function DailyLog() {
   const hadSex = watch("hadSex");
 
   const formDisabled =
-    addDailyLog.isPending || updateDailyLog.isPending || deleteDailyLog.isPending;
+    addDailyLog.isPending ||
+    updateDailyLog.isPending ||
+    deleteDailyLog.isPending;
 
   const flowOptions = useMemo<Option[]>(
     () => [
@@ -258,7 +261,10 @@ export function DailyLog() {
       navigate("/");
     } catch (error) {
       showErrorNotification({
-        message: resolveMutationError(error, t("_pages:dailyLog.messages.saveError")),
+        message: resolveMutationError(
+          error,
+          t("_pages:dailyLog.messages.saveError"),
+        ),
       });
     }
   });
@@ -295,11 +301,14 @@ export function DailyLog() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <h1 className="text-xl font-semibold text-text mb-1">
-        {existingDailyLog
-          ? t("_pages:dailyLog.editTitle")
-          : t("_pages:dailyLog.title")}
-      </h1>
+      <header className="flex gap-3 mb-1">
+        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
+        <h1 className="text-xl font-semibold text-text">
+          {existingDailyLog
+            ? t("_pages:dailyLog.editTitle")
+            : t("_pages:dailyLog.title")}
+        </h1>
+      </header>
       <p className="text-sm text-text-muted mb-6">{displayDate}</p>
 
       <form
@@ -354,7 +363,7 @@ export function DailyLog() {
               id="flow"
               label={
                 <>
-                  {t("_pages:dailyLog.flow")} {" "}
+                  {t("_pages:dailyLog.flow")}{" "}
                   <span className="text-text-muted text-xs">
                     ({t("_pages:dailyLog.optional")})
                   </span>
@@ -394,11 +403,14 @@ export function DailyLog() {
                       disabled={formDisabled}
                       containerClassName="bg-base-light rounded-lg px-3 py-2 border border-border"
                       onChange={(event) => {
-                        const isChecked = (event.target as HTMLInputElement).checked;
+                        const isChecked = (event.target as HTMLInputElement)
+                          .checked;
                         const current = field.value ?? [];
                         const next = isChecked
                           ? [...current, symptom]
-                          : current.filter((item: SymptomKey) => item !== symptom);
+                          : current.filter(
+                              (item: SymptomKey) => item !== symptom,
+                            );
                         field.onChange([...new Set(next)]);
                       }}
                     />
@@ -464,7 +476,7 @@ export function DailyLog() {
                 id="mood"
                 label={
                   <>
-                    {t("_pages:dailyLog.mood")} {" "}
+                    {t("_pages:dailyLog.mood")}{" "}
                     <span className="text-text-muted text-xs">
                       ({t("_pages:dailyLog.optional")})
                     </span>
@@ -489,7 +501,7 @@ export function DailyLog() {
                 id="sleepQuality"
                 label={
                   <>
-                    {t("_pages:dailyLog.sleepQuality")} {" "}
+                    {t("_pages:dailyLog.sleepQuality")}{" "}
                     <span className="text-text-muted text-xs">
                       ({t("_pages:dailyLog.optional")})
                     </span>
@@ -530,7 +542,7 @@ export function DailyLog() {
               inputMode="decimal"
               label={
                 <>
-                  {t("_pages:dailyLog.sleepHours")} {" "}
+                  {t("_pages:dailyLog.sleepHours")}{" "}
                   <span className="text-text-muted text-xs">
                     ({t("_pages:dailyLog.optional")})
                   </span>
@@ -562,7 +574,7 @@ export function DailyLog() {
               maxLength={500}
               label={
                 <>
-                  {t("_pages:dailyLog.notes")} {" "}
+                  {t("_pages:dailyLog.notes")}{" "}
                   <span className="text-text-muted text-xs">
                     ({t("_pages:dailyLog.optional")})
                   </span>
@@ -579,7 +591,12 @@ export function DailyLog() {
         />
 
         <div className="flex gap-3 mt-4">
-          <Button type="submit" variant="submit" color="primary" className="w-full">
+          <Button
+            type="submit"
+            variant="submit"
+            color="primary"
+            className="w-full"
+          >
             {t("_pages:dailyLog.save")}
           </Button>
 
