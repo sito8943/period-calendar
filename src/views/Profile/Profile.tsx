@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 // @sito/dashboard-app
 import {
   Button,
-  IconButton,
   SelectInput,
   State,
   TextInput,
@@ -16,6 +16,9 @@ import type { Option } from "@sito/dashboard-app";
 // hooks
 import { useProfileSettings, useUpdateProfileSettings } from "hooks";
 
+// components
+import { PageHeader } from "components";
+
 // lib
 import {
   getStoredPeriodTheme,
@@ -25,8 +28,6 @@ import {
   type PeriodTheme,
   type ProfileLanguage,
 } from "lib";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 
 type ProfileFormType = {
   name: string;
@@ -151,12 +152,7 @@ export function Profile() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <header className="flex gap-3 mb-6">
-        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
-        <h1 className="text-xl font-semibold text-text">
-          {t("_pages:profile.title")}
-        </h1>
-      </header>
+      <PageHeader title={t("_pages:profile.title")} onBack={() => navigate(-1)} />
 
       <div className="w-full base-border sm:p-6 p-4 rounded-2xl flex flex-col gap-6">
         <form

@@ -3,13 +3,12 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
 import {
   Button,
   CheckInput,
-  IconButton,
   ParagraphInput,
   SelectInput,
   State,
@@ -25,6 +24,9 @@ import {
   useDailyLogByDate,
   useUpdateDailyLog,
 } from "hooks";
+
+// components
+import { PageHeader } from "components";
 
 // lib
 import {
@@ -301,15 +303,15 @@ export function DailyLog() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <header className="flex gap-3 mb-1">
-        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
-        <h1 className="text-xl font-semibold text-text">
-          {existingDailyLog
+      <PageHeader
+        title={
+          existingDailyLog
             ? t("_pages:dailyLog.editTitle")
-            : t("_pages:dailyLog.title")}
-        </h1>
-      </header>
-      <p className="text-sm text-text-muted mb-6">{displayDate}</p>
+            : t("_pages:dailyLog.title")
+        }
+        onBack={() => navigate(-1)}
+        subtitle={displayDate}
+      />
 
       <form
         onSubmit={(event) => {

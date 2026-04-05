@@ -3,12 +3,11 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
 import {
   Button,
-  IconButton,
   State,
   TextInput,
   useNotification,
@@ -21,6 +20,9 @@ import {
   useUpdatePeriod,
   useDeletePeriod,
 } from "hooks";
+
+// components
+import { PageHeader } from "components";
 
 // lib
 import { toISODateString } from "lib";
@@ -103,14 +105,12 @@ export function PeriodLog() {
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">
-      <header className="flex gap-3 mb-1">
-        <IconButton onClick={() => navigate(-1)} icon={faArrowLeft} />
-        <h1 className="text-xl font-semibold text-text mb-6">
-          {isEditing
-            ? t("_pages:periodLog.editTitle")
-            : t("_pages:periodLog.title")}
-        </h1>
-      </header>
+      <PageHeader
+        title={
+          isEditing ? t("_pages:periodLog.editTitle") : t("_pages:periodLog.title")
+        }
+        onBack={() => navigate(-1)}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         {/* Start date */}
