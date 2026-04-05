@@ -81,7 +81,7 @@ export function Home() {
           {t("_pages:home.nextPeriod")}
         </h2>
         {stats.daysUntilNext !== null ? (
-          <p className="text-2xl font-bold mt-1">
+          <p className="text-2xl max-sm:text-xl font-bold mt-1">
             {stats.daysUntilNext > 0
               ? t("_pages:home.daysUntil", { days: stats.daysUntilNext })
               : stats.daysUntilNext === 0
