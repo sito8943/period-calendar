@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { IconButton } from "@sito/dashboard-app";
 import {
   PREDICTION_CARD_CLASSNAMES,
   PREDICTION_CARD_CLOSE_BUTTON_VARIANT_CLASSNAMES,
@@ -43,17 +43,18 @@ export function PredictionCard({
         className,
       )}
     >
-      <button
+      <IconButton
         type="button"
+        icon={faXmark}
+        variant="text"
         className={joinClasses(
           PREDICTION_CARD_CLASSNAMES.closeButton,
           PREDICTION_CARD_CLOSE_BUTTON_VARIANT_CLASSNAMES[variant],
         )}
+        name={closeAriaLabel}
         aria-label={closeAriaLabel}
         onClick={handleClose}
-      >
-        <FontAwesomeIcon icon={faXmark} />
-      </button>
+      />
       <h2 className={PREDICTION_CARD_CLASSNAMES.title}>{title}</h2>
       <p
         className={joinClasses(
