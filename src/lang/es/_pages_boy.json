@@ -3,7 +3,15 @@
     "appName": "Calendario de Seguimiento",
     "nextPeriod": "Proximo periodo (seguimiento)",
     "logPeriod": "Registrar periodo a seguir",
-    "noData": "Aun no hay datos. Registra el primer periodo para seguimiento."
+    "noData": "Aun no hay datos. Registra el primer periodo para seguimiento.",
+    "alerts": {
+      "periodInDays": "El periodo que sigues llegara en {{days}} dias",
+      "periodToday": "El periodo que sigues llega hoy",
+      "fertileTitle": "Fertilidad (seguimiento)",
+      "fertileMessage": "La persona que sigues esta en dias fertiles",
+      "missingPeriodTitle": "Recordatorio",
+      "missingPeriodMessage": "No has registrado el periodo a seguir este mes"
+    }
   },
   "history": {
     "empty": "No hay periodos registrados para seguimiento"

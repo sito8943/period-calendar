@@ -3,7 +3,15 @@
     "appName": "Tracking Calendar",
     "nextPeriod": "Next period (tracking)",
     "logPeriod": "Log period to track",
-    "noData": "No data yet. Log the first period for tracking."
+    "noData": "No data yet. Log the first period for tracking.",
+    "alerts": {
+      "periodInDays": "The tracked period will arrive in {{days}} days",
+      "periodToday": "The tracked period arrives today",
+      "fertileTitle": "Fertility (tracking)",
+      "fertileMessage": "The person you track is in fertile days",
+      "missingPeriodTitle": "Reminder",
+      "missingPeriodMessage": "You have not logged the tracked period this month"
+    }
   },
   "history": {
     "empty": "No periods recorded for tracking"
