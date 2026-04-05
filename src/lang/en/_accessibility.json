@@ -15,7 +15,8 @@
     "signIn": "Finish onboarding",
     "ok": "Confirm action",
     "cancel": "Cancel action",
-    "closeDialog": "Close dialog"
+    "closeDialog": "Close dialog",
+    "closePredictionCard": "Close prediction alert"
   },
   "calendar": {
     "previousMonth": "Previous month",

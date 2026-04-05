@@ -18,6 +18,7 @@ import { DEFAULT_SETTINGS, toISODateString } from "lib";
 
 // components
 import { Calendar, PredictionCard } from "components";
+import { HOME_PREDICTION_CARD_DISMISS_KEYS } from "./constants";
 
 export function Home() {
   const { t } = useTranslation();
@@ -27,6 +28,9 @@ export function Home() {
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
 
   const stats = useCycleStats(periods, settings);
+  const closePredictionCardAriaLabel = t(
+    "_accessibility:ariaLabels.closePredictionCard",
+  );
   const nextPeriodMessage = useMemo(() => {
     if (stats.daysUntilNext === null) return t("_pages:home.noData");
     if (stats.daysUntilNext > 0) {
@@ -90,6 +94,8 @@ export function Home() {
         <PredictionCard
           title={t("_pages:home.nextPeriod")}
           message={nextPeriodMessage}
+          closeAriaLabel={closePredictionCardAriaLabel}
+          dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.nextPeriod}
           variant="primary"
           messageClassName={
             stats.daysUntilNext === null
@@ -101,6 +107,8 @@ export function Home() {
           <PredictionCard
             title={t("_pages:home.alerts.fertileTitle")}
             message={t("_pages:home.alerts.fertileMessage")}
+            closeAriaLabel={closePredictionCardAriaLabel}
+            dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.fertile}
             variant="fertile"
             messageClassName="text-lg max-sm:text-base"
           />
@@ -109,6 +117,8 @@ export function Home() {
           <PredictionCard
             title={t("_pages:home.alerts.missingPeriodTitle")}
             message={t("_pages:home.alerts.missingPeriodMessage")}
+            closeAriaLabel={closePredictionCardAriaLabel}
+            dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.missingPeriod}
             variant="error"
             messageClassName="text-lg max-sm:text-base"
           />
