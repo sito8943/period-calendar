@@ -6,7 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 // @sito/dashboard-app
-import { Button, State, TextInput, useNotification } from "@sito/dashboard-app";
+import {
+  Button,
+  ConfirmationDialog,
+  State,
+  TextInput,
+  useNotification,
+} from "@sito/dashboard-app";
 
 // hooks
 import {
@@ -190,36 +196,23 @@ export function PeriodLog() {
 
           {isEditing && (
             <>
-              {showDeleteConfirm ? (
-                <div className="flex flex-col gap-2 p-3 bg-bg-error/10 rounded-lg border border-error/30">
-                  <p className="text-sm text-text text-center">
-                    {t("_pages:periodLog.deleteDialog.title")}
-                  </p>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="submit"
-                      color="primary"
-                      onClick={() => setShowDeleteConfirm(false)}
-                      className="flex-1"
-                    >
-                      {t("_pages:periodLog.deleteDialog.cancel")}
-                    </Button>
-                    <Button type="button" variant="outlined" color="error">
-                      {t("_pages:periodLog.deleteDialog.confirm")}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  variant="outlined"
-                  color="error"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                  {t("_pages:periodLog.delete")}
-                </Button>
-              )}
+              <Button
+                type="button"
+                onClick={() => setShowDeleteConfirm(true)}
+                variant="outlined"
+                color="error"
+                className="px-10"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+                {t("_pages:periodLog.delete")}
+              </Button>
+              <ConfirmationDialog
+                open={showDeleteConfirm}
+                title={t("_pages:periodLog.deleteDialog.title")}
+                handleClose={() => setShowDeleteConfirm(false)}
+                handleSubmit={handleDelete}
+                isLoading={deletePeriod.isPending}
+              />
             </>
           )}
         </div>

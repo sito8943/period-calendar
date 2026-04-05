@@ -93,10 +93,9 @@ main {
   @apply bg-bg-success text-success;
 }
 
-.error {
+.text-error {
   @apply bg-bg-error text-error;
 }
-
 .inverted-success {
   @apply text-bg-success;
 }

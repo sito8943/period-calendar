@@ -3,13 +3,19 @@
     "skip": "Saltar",
     "next": "Siguiente",
     "startAsGuest": "Comenzar",
-    "signIn": "Listo"
+    "signIn": "Listo",
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "closeDialog": "Cerrar dialogo"
   },
   "ariaLabels": {
     "skip": "Omitir paso",
     "next": "Ir al siguiente paso",
     "startAsGuest": "Comenzar",
-    "signIn": "Finalizar onboarding"
+    "signIn": "Finalizar onboarding",
+    "ok": "Aceptar",
+    "cancel": "Cancelar",
+    "closeDialog": "Cerrar dialogo"
   },
   "calendar": {
     "previousMonth": "Mes anterior",

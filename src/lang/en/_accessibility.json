@@ -3,13 +3,19 @@
     "skip": "Skip",
     "next": "Next",
     "startAsGuest": "Start",
-    "signIn": "Done"
+    "signIn": "Done",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "closeDialog": "Close dialog"
   },
   "ariaLabels": {
     "skip": "Skip step",
     "next": "Go to next step",
     "startAsGuest": "Start",
-    "signIn": "Finish onboarding"
+    "signIn": "Finish onboarding",
+    "ok": "Confirm action",
+    "cancel": "Cancel action",
+    "closeDialog": "Close dialog"
   },
   "calendar": {
     "previousMonth": "Previous month",

@@ -83,3 +83,15 @@
     gap: 1.5rem;
   }
 }
+
+.drawer-header {
+  text-wrap: nowrap;
+}
+
+.drawer {
+  width: auto;
+}
+
+.drawer.closed {
+  transform: translateX(calc(var(--spacing, 0.25rem) * -15)) !important;
+}

@@ -595,21 +595,15 @@ export function DailyLog() {
         />
 
         <div className="flex gap-3 mt-4">
-          <Button
-            type="submit"
-            variant="submit"
-            color="primary"
-            className="w-full"
-          >
+          <Button type="submit" variant="submit" color="primary">
             {t("_pages:dailyLog.save")}
           </Button>
 
           <Button
             type="button"
-            variant="submit"
+            variant="outlined"
             color="primary"
             onClick={handleCancel}
-            className="w-full"
           >
             {t("_pages:dailyLog.cancel")}
           </Button>
