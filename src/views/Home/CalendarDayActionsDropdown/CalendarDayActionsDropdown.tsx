@@ -9,7 +9,8 @@ import {
 
 // @sito/dashboard-app
 import type { BaseDto, ActionPropsType } from "@sito/dashboard-app";
-import { Dropdown, Actions } from "@sito/dashboard-app";
+import { Actions } from "@sito/dashboard-app";
+import { AnimatedDropdown } from "components";
 import { getDailyLogRoute, getPeriodLogRouteWithStartDate } from "lib";
 
 // constants
@@ -60,7 +61,7 @@ export function CalendarDayActionsDropdown({
   );
 
   return (
-    <Dropdown open={open} onClose={onClose} anchorEl={anchorEl}>
+    <AnimatedDropdown open={open} onClose={onClose} anchorEl={anchorEl}>
       <Actions
         actions={actions}
         showActionTexts
@@ -69,6 +70,6 @@ export function CalendarDayActionsDropdown({
         itemClassName={CALENDAR_DAY_ACTIONS_DROPDOWN_CLASSNAMES.item}
         actionClassName={CALENDAR_DAY_ACTIONS_DROPDOWN_CLASSNAMES.action}
       />
-    </Dropdown>
+    </AnimatedDropdown>
   );
 }
