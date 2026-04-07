@@ -21,7 +21,8 @@
   "calendar": {
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "selectDay": "Select day {{day}}"
+    "selectDay": "Select day {{day}}",
+    "openLegend": "Open calendar legend"
   },
   "navigation": {
     "home": "Go to home",

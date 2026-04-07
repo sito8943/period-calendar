@@ -26,3 +26,7 @@ export type CalendarDayProps = {
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   ariaLabel?: string;
 };
+
+export type CalendarLegendDropdownProps = {
+  monthHasReportedPeriod: boolean;
+};

@@ -19,6 +19,7 @@ import {
 
 // components
 import { CalendarDay } from "./CalendarDay";
+import { CalendarLegendDropdown } from "./CalendarLegendDropdown";
 
 // utils
 import { getWeekdays, isDateInRange } from "./utils";
@@ -280,45 +281,7 @@ export function Calendar({
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-xs text-text-muted">
-        <div className="flex items-center gap-1">
-          <span className="w-3 h-3 legend-dot legend-dot-today" />
-          <span>{t("_pages:calendar.today")}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-3 h-3 legend-dot legend-dot-period" />
-          <span>{t("_pages:calendar.period")}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span
-            className={`w-3 h-3 legend-dot ${
-              monthHasReportedPeriod
-                ? "legend-dot-ovulation-dashed"
-                : "legend-dot-ovulation-predicted"
-            }`}
-          />
-          <span>{t("_pages:calendar.ovulation")}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span
-            className={`w-3 h-3 legend-dot ${
-              monthHasReportedPeriod
-                ? "legend-dot-fertile-dashed"
-                : "legend-dot-fertile-predicted"
-            }`}
-          />
-          <span>{t("_pages:calendar.fertileDays")}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-3 h-3 legend-dot legend-dot-prediction" />
-          <span>{t("_pages:calendar.prediction")}</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-primary inline-block" />
-          <span>{t("_pages:calendar.dailyLog")}</span>
-        </div>
-      </div>
+      <CalendarLegendDropdown monthHasReportedPeriod={monthHasReportedPeriod} />
       <p className="mt-2 text-xs text-text-muted">
         {t("_pages:calendar.fertilityDisclaimer")}
       </p>

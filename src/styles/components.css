@@ -243,3 +243,51 @@
   border: 2px dashed
     color-mix(in srgb, var(--color-fertile) 68%, var(--color-prediction) 32%);
 }
+
+.calendar-legend-trigger {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.calendar-legend-info-button {
+  color: var(--color-text-muted);
+}
+
+.calendar-legend-info-button:hover {
+  color: var(--color-text);
+}
+
+.calendar-legend-dropdown {
+  min-width: 13.5rem;
+  max-width: 15.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background-color: var(--color-base-light);
+  box-shadow:
+    0 12px 24px color-mix(in srgb, var(--color-text) 18%, transparent),
+    0 2px 8px color-mix(in srgb, var(--color-text) 10%, transparent);
+  padding: 0.7rem 0.75rem;
+}
+
+.calendar-legend-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.calendar-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+}
+
+.calendar-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}

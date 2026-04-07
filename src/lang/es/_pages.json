@@ -158,6 +158,7 @@
     }
   },
   "calendar": {
+    "legendTitle": "Leyenda",
     "today": "Hoy",
     "period": "Periodo",
     "prediction": "Periodo estimado",
