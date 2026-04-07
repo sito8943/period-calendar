@@ -11,6 +11,7 @@ import {
   getMonthDays,
   isSameDay,
   isDateInPeriod,
+  hasReportedPeriodInMonth,
   getPredictedPeriodDaysForMonth,
   getFertilityPredictionForMonth,
   toISODateString,
@@ -80,6 +81,10 @@ export function Calendar({
       ),
     [periods, defaultCycleLength, currentYear, currentMonth],
   );
+  const monthHasReportedPeriod = useMemo(
+    () => hasReportedPeriodInMonth(periods, currentYear, currentMonth),
+    [periods, currentYear, currentMonth],
+  );
   const ovulationDaySet = useMemo(
     () =>
       new Set(
@@ -133,6 +138,7 @@ export function Calendar({
         date: d,
         isCurrentMonth: false,
         isToday: false,
+        hasReportedPeriodInMonth: false,
         isPeriodDay: false,
         isPredictedDay: false,
         isFertileDay: false,
@@ -164,6 +170,7 @@ export function Calendar({
         date,
         isCurrentMonth: true,
         isToday: isSameDay(date, today),
+        hasReportedPeriodInMonth: monthHasReportedPeriod,
         isPeriodDay,
         isPredictedDay,
         isFertileDay,
@@ -182,6 +189,7 @@ export function Calendar({
           date: d,
           isCurrentMonth: false,
           isToday: false,
+          hasReportedPeriodInMonth: false,
           isPeriodDay: false,
           isPredictedDay: false,
           isFertileDay: false,
@@ -199,6 +207,7 @@ export function Calendar({
     periods,
     monthPrediction,
     monthFertilityPrediction,
+    monthHasReportedPeriod,
     ovulationDaySet,
     dailyLogDateSet,
   ]);
@@ -274,15 +283,31 @@ export function Calendar({
       {/* Legend */}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 text-xs text-text-muted">
         <div className="flex items-center gap-1">
+          <span className="w-3 h-3 legend-dot legend-dot-today" />
+          <span>{t("_pages:calendar.today")}</span>
+        </div>
+        <div className="flex items-center gap-1">
           <span className="w-3 h-3 legend-dot legend-dot-period" />
           <span>{t("_pages:calendar.period")}</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-3 h-3 legend-dot legend-dot-ovulation" />
+          <span
+            className={`w-3 h-3 legend-dot ${
+              monthHasReportedPeriod
+                ? "legend-dot-ovulation-dashed"
+                : "legend-dot-ovulation-predicted"
+            }`}
+          />
           <span>{t("_pages:calendar.ovulation")}</span>
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-3 h-3 legend-dot legend-dot-fertile" />
+          <span
+            className={`w-3 h-3 legend-dot ${
+              monthHasReportedPeriod
+                ? "legend-dot-fertile-dashed"
+                : "legend-dot-fertile-predicted"
+            }`}
+          />
           <span>{t("_pages:calendar.fertileDays")}</span>
         </div>
         <div className="flex items-center gap-1">

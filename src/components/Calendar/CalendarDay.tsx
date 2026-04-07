@@ -10,6 +10,7 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     date,
     isCurrentMonth,
     isToday,
+    hasReportedPeriodInMonth,
     isPeriodDay,
     isPredictedDay,
     isFertileDay,
@@ -23,38 +24,42 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
   let colorClasses = "";
   if (!isCurrentMonth) {
     colorClasses = "text-text-muted/30";
+  } else if (isToday) {
+    colorClasses = "today-day";
   } else if (isPeriodDay) {
     colorClasses = "period-day";
   } else if (isOvulationDay) {
-    colorClasses = "ovulation-day";
+    colorClasses = hasReportedPeriodInMonth
+      ? "ovulation-day-dashed"
+      : "ovulation-day-predicted";
   } else if (isFertileDay) {
-    colorClasses = "fertile-day";
+    colorClasses = hasReportedPeriodInMonth
+      ? "fertile-day-dashed"
+      : "fertile-day-predicted";
   } else if (isPredictedDay) {
     colorClasses = "predicted-day";
   } else {
     colorClasses = "text-text";
   }
 
-  const todayClasses =
-    isToday && !isPeriodDay && !isPredictedDay && !isFertileDay && !isOvulationDay
-      ? "today-marker"
-      : "";
   const isSpecialDay =
-    isPeriodDay || isPredictedDay || isFertileDay || isOvulationDay;
+    isToday || isPeriodDay || isPredictedDay || isFertileDay || isOvulationDay;
   const interactiveClasses = onClick
     ? isSpecialDay
       ? "cursor-pointer"
       : "hover:bg-base-dark/60 cursor-pointer"
     : "cursor-default";
-  const dailyLogDotClass = isPeriodDay
-    ? "bg-white"
-    : isOvulationDay
-      ? "bg-ovulation"
-      : isFertileDay
-        ? "bg-fertile"
-        : isPredictedDay
-          ? "bg-period"
-          : "bg-primary";
+  const dailyLogDotClass = isToday
+    ? "daily-log-dot--today"
+    : isPeriodDay
+      ? "daily-log-dot--period"
+      : isOvulationDay
+        ? "daily-log-dot--ovulation"
+        : isFertileDay
+          ? "daily-log-dot--fertile"
+          : isPredictedDay
+            ? "daily-log-dot--prediction"
+            : "daily-log-dot--default";
 
   return (
     <button
@@ -62,12 +67,37 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
       onClick={onClick}
       disabled={!onClick}
       aria-label={ariaLabel}
-      className={`${baseClasses} ${colorClasses} ${todayClasses} ${interactiveClasses}`}
+      className={`${baseClasses} ${colorClasses} ${interactiveClasses}`}
     >
       {date.getDate()}
+      {isPredictedDay && (
+        <span
+          className={`prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+          aria-hidden
+        />
+      )}
+      {isFertileDay && !hasReportedPeriodInMonth && (
+        <span
+          className={`fertile-prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+          aria-hidden
+        />
+      )}
+      {isOvulationDay && (
+        hasReportedPeriodInMonth ? (
+          <span
+            className={`ovulation-indicator ${isToday ? "ovulation-indicator-on-today" : ""}`}
+            aria-hidden
+          />
+        ) : (
+          <span
+            className={`ovulation-prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+            aria-hidden
+          />
+        )
+      )}
       {hasDailyLog && (
         <span
-          className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${dailyLogDotClass}`}
+          className={`daily-log-dot ${dailyLogDotClass}`}
         />
       )}
     </button>

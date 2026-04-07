@@ -5,6 +5,7 @@ export type CalendarDayData = {
   date: Date;
   isCurrentMonth: boolean;
   isToday: boolean;
+  hasReportedPeriodInMonth: boolean;
   isPeriodDay: boolean;
   isPredictedDay: boolean;
   isFertileDay: boolean;

@@ -23,6 +23,8 @@
   --color-ovulation: #7a1532;
   --color-ovulation-hover: #651129;
   --color-ovulation-soft: #c58b9d;
+  --color-prediction: #b996a5;
+  --color-prediction-hover: #8e6d7b;
   /** Base colors **/
   --color-base-dark: hsl(0 0% 90%);
   --color-base: hsl(0 0% 95%);

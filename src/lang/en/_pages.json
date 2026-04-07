@@ -158,12 +158,13 @@
     }
   },
   "calendar": {
+    "today": "Today",
     "period": "Period",
-    "prediction": "Prediction",
+    "prediction": "Estimated period",
     "dailyLog": "Daily log",
     "ovulation": "Estimated ovulation",
-    "fertileDays": "Fertile days",
-    "fertilityDisclaimer": "Estimate only: this can vary, especially with irregular cycles.",
+    "fertileDays": "Estimated fertile days",
+    "fertilityDisclaimer": "Estimate only: ovulation, fertile window, and projected period can vary, especially with irregular cycles.",
     "fertilityWindowWithMargin": "Fertile window widened by +/-{{days}} days due to cycle variability"
   },
   "profile": {
