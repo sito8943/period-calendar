@@ -1,9 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@sito/dashboard-app";
 import {
   PREDICTION_CARD_CLASSNAMES,
   PREDICTION_CARD_CLOSE_BUTTON_VARIANT_CLASSNAMES,
+  PREDICTION_CARD_DISMISS_ANIMATION_DURATION_MS,
   PREDICTION_CARD_VARIANT_CLASSNAMES,
 } from "./constants";
 import type { PredictionCardProps } from "./types";
@@ -26,12 +27,25 @@ export function PredictionCard({
   const [isDismissed, setIsDismissed] = useState<boolean>(() =>
     isPredictionCardDismissed(dismissStorageKey),
   );
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (!isClosing) return;
+
+    const timeoutId = setTimeout(() => {
+      setIsDismissed(true);
+    }, PREDICTION_CARD_DISMISS_ANIMATION_DURATION_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [isClosing]);
 
   const handleClose = useCallback(() => {
-    setIsDismissed(true);
+    if (isClosing) return;
+
+    setIsClosing(true);
     persistPredictionCardDismissed(dismissStorageKey);
     onClose?.();
-  }, [dismissStorageKey, onClose]);
+  }, [dismissStorageKey, isClosing, onClose]);
 
   if (isDismissed) return null;
 
@@ -39,6 +53,9 @@ export function PredictionCard({
     <div
       className={joinClasses(
         PREDICTION_CARD_CLASSNAMES.root,
+        isClosing
+          ? PREDICTION_CARD_CLASSNAMES.exitAnimation
+          : PREDICTION_CARD_CLASSNAMES.enterAnimation,
         PREDICTION_CARD_VARIANT_CLASSNAMES[variant],
         className,
       )}
