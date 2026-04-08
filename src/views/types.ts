@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { PageId } from "./sitemap";
 
 export type ViewPageType = {
@@ -22,4 +23,12 @@ export type MenuItemType<MenuKeys extends string = string> = {
   path?: string;
   icon?: ReactNode;
   type?: "menu" | "divider";
+};
+
+export type BottomNavItemType = {
+  id: string;
+  page: PageId;
+  to: string;
+  icon: IconDefinition;
+  position: "left" | "right";
 };

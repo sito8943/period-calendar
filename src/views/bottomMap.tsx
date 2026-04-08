@@ -1,19 +1,21 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { AppRoute } from "lib";
-import type { BottomNavItemType } from "../components/BottomNavigation/types";
+import { PageId } from "./sitemap";
+import type { BottomNavItemType } from "./types";
 
 export const bottomMap: BottomNavItemType[] = [
   {
-    page: "home",
-    path: AppRoute.Home,
-    icon: <FontAwesomeIcon icon={faHome} />,
+    id: "home",
+    page: PageId.Home,
+    to: AppRoute.Home,
+    icon: faHome,
     position: "left",
   },
   {
-    page: "history",
-    path: AppRoute.History,
-    icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
+    id: "history",
+    page: PageId.History,
+    to: AppRoute.History,
+    icon: faClockRotateLeft,
     position: "right",
   },
 ];

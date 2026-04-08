@@ -3,5 +3,5 @@ export {
   BottomNavActionProvider,
   useBottomNavAction,
   useRegisterBottomNavAction,
-} from "./BottomNavAction";
+} from "@sito/dashboard-app";
 export type { BasicProviderPropTypes } from "./types";

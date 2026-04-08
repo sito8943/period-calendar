@@ -1,25 +1,17 @@
-import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 // hooks
 import { useCanGoBack, usePeriodsList } from "hooks";
 
-// providers
-import { useRegisterBottomNavAction } from "providers";
-
 // components
 import { PageHeader, PeriodCard } from "components";
-import { AppRoute } from "lib";
 
 export function History() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const canGoBack = useCanGoBack();
   const { data: periods = [] } = usePeriodsList();
-
-  const goToLog = useCallback(() => navigate(AppRoute.PeriodLog), [navigate]);
-  useRegisterBottomNavAction(goToLog);
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full">

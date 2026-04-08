@@ -10,9 +10,6 @@ import { Button } from "@sito/dashboard-app";
 // hooks
 import { usePeriodsList, useSettings, useCycleStats, useDailyLogsList } from "hooks";
 
-// providers
-import { useRegisterBottomNavAction } from "providers";
-
 // lib
 import { AppRoute, DEFAULT_SETTINGS, getDailyLogRoute, toISODateString } from "lib";
 
@@ -106,7 +103,6 @@ export function Home() {
   );
   const showCalendarDayActions =
     selectedCalendarDate !== null && calendarActionAnchorEl !== null;
-  useRegisterBottomNavAction(goToLog);
 
   return (
     <main className="flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4 home-enter-stagger">

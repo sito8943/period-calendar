@@ -7,6 +7,8 @@ import type { ComponentType } from "react";
 
 // @sito/dashboard-app
 import {
+  BottomNavActionProvider,
+  BottomNavigation,
   ConfigProvider,
   fromLocal,
   NavbarProvider,
@@ -15,23 +17,23 @@ import {
   toLocal,
 } from "@sito/dashboard-app";
 import type { BaseLinkPropsType } from "@sito/dashboard-app";
+import type { BottomNavigationItemType } from "@sito/dashboard-app";
 import type { OnboardingStepType } from "@sito/dashboard-app";
 
 // components
-import { BottomNavigation } from "components";
 import Header from "./Header";
 import Footer from "./Footer";
 import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
 
-// providers
-import { BottomNavActionProvider } from "providers";
 import { config } from "../../config";
 import {
+  AppRoute,
   getStoredPeriodTheme,
   getThemedLanguage,
   setPeriodTheme,
   toBaseAppLanguage,
 } from "lib";
+import { bottomMap } from "../../views/bottomMap";
 
 export function View() {
   const { t, i18n } = useTranslation();
@@ -121,6 +123,28 @@ export function View() {
     [handleThemeSelect, selectedTheme, t],
   );
 
+  const bottomNavigationItems = useMemo<BottomNavigationItemType[]>(
+    () =>
+      bottomMap.map((item) => {
+        const label = t(`_pages:${item.page}.title`);
+
+        return {
+          id: item.id,
+          to: item.to,
+          icon: item.icon,
+          position: item.position,
+          label,
+          ariaLabel: label,
+        };
+      }),
+    [t],
+  );
+
+  const isBottomNavItemActive = (
+    pathname: string,
+    item: BottomNavigationItemType,
+  ) => (item.to === AppRoute.Home ? pathname === AppRoute.Home : pathname.startsWith(item.to));
+
   return (
     <ConfigProvider
       navigate={(route) => navigate(route as To)}
@@ -140,7 +164,14 @@ export function View() {
           <Header />
           <Outlet />
           <Footer />
-          <BottomNavigation />
+          <BottomNavigation
+            items={bottomNavigationItems}
+            centerAction={{
+              to: AppRoute.PeriodLog,
+              ariaLabel: t("_pages:home.logPeriod"),
+            }}
+            isItemActive={isBottomNavItemActive}
+          />
           <Tooltip id="tooltip" />
           <Notification />
         </BottomNavActionProvider>
