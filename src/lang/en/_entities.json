@@ -10,5 +10,23 @@
   "settings": {
     "singular": "Settings",
     "plural": "Settings"
+  },
+  "user": {
+    "name": {
+      "label": "Name",
+      "required": "Name is required"
+    },
+    "email": {
+      "label": "Email",
+      "required": "Email is required"
+    },
+    "password": {
+      "label": "Password",
+      "required": "Password is required"
+    },
+    "confirmPassword": {
+      "label": "Confirm password",
+      "required": "Password confirmation is required"
+    }
   }
 }

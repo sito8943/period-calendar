@@ -24,6 +24,18 @@ import {
   SEXUAL_PROTECTION_OPTIONS,
   SYMPTOM_KEYS,
 } from "./types";
+import {
+  getDailyLogsSupabaseClient,
+  getPeriodsSupabaseClient,
+  getSupabaseSessionUserId,
+  isSupabaseConfigured,
+} from "./supabase";
+import type {
+  DailyLogSupabaseAddDto,
+  DailyLogSupabaseUpdateDto,
+  PeriodSupabaseAddDto,
+  PeriodSupabaseUpdateDto,
+} from "./supabase";
 
 const STORAGE_KEYS = {
   periods: "period-calendar:periods",
@@ -43,6 +55,7 @@ const LEGACY_STORES = {
 } as const;
 
 const MIGRATION_DONE_VALUE = "done";
+const SUPABASE_MIGRATION_VERSION = "v1";
 
 type OfflineFilterDto = BaseFilterDto;
 
@@ -651,7 +664,23 @@ async function ensureOfflineMigration(): Promise<void> {
   await migrationPromise;
 }
 
-export async function getPeriods(): Promise<Period[]> {
+const supabaseMigrationPromises = new Map<string, Promise<void>>();
+
+const getSupabaseMigrationKey = (userId: string): string =>
+  `period-calendar:supabase-migrated:${SUPABASE_MIGRATION_VERSION}:${userId}`;
+
+const getCurrentSupabaseUserId = async (): Promise<string | null> => {
+  if (!isBrowser() || !isSupabaseConfigured()) return null;
+
+  try {
+    return await getSupabaseSessionUserId();
+  } catch (error) {
+    console.error("Failed to get Supabase auth session", error);
+    return null;
+  }
+};
+
+async function getPeriodsFromOfflineStore(): Promise<Period[]> {
   if (!isIndexedDbSupported()) return getPeriodsFromLocalStorage();
 
   await ensureOfflineMigration();
@@ -665,7 +694,7 @@ export async function getPeriods(): Promise<Period[]> {
   }
 }
 
-export async function addPeriod(dto: AddPeriodDto): Promise<Period> {
+async function addPeriodToOfflineStore(dto: AddPeriodDto): Promise<Period> {
   if (!isIndexedDbSupported()) return addPeriodInLocalStorage(dto);
 
   await ensureOfflineMigration();
@@ -686,7 +715,7 @@ export async function addPeriod(dto: AddPeriodDto): Promise<Period> {
   return toPeriodModel(created);
 }
 
-export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
+async function updatePeriodInOfflineStore(dto: UpdatePeriodDto): Promise<Period> {
   if (!isIndexedDbSupported()) return updatePeriodInLocalStorage(dto);
 
   await ensureOfflineMigration();
@@ -704,7 +733,7 @@ export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
   return toPeriodModel(updated);
 }
 
-export async function deletePeriod(id: string): Promise<void> {
+async function deletePeriodFromOfflineStore(id: string): Promise<void> {
   if (!isIndexedDbSupported()) {
     deletePeriodInLocalStorage(id);
     return;
@@ -716,7 +745,7 @@ export async function deletePeriod(id: string): Promise<void> {
   await periodsClient.softDelete([numericId]);
 }
 
-export async function getDailyLogs(): Promise<DailyLog[]> {
+async function getDailyLogsFromOfflineStore(): Promise<DailyLog[]> {
   if (!isIndexedDbSupported()) return getDailyLogsFromLocalStorage();
 
   await ensureOfflineMigration();
@@ -730,7 +759,7 @@ export async function getDailyLogs(): Promise<DailyLog[]> {
   }
 }
 
-export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
+async function addDailyLogToOfflineStore(dto: AddDailyLogDto): Promise<DailyLog> {
   if (!isIndexedDbSupported()) return addDailyLogInLocalStorage(dto);
 
   await ensureOfflineMigration();
@@ -756,7 +785,9 @@ export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
   return toDailyLogModel(created);
 }
 
-export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> {
+async function updateDailyLogInOfflineStore(
+  dto: UpdateDailyLogDto,
+): Promise<DailyLog> {
   if (!isIndexedDbSupported()) return updateDailyLogInLocalStorage(dto);
 
   await ensureOfflineMigration();
@@ -789,7 +820,7 @@ export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> 
   return toDailyLogModel(updated);
 }
 
-export async function deleteDailyLog(id: string): Promise<void> {
+async function deleteDailyLogFromOfflineStore(id: string): Promise<void> {
   if (!isIndexedDbSupported()) {
     deleteDailyLogInLocalStorage(id);
     return;
@@ -799,6 +830,379 @@ export async function deleteDailyLog(id: string): Promise<void> {
 
   const numericId = parseNumericId(id);
   await dailyLogsClient.softDelete([numericId]);
+}
+
+async function ensureSupabaseSeedFromOffline(userId: string): Promise<void> {
+  if (!isBrowser()) return;
+
+  const migrationKey = getSupabaseMigrationKey(userId);
+  if (window.localStorage.getItem(migrationKey) === MIGRATION_DONE_VALUE) {
+    return;
+  }
+
+  const runningMigration = supabaseMigrationPromises.get(userId);
+  if (runningMigration) {
+    await runningMigration;
+    return;
+  }
+
+  const migrationTask = (async () => {
+    const periodsSupabaseClient = getPeriodsSupabaseClient();
+    const dailyLogsSupabaseClient = getDailyLogsSupabaseClient();
+
+    if (!periodsSupabaseClient || !dailyLogsSupabaseClient) return;
+
+    const [periodsRemote, dailyLogsRemote] = await Promise.all([
+      periodsSupabaseClient.get(
+        { currentPage: 0, pageSize: 1 },
+        { user_id: userId, softDeleteScope: "ALL" },
+      ),
+      dailyLogsSupabaseClient.get(
+        { currentPage: 0, pageSize: 1 },
+        { user_id: userId, softDeleteScope: "ALL" },
+      ),
+    ]);
+
+    if (periodsRemote.totalElements > 0 || dailyLogsRemote.totalElements > 0) {
+      window.localStorage.setItem(migrationKey, MIGRATION_DONE_VALUE);
+      return;
+    }
+
+    const [periodsLocal, dailyLogsLocal] = await Promise.all([
+      getPeriodsFromOfflineStore(),
+      getDailyLogsFromOfflineStore(),
+    ]);
+
+    if (periodsLocal.length > 0) {
+      const periodRows: PeriodSupabaseAddDto[] = periodsLocal.map((item) => ({
+        userId,
+        startDate: item.startDate,
+        endDate: item.endDate,
+        createdAt: parseDateOrFallback(item.createdAt, new Date()),
+        updatedAt: parseDateOrFallback(item.updatedAt, new Date()),
+        deletedAt: null,
+      }));
+      await periodsSupabaseClient.insertMany(periodRows);
+    }
+
+    if (dailyLogsLocal.length > 0) {
+      const dailyLogRows: DailyLogSupabaseAddDto[] = dailyLogsLocal.map(
+        (item) => ({
+          userId,
+          date: item.date,
+          flow: item.flow,
+          symptoms: [...new Set(item.symptoms)],
+          sexualActivity: item.sexualActivity,
+          mood: item.mood,
+          sleepHours: item.sleepHours,
+          sleepQuality: item.sleepQuality,
+          notes: item.notes,
+          createdAt: parseDateOrFallback(item.createdAt, new Date()),
+          updatedAt: parseDateOrFallback(item.updatedAt, new Date()),
+          deletedAt: null,
+        }),
+      );
+      await dailyLogsSupabaseClient.insertMany(dailyLogRows);
+    }
+
+    window.localStorage.setItem(migrationKey, MIGRATION_DONE_VALUE);
+  })().finally(() => {
+    supabaseMigrationPromises.delete(userId);
+  });
+
+  supabaseMigrationPromises.set(userId, migrationTask);
+  await migrationTask;
+}
+
+async function getPeriodsFromSupabase(userId: string): Promise<Period[]> {
+  const periodsSupabaseClient = getPeriodsSupabaseClient();
+  if (!periodsSupabaseClient) {
+    throw new Error("Supabase periods client is not available");
+  }
+
+  const result = await periodsSupabaseClient.export({
+    user_id: userId,
+    softDeleteScope: "ACTIVE",
+  });
+
+  return result.map(toPeriodModel).sort(byPeriodStartDateDesc);
+}
+
+async function addPeriodToSupabase(
+  userId: string,
+  dto: AddPeriodDto,
+): Promise<Period> {
+  const periodsSupabaseClient = getPeriodsSupabaseClient();
+  if (!periodsSupabaseClient) {
+    throw new Error("Supabase periods client is not available");
+  }
+
+  const addDto = toPeriodEntityAddDto({
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    deletedAt: null,
+  });
+
+  if (!addDto) {
+    throw new Error("Invalid period payload");
+  }
+
+  const created = await periodsSupabaseClient.insert({
+    ...addDto,
+    userId,
+  });
+
+  return toPeriodModel(created);
+}
+
+async function updatePeriodInSupabase(
+  dto: UpdatePeriodDto,
+): Promise<Period> {
+  const periodsSupabaseClient = getPeriodsSupabaseClient();
+  if (!periodsSupabaseClient) {
+    throw new Error("Supabase periods client is not available");
+  }
+
+  const payload: PeriodSupabaseUpdateDto = {
+    id: parseNumericId(dto.id),
+    startDate: dto.startDate,
+    endDate: dto.endDate ?? null,
+    updatedAt: new Date(),
+  };
+
+  const updated = await periodsSupabaseClient.update(payload);
+  return toPeriodModel(updated);
+}
+
+async function deletePeriodFromSupabase(id: string): Promise<void> {
+  const periodsSupabaseClient = getPeriodsSupabaseClient();
+  if (!periodsSupabaseClient) {
+    throw new Error("Supabase periods client is not available");
+  }
+
+  const numericId = parseNumericId(id);
+  await periodsSupabaseClient.softDelete([numericId]);
+}
+
+async function getDailyLogsFromSupabase(userId: string): Promise<DailyLog[]> {
+  const dailyLogsSupabaseClient = getDailyLogsSupabaseClient();
+  if (!dailyLogsSupabaseClient) {
+    throw new Error("Supabase daily logs client is not available");
+  }
+
+  const result = await dailyLogsSupabaseClient.export({
+    user_id: userId,
+    softDeleteScope: "ACTIVE",
+  });
+
+  return result.map(toDailyLogModel).sort(byDailyLogDateDesc);
+}
+
+async function addDailyLogToSupabase(
+  userId: string,
+  dto: AddDailyLogDto,
+): Promise<DailyLog> {
+  const dailyLogsSupabaseClient = getDailyLogsSupabaseClient();
+  if (!dailyLogsSupabaseClient) {
+    throw new Error("Supabase daily logs client is not available");
+  }
+
+  const duplicateByDate = await dailyLogsSupabaseClient.export({
+    user_id: userId,
+    date: dto.date,
+    softDeleteScope: "ACTIVE",
+  });
+  if (duplicateByDate.length > 0) {
+    throw new Error("A daily log already exists for this date");
+  }
+
+  const addDto = toDailyLogEntityAddDto({
+    ...dto,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    deletedAt: null,
+  });
+
+  if (!addDto) {
+    throw new Error("Invalid daily log payload");
+  }
+
+  const created = await dailyLogsSupabaseClient.insert({
+    ...addDto,
+    userId,
+  });
+  return toDailyLogModel(created);
+}
+
+async function updateDailyLogInSupabase(
+  userId: string,
+  dto: UpdateDailyLogDto,
+): Promise<DailyLog> {
+  const dailyLogsSupabaseClient = getDailyLogsSupabaseClient();
+  if (!dailyLogsSupabaseClient) {
+    throw new Error("Supabase daily logs client is not available");
+  }
+
+  const duplicateByDate = await dailyLogsSupabaseClient.export({
+    user_id: userId,
+    date: dto.date,
+    softDeleteScope: "ACTIVE",
+  });
+
+  const hasDuplicate = duplicateByDate.some((item) => String(item.id) !== dto.id);
+  if (hasDuplicate) {
+    throw new Error("A daily log already exists for this date");
+  }
+
+  const payload: DailyLogSupabaseUpdateDto = {
+    id: parseNumericId(dto.id),
+    date: dto.date,
+    flow: dto.flow,
+    symptoms: [...new Set(dto.symptoms)],
+    sexualActivity: dto.sexualActivity,
+    mood: dto.mood,
+    sleepHours: dto.sleepHours,
+    sleepQuality: dto.sleepQuality,
+    notes: dto.notes,
+    updatedAt: new Date(),
+  };
+
+  const updated = await dailyLogsSupabaseClient.update(payload);
+  return toDailyLogModel(updated);
+}
+
+async function deleteDailyLogFromSupabase(id: string): Promise<void> {
+  const dailyLogsSupabaseClient = getDailyLogsSupabaseClient();
+  if (!dailyLogsSupabaseClient) {
+    throw new Error("Supabase daily logs client is not available");
+  }
+
+  const numericId = parseNumericId(id);
+  await dailyLogsSupabaseClient.softDelete([numericId]);
+}
+
+export async function getPeriods(): Promise<Period[]> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await getPeriodsFromSupabase(userId);
+    } catch (error) {
+      console.error("Supabase periods read failed, using offline store", error);
+    }
+  }
+
+  return getPeriodsFromOfflineStore();
+}
+
+export async function addPeriod(dto: AddPeriodDto): Promise<Period> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await addPeriodToSupabase(userId, dto);
+    } catch (error) {
+      console.error("Supabase add period failed, using offline store", error);
+    }
+  }
+
+  return addPeriodToOfflineStore(dto);
+}
+
+export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await updatePeriodInSupabase(dto);
+    } catch (error) {
+      console.error("Supabase update period failed, using offline store", error);
+    }
+  }
+
+  return updatePeriodInOfflineStore(dto);
+}
+
+export async function deletePeriod(id: string): Promise<void> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      await deletePeriodFromSupabase(id);
+      return;
+    } catch (error) {
+      console.error("Supabase delete period failed, using offline store", error);
+    }
+  }
+
+  await deletePeriodFromOfflineStore(id);
+}
+
+export async function getDailyLogs(): Promise<DailyLog[]> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await getDailyLogsFromSupabase(userId);
+    } catch (error) {
+      console.error("Supabase daily logs read failed, using offline store", error);
+    }
+  }
+
+  return getDailyLogsFromOfflineStore();
+}
+
+export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await addDailyLogToSupabase(userId, dto);
+    } catch (error) {
+      console.error("Supabase add daily log failed, using offline store", error);
+    }
+  }
+
+  return addDailyLogToOfflineStore(dto);
+}
+
+export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      return await updateDailyLogInSupabase(userId, dto);
+    } catch (error) {
+      console.error("Supabase update daily log failed, using offline store", error);
+    }
+  }
+
+  return updateDailyLogInOfflineStore(dto);
+}
+
+export async function deleteDailyLog(id: string): Promise<void> {
+  const userId = await getCurrentSupabaseUserId();
+
+  if (userId) {
+    try {
+      await ensureSupabaseSeedFromOffline(userId);
+      await deleteDailyLogFromSupabase(id);
+      return;
+    } catch (error) {
+      console.error("Supabase delete daily log failed, using offline store", error);
+    }
+  }
+
+  await deleteDailyLogFromOfflineStore(id);
 }
 
 export function getSettings(): Settings {

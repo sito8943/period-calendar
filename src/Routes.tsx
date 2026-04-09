@@ -1,11 +1,26 @@
 import loadable from "@loadable/component";
 
 // layouts
-import { View } from "./layouts";
+import { Auth, View } from "./layouts";
 import { BrowserRouter, Routes as ReactRoutes, Route } from "react-router-dom";
 import { AppRoute } from "lib";
 
 // views
+const SignIn = loadable(() =>
+  import("views").then((module) => ({
+    default: module.SignIn,
+  })),
+);
+const SignUp = loadable(() =>
+  import("views").then((module) => ({
+    default: module.SignUp,
+  })),
+);
+const SignOut = loadable(() =>
+  import("views").then((module) => ({
+    default: module.SignOut,
+  })),
+);
 const Home = loadable(() =>
   import("views").then((module) => ({
     default: module.Home,
@@ -41,6 +56,12 @@ export const Routes = () => {
   return (
     <BrowserRouter>
       <ReactRoutes>
+        <Route path={AppRoute.AuthRoot} element={<Auth />}>
+          <Route path="sign-in" element={<SignIn />} />
+          <Route path="sign-up" element={<SignUp />} />
+          <Route path={AppRoute.AuthNotFound} element={<NotFound />} />
+        </Route>
+        <Route path={AppRoute.SignOut} element={<SignOut />} />
         <Route path={AppRoute.Home} element={<View />}>
           <Route index element={<Home />} />
           <Route path={AppRoute.PeriodLog} element={<PeriodLog />} />

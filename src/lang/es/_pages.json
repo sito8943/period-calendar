@@ -3,7 +3,11 @@
     "home": "Inicio",
     "history": "Historial",
     "period-log": "Registrar",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "auth": {
+      "signIn": "Iniciar sesion",
+      "signOut": "Cerrar sesion"
+    }
   },
   "home": {
     "title": "Inicio",
@@ -198,6 +202,30 @@
     "errors": {
       "nameRequired": "El nombre es requerido",
       "nameMax": "El nombre debe tener como máximo 120 caracteres"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Iniciar sesion",
+      "submit": "Entrar",
+      "guest": "Continuar como invitada/o",
+      "remember": "Recordarme",
+      "toRegister": {
+        "question": "¿No tienes cuenta?",
+        "link": "Crear cuenta"
+      }
+    },
+    "signOut": {
+      "title": "Cerrar sesion"
+    },
+    "signUp": {
+      "title": "Crear cuenta",
+      "submit": "Registrarme",
+      "guest": "Continuar como invitada/o",
+      "toLogin": {
+        "question": "¿Ya tienes cuenta?",
+        "link": "Iniciar sesion"
+      }
     }
   },
   "onboarding": {

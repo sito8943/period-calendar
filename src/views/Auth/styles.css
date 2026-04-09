@@ -1,0 +1,12 @@
+@reference "../../styles/variables.css";
+
+.auth-form {
+  @apply gap-2 transition duration-300 rounded-3xl w-99 px-5 pt-5 py-5 flex flex-col items-center justify-start;
+}
+
+@media (width < 40rem) {
+  .auth-form {
+    width: 100%;
+    @apply px-4;
+  }
+}

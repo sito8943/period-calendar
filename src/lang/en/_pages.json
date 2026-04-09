@@ -3,7 +3,11 @@
     "home": "Home",
     "history": "History",
     "period-log": "Log",
-    "profile": "Profile"
+    "profile": "Profile",
+    "auth": {
+      "signIn": "Sign in",
+      "signOut": "Sign out"
+    }
   },
   "home": {
     "title": "Home",
@@ -198,6 +202,30 @@
     "errors": {
       "nameRequired": "Name is required",
       "nameMax": "Name must be at most 120 characters"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "guest": "Continue as guest",
+      "remember": "Remember me",
+      "toRegister": {
+        "question": "Don't have an account?",
+        "link": "Create one"
+      }
+    },
+    "signOut": {
+      "title": "Sign out"
+    },
+    "signUp": {
+      "title": "Create account",
+      "submit": "Sign up",
+      "guest": "Continue as guest",
+      "toLogin": {
+        "question": "Already have an account?",
+        "link": "Sign in"
+      }
     }
   },
   "onboarding": {

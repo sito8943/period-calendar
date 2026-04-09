@@ -22,6 +22,7 @@ Aplicacion web para registrar periodos, llevar un diario diario y visualizar pre
 - TanStack Query 5
 - i18next + react-i18next
 - `@sito/dashboard-app` para componentes base (UI, notificaciones, onboarding, providers)
+- Supabase (opcional) para persistencia remota autenticada
 
 ## Requisitos
 
@@ -52,10 +53,16 @@ Servidor local por defecto: `http://localhost:5173`.
 - `/daily-log/:date`: diario de una fecha (`YYYY-MM-DD`).
 - `/history`: historial de periodos.
 - `/profile`: datos de perfil, idioma y tema.
+- `/auth/sign-in`: inicio de sesion con Supabase.
+- `/auth/sign-up`: registro con Supabase.
+- `/sign-out`: cierre de sesion.
 
 ## Persistencia de Datos
 
 No requiere backend para funcionar.
+
+Opcionalmente puede usar Supabase cuando existe sesion autenticada y variables de entorno configuradas.
+Setup completo (tablas + RLS): `SUPABASE_SETUP.md`.
 
 Datos funcionales (IndexedDB):
 

@@ -157,7 +157,7 @@ export function View() {
             <Onboarding
               steps={onboardingSteps}
               onSkip={closeOnboarding}
-              onSignIn={closeOnboarding}
+              onSignIn={() => navigate(AppRoute.SignIn)}
               onStartAsGuest={closeOnboarding}
             />
           )}

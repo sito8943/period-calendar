@@ -4,6 +4,7 @@
     "next": "Next",
     "startAsGuest": "Start",
     "signIn": "Done",
+    "submit": "Submit",
     "ok": "OK",
     "cancel": "Cancel",
     "closeDialog": "Close dialog"
@@ -13,10 +14,27 @@
     "next": "Go to next step",
     "startAsGuest": "Start",
     "signIn": "Finish onboarding",
+    "submit": "Submit form",
     "ok": "Confirm action",
     "cancel": "Cancel action",
     "closeDialog": "Close dialog",
     "closePredictionCard": "Close prediction alert"
+  },
+  "messages": {
+    "signUpEmailConfirmation": "Check your inbox to confirm your account."
+  },
+  "errors": {
+    "differentPasswords": "Passwords do not match",
+    "signIn": {
+      "invalidCredentials": "Invalid credentials",
+      "supabaseNotConfigured": "Supabase is not configured in this app",
+      "generic": "Could not sign in"
+    },
+    "signUp": {
+      "emailAlreadyInUse": "That email is already registered",
+      "supabaseNotConfigured": "Supabase is not configured in this app",
+      "generic": "Could not create account"
+    }
   },
   "calendar": {
     "previousMonth": "Previous month",

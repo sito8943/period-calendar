@@ -5,6 +5,8 @@ import {
   faHome,
   faClockRotateLeft,
   faUser,
+  faRightToBracket,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { AppRoute } from "lib";
 
@@ -16,6 +18,8 @@ export const MenuKeys = {
   History: "history",
   PeriodLog: "period-log",
   Profile: "profile",
+  SignOut: "auth.signOut",
+  SignIn: "auth.signIn",
 } as const;
 
 export type MenuKeys = (typeof MenuKeys)[keyof typeof MenuKeys];
@@ -36,5 +40,19 @@ export const menuMap: MenuItemType<MenuKeys>[] = [
     page: MenuKeys.Profile,
     path: AppRoute.Profile,
     icon: <FontAwesomeIcon icon={faUser} />,
+    auth: true,
+  },
+  { type: "divider" },
+  {
+    page: MenuKeys.SignOut,
+    path: AppRoute.SignOut,
+    icon: <FontAwesomeIcon icon={faRightFromBracket} />,
+    auth: true,
+  },
+  {
+    page: MenuKeys.SignIn,
+    path: AppRoute.SignIn,
+    icon: <FontAwesomeIcon icon={faRightToBracket} />,
+    auth: false,
   },
 ];

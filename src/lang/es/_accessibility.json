@@ -4,6 +4,7 @@
     "next": "Siguiente",
     "startAsGuest": "Comenzar",
     "signIn": "Listo",
+    "submit": "Enviar",
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "closeDialog": "Cerrar dialogo"
@@ -13,10 +14,27 @@
     "next": "Ir al siguiente paso",
     "startAsGuest": "Comenzar",
     "signIn": "Finalizar onboarding",
+    "submit": "Enviar formulario",
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "closeDialog": "Cerrar dialogo",
     "closePredictionCard": "Cerrar alerta de prediccion"
+  },
+  "messages": {
+    "signUpEmailConfirmation": "Revisa tu correo para confirmar tu cuenta."
+  },
+  "errors": {
+    "differentPasswords": "Las contraseñas no coinciden",
+    "signIn": {
+      "invalidCredentials": "Credenciales invalidas",
+      "supabaseNotConfigured": "Supabase no esta configurado en esta app",
+      "generic": "No se pudo iniciar sesion"
+    },
+    "signUp": {
+      "emailAlreadyInUse": "Ese correo ya esta registrado",
+      "supabaseNotConfigured": "Supabase no esta configurado en esta app",
+      "generic": "No se pudo crear la cuenta"
+    }
   },
   "calendar": {
     "previousMonth": "Mes anterior",

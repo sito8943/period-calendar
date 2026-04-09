@@ -22,6 +22,7 @@ export type MenuItemType<MenuKeys extends string = string> = {
   page?: MenuKeys;
   path?: string;
   icon?: ReactNode;
+  auth?: boolean;
   type?: "menu" | "divider";
 };
 

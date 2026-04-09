@@ -1,10 +1,15 @@
 export const AppRoute = {
+  AuthRoot: "/auth",
+  SignIn: "/auth/sign-in",
+  SignUp: "/auth/sign-up",
+  SignOut: "/sign-out",
   Home: "/",
   PeriodLog: "/log",
   PeriodLogById: "/log/:id",
   DailyLogByDate: "/daily-log/:date",
   History: "/history",
   Profile: "/profile",
+  AuthNotFound: "*",
   NotFound: "*",
 } as const;
 

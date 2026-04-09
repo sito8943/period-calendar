@@ -10,5 +10,23 @@
   "settings": {
     "singular": "Configuracion",
     "plural": "Configuraciones"
+  },
+  "user": {
+    "name": {
+      "label": "Nombre",
+      "required": "El nombre es obligatorio"
+    },
+    "email": {
+      "label": "Correo electronico",
+      "required": "El correo electronico es obligatorio"
+    },
+    "password": {
+      "label": "Contrasena",
+      "required": "La contrasena es obligatoria"
+    },
+    "confirmPassword": {
+      "label": "Confirmar contrasena",
+      "required": "La confirmacion de contrasena es obligatoria"
+    }
   }
 }
