@@ -159,6 +159,17 @@ const authStorageKeys = {
 
 - Instantiate only in browser (for example inside `useEffect` or after checking `typeof window !== "undefined"`).
 
+### 2.12 App crashes in SSR/server-render pipelines
+
+**Cause**
+
+- `@sito/dashboard-app` is a browser-focused package and relies on browser APIs (`window`, `document`, storage, portal targets).
+
+**Fix**
+
+- Do not integrate this package in SSR/server-render paths.
+- Mount usage only in client/browser-rendered app trees.
+
 ## 3. Common typing pitfalls
 
 ### 3.1 Lost type safety due to missing generics

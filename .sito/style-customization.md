@@ -1,10 +1,5 @@
 # Visual Customization for `@sito/dashboard`
 
-Internal scope note:
-
-- This is upstream styling reference for direct `@sito/dashboard` usage.
-- For `@sito/dashboard-app` integration rules, prioritize `README.md` and `AGENTS.md` in the repository root.
-
 This guide focuses on:
 
 - theme variable tuning,
