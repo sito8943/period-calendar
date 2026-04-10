@@ -21,7 +21,8 @@
     "closePredictionCard": "Cerrar alerta de prediccion"
   },
   "messages": {
-    "signUpEmailConfirmation": "Revisa tu correo para confirmar tu cuenta."
+    "signUpEmailConfirmation": "Revisa tu correo para confirmar tu cuenta.",
+    "forgotPasswordEmailSent": "Si el correo existe, te enviamos un enlace para restablecer tu contrasena."
   },
   "errors": {
     "differentPasswords": "Las contraseñas no coinciden",
@@ -34,6 +35,11 @@
       "emailAlreadyInUse": "Ese correo ya esta registrado",
       "supabaseNotConfigured": "Supabase no esta configurado en esta app",
       "generic": "No se pudo crear la cuenta"
+    },
+    "forgotPassword": {
+      "invalidEmail": "Correo electronico invalido",
+      "supabaseNotConfigured": "Supabase no esta configurado en esta app",
+      "generic": "No se pudo enviar el enlace de recuperacion"
     }
   },
   "calendar": {

@@ -210,6 +210,10 @@
       "submit": "Sign in",
       "guest": "Continue as guest",
       "remember": "Remember me",
+      "accountRecovery": {
+        "question": "Forgot your password?",
+        "link": "Recover it"
+      },
       "toRegister": {
         "question": "Don't have an account?",
         "link": "Create one"
@@ -225,6 +229,16 @@
       "toLogin": {
         "question": "Already have an account?",
         "link": "Sign in"
+      }
+    },
+    "forgotPassword": {
+      "title": "Recover password",
+      "description": "Enter your email and we'll send you a link to reset it.",
+      "submit": "Send link",
+      "sent": "If an account exists for {{email}}, we sent a recovery link.",
+      "toLogin": {
+        "question": "Remembered your password?",
+        "link": "Back to sign in"
       }
     }
   },

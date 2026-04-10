@@ -178,6 +178,18 @@ export function SignIn() {
           </p>
         </div>
 
+        <div className="self-start">
+          <p className="ml-1">
+            {t("_pages:auth.signIn.accountRecovery.question")}
+            <Link
+              to={AppRoute.ForgotPassword}
+              className="ml-1 primary text-sm underline text-left"
+            >
+              {t("_pages:auth.signIn.accountRecovery.link")}
+            </Link>
+          </p>
+        </div>
+
         <div className="flex max-xs:flex-col gap-3 mt-4 w-full">
           <Button
             type="submit"

@@ -10,3 +10,7 @@ export type SignUpFormType = {
   password: string;
   confirmPassword: string;
 };
+
+export type ForgotPasswordFormType = {
+  email: string;
+};

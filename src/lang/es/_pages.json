@@ -210,6 +210,10 @@
       "submit": "Entrar",
       "guest": "Continuar como invitada/o",
       "remember": "Recordarme",
+      "accountRecovery": {
+        "question": "¿Olvidaste tu contrasena?",
+        "link": "Recuperarla"
+      },
       "toRegister": {
         "question": "¿No tienes cuenta?",
         "link": "Crear cuenta"
@@ -225,6 +229,16 @@
       "toLogin": {
         "question": "¿Ya tienes cuenta?",
         "link": "Iniciar sesion"
+      }
+    },
+    "forgotPassword": {
+      "title": "Recuperar contrasena",
+      "description": "Introduce tu correo y te enviaremos un enlace para restablecerla.",
+      "submit": "Enviar enlace",
+      "sent": "Si existe una cuenta para {{email}}, te enviamos un enlace de recuperacion.",
+      "toLogin": {
+        "question": "¿Recuerdas tu contrasena?",
+        "link": "Volver a iniciar sesion"
       }
     }
   },

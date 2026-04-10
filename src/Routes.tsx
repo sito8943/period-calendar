@@ -16,6 +16,11 @@ const SignUp = loadable(() =>
     default: module.SignUp,
   })),
 );
+const ForgotPassword = loadable(() =>
+  import("views").then((module) => ({
+    default: module.ForgotPassword,
+  })),
+);
 const SignOut = loadable(() =>
   import("views").then((module) => ({
     default: module.SignOut,
@@ -57,8 +62,12 @@ export const Routes = () => {
     <BrowserRouter>
       <ReactRoutes>
         <Route path={AppRoute.AuthRoot} element={<Auth />}>
-          <Route path="sign-in" element={<SignIn />} />
-          <Route path="sign-up" element={<SignUp />} />
+          <Route path={AppRoute.SignIn} element={<SignIn />} />
+          <Route path={AppRoute.SignUp} element={<SignUp />} />
+          <Route
+            path={AppRoute.ForgotPassword}
+            element={<ForgotPassword />}
+          />
           <Route path={AppRoute.AuthNotFound} element={<NotFound />} />
         </Route>
         <Route path={AppRoute.SignOut} element={<SignOut />} />

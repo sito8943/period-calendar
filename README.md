@@ -62,7 +62,7 @@ Servidor local por defecto: `http://localhost:5173`.
 No requiere backend para funcionar.
 
 Opcionalmente puede usar Supabase cuando existe sesion autenticada y variables de entorno configuradas.
-Setup completo (tablas + RLS): `SUPABASE_SETUP.md`.
+Setup completo (tablas + RLS, con script SQL listo para pegar en el SQL Editor): `SUPABASE_SETUP.md`.
 
 Datos funcionales (IndexedDB):
 

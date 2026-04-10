@@ -21,7 +21,8 @@
     "closePredictionCard": "Close prediction alert"
   },
   "messages": {
-    "signUpEmailConfirmation": "Check your inbox to confirm your account."
+    "signUpEmailConfirmation": "Check your inbox to confirm your account.",
+    "forgotPasswordEmailSent": "If the email exists, we sent a password reset link."
   },
   "errors": {
     "differentPasswords": "Passwords do not match",
@@ -34,6 +35,11 @@
       "emailAlreadyInUse": "That email is already registered",
       "supabaseNotConfigured": "Supabase is not configured in this app",
       "generic": "Could not create account"
+    },
+    "forgotPassword": {
+      "invalidEmail": "Invalid email",
+      "supabaseNotConfigured": "Supabase is not configured in this app",
+      "generic": "Could not send recovery link"
     }
   },
   "calendar": {

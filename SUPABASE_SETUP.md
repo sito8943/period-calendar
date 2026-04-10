@@ -16,7 +16,8 @@ VITE_SUPABASE_ANON_KEY=YOUR_PUBLIC_ANON_KEY
 
 ## 2. SQL: tablas, índices, triggers y RLS
 
-Ejecuta este script en Supabase SQL Editor:
+Ejecuta este script en Supabase SQL Editor.
+Es idempotente: lo puedes volver a correr sin romper por políticas duplicadas.
 
 ```sql
 -- ======================================
@@ -94,19 +95,21 @@ execute function public.set_updated_at_timestamp();
 alter table public.periods enable row level security;
 alter table public.daily_logs enable row level security;
 
--- Periods
+drop policy if exists periods_select_own on public.periods;
 create policy periods_select_own
   on public.periods
   for select
   to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists periods_insert_own on public.periods;
 create policy periods_insert_own
   on public.periods
   for insert
   to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists periods_update_own on public.periods;
 create policy periods_update_own
   on public.periods
   for update
@@ -114,25 +117,28 @@ create policy periods_update_own
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists periods_delete_own on public.periods;
 create policy periods_delete_own
   on public.periods
   for delete
   to authenticated
   using (auth.uid() = user_id);
 
--- Daily logs
+drop policy if exists daily_logs_select_own on public.daily_logs;
 create policy daily_logs_select_own
   on public.daily_logs
   for select
   to authenticated
   using (auth.uid() = user_id);
 
+drop policy if exists daily_logs_insert_own on public.daily_logs;
 create policy daily_logs_insert_own
   on public.daily_logs
   for insert
   to authenticated
   with check (auth.uid() = user_id);
 
+drop policy if exists daily_logs_update_own on public.daily_logs;
 create policy daily_logs_update_own
   on public.daily_logs
   for update
@@ -140,6 +146,7 @@ create policy daily_logs_update_own
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
+drop policy if exists daily_logs_delete_own on public.daily_logs;
 create policy daily_logs_delete_own
   on public.daily_logs
   for delete

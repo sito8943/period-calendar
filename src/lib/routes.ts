@@ -2,6 +2,7 @@ export const AppRoute = {
   AuthRoot: "/auth",
   SignIn: "/auth/sign-in",
   SignUp: "/auth/sign-up",
+  ForgotPassword: "/auth/forgot-password",
   SignOut: "/sign-out",
   Home: "/",
   PeriodLog: "/log",
