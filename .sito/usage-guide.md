@@ -1,5 +1,20 @@
 # `@sito/dashboard` in a Consumer Project
 
+## Internal Scope (This Repository)
+
+This document is an upstream reference for direct `@sito/dashboard` usage.
+If your app consumes `@sito/dashboard-app`, use the repository root docs instead:
+
+- `README.md` for public integration (`@sito/dashboard-app`)
+- `AGENTS.md` for agent/maintainer rules
+
+Quick context map:
+
+| Topic                  | `@sito/dashboard` (this document)              | `@sito/dashboard-app` (root docs)                                                                                                |
+| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Provider baseline      | `TranslationProvider` + `TableOptionsProvider` | `ConfigProvider -> ManagerProvider -> AuthProvider -> NotificationProvider -> DrawerMenuProvider` (`NavbarProvider` when needed) |
+| `IconButton` icon type | React node                                     | `IconDefinition` (FontAwesome wrapper)                                                                                           |
+
 ## 1. Installation
 
 ```bash
@@ -472,6 +487,11 @@ function ExampleDropdown() {
 
 <Loading className="h-20" />;
 ```
+
+Note for `@sito/dashboard-app` consumers:
+
+- `IconButton` is overridden and expects `icon: IconDefinition`.
+- The React-node `icon` examples above apply to direct `@sito/dashboard` usage.
 
 ## 12. Integration Checklist
 

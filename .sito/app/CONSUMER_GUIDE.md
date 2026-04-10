@@ -13,7 +13,7 @@ Install peer dependencies in the consumer project as well:
 ```bash
 npm install \
   react@18.3.1 react-dom@18.3.1 \
-  @sito/dashboard@^0.0.75 \
+  @sito/dashboard@^0.0.76 \
   @tanstack/react-query@5.83.0 \
   react-hook-form@7.61.1 \
   @fortawesome/fontawesome-svg-core@7.0.0 \

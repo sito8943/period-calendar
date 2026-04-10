@@ -1,5 +1,10 @@
 # Translation Keys Reference (`@sito/dashboard`)
 
+Internal scope note:
+
+- This file documents runtime keys used by upstream `@sito/dashboard`.
+- In this repository, `README.md` and `AGENTS.md` remain canonical for `@sito/dashboard-app` integration setup.
+
 This document lists every translation key currently used at runtime by the library, where it is used, and when it is needed.
 
 `@sito/dashboard` expects your app to provide a translation function through `TranslationProvider`:
