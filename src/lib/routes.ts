@@ -2,6 +2,7 @@ export const AppRoute = {
   AuthRoot: "/auth",
   SignIn: "/auth/sign-in",
   SignUp: "/auth/sign-up",
+  SignUpConfirmation: "/auth/sign-up-confirmation",
   ForgotPassword: "/auth/forgot-password",
   SignOut: "/sign-out",
   Home: "/",
@@ -16,6 +17,7 @@ export const AppRoute = {
 
 export const RouteQueryParam = {
   PeriodStartDate: "startDate",
+  Email: "email",
 } as const;
 
 export function getPeriodLogDetailRoute(id: string): string {
@@ -31,4 +33,11 @@ export function getPeriodLogRouteWithStartDate(startDate: string): string {
     [RouteQueryParam.PeriodStartDate]: startDate,
   });
   return `${AppRoute.PeriodLog}?${searchParams.toString()}`;
+}
+
+export function getSignUpConfirmationRoute(email: string): string {
+  const searchParams = new URLSearchParams({
+    [RouteQueryParam.Email]: email,
+  });
+  return `${AppRoute.SignUpConfirmation}?${searchParams.toString()}`;
 }

@@ -4,7 +4,13 @@ export { DailyLog } from "./DailyLog";
 export { History } from "./History";
 export { Profile } from "./Profile";
 export { NotFound } from "./NotFound";
-export { ForgotPassword, SignIn, SignOut, SignUp } from "./Auth";
+export {
+  ForgotPassword,
+  SignIn,
+  SignOut,
+  SignUp,
+  SignUpConfirmation,
+} from "./Auth";
 export * from "./sitemap";
 export * from "./menuMap";
 export * from "./bottomMap";

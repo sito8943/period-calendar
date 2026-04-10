@@ -231,6 +231,12 @@
         "link": "Iniciar sesion"
       }
     },
+    "signUpConfirmation": {
+      "title": "Confirma tu correo",
+      "description": "Te enviamos un correo de confirmacion. Revisa tu bandeja de entrada y sigue el enlace para activar tu cuenta.",
+      "descriptionWithEmail": "Te enviamos un correo de confirmacion a {{email}}. Revisa tu bandeja de entrada y sigue el enlace para activar tu cuenta.",
+      "cta": "Ir a iniciar sesion"
+    },
     "forgotPassword": {
       "title": "Recuperar contrasena",
       "description": "Introduce tu correo y te enviaremos un enlace para restablecerla.",

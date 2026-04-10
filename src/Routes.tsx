@@ -16,6 +16,11 @@ const SignUp = loadable(() =>
     default: module.SignUp,
   })),
 );
+const SignUpConfirmation = loadable(() =>
+  import("views").then((module) => ({
+    default: module.SignUpConfirmation,
+  })),
+);
 const ForgotPassword = loadable(() =>
   import("views").then((module) => ({
     default: module.ForgotPassword,
@@ -64,6 +69,10 @@ export const Routes = () => {
         <Route path={AppRoute.AuthRoot} element={<Auth />}>
           <Route path={AppRoute.SignIn} element={<SignIn />} />
           <Route path={AppRoute.SignUp} element={<SignUp />} />
+          <Route
+            path={AppRoute.SignUpConfirmation}
+            element={<SignUpConfirmation />}
+          />
           <Route
             path={AppRoute.ForgotPassword}
             element={<ForgotPassword />}

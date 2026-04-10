@@ -14,7 +14,7 @@ import {
   useNotification,
 } from "@sito/dashboard-app";
 
-import { AppRoute, supabase } from "lib";
+import { AppRoute, getSignUpConfirmationRoute, supabase } from "lib";
 import type { SignUpFormType } from "./types";
 import "./styles.css";
 
@@ -33,7 +33,7 @@ export function SignUp() {
   const navigate = useNavigate();
   const auth = useOptionalAuthContext();
   const accountToken = auth?.account?.token;
-  const { showErrorNotification, showSuccessNotification } = useNotification();
+  const { showErrorNotification } = useNotification();
 
   const { handleSubmit, control, formState, setError } =
     useForm<SignUpFormType>({
@@ -87,10 +87,7 @@ export function SignUp() {
     }
 
     if (!data.session) {
-      showSuccessNotification({
-        message: t("_accessibility:messages.signUpEmailConfirmation"),
-      });
-      navigate(AppRoute.SignIn, { replace: true });
+      navigate(getSignUpConfirmationRoute(values.email), { replace: true });
       return;
     }
 
