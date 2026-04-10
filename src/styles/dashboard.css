@@ -143,3 +143,8 @@
     animation: none !important;
   }
 }
+
+.dropdown-main {
+  border: none;
+  box-shadow: none;
+}
