@@ -44,7 +44,7 @@ export function SignUpConfirmation() {
             type="button"
             color="primary"
             variant="submit"
-            className="!px-8"
+            className="px-8!"
             onClick={() => navigate(AppRoute.SignIn, { replace: true })}
             aria-label={t("_pages:auth.signUpConfirmation.cta")}
           >
