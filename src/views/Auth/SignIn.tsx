@@ -95,7 +95,9 @@ export function SignIn() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <form onSubmit={onSubmit} className="auth-form blur-appear">
-        <h1 className="w-full text-2xl mb-1">{t("_pages:auth.signIn.title")}</h1>
+        <h1 className="w-full text-2xl mb-1">
+          {t("_pages:auth.signIn.title")}
+        </h1>
 
         <div className="form-container w-full">
           <Controller
@@ -143,7 +145,10 @@ export function SignIn() {
             control={control}
             name="rememberMe"
             render={({ field }) => (
-              <label htmlFor="rememberMe" className="ml-1 flex items-center gap-2">
+              <label
+                htmlFor="rememberMe"
+                className="ml-1 flex items-center gap-2"
+              >
                 <input
                   id="rememberMe"
                   type="checkbox"
@@ -153,7 +158,9 @@ export function SignIn() {
                   disabled={formState.isSubmitting}
                   onChange={(event) => field.onChange(event.target.checked)}
                 />
-                <span className="text-sm">{t("_pages:auth.signIn.remember")}</span>
+                <span className="text-sm">
+                  {t("_pages:auth.signIn.remember")}
+                </span>
               </label>
             )}
           />
@@ -162,7 +169,10 @@ export function SignIn() {
         <div className="self-start">
           <p className="ml-1">
             {t("_pages:auth.signIn.toRegister.question")}
-            <Link to={AppRoute.SignUp} className="ml-1 primary text-sm underline text-left">
+            <Link
+              to={AppRoute.SignUp}
+              className="ml-1 primary text-sm underline text-left"
+            >
               {t("_pages:auth.signIn.toRegister.link")}
             </Link>
           </p>
