@@ -24,18 +24,22 @@ export function SignUpConfirmation() {
 
   return (
     <div className="w-full h-screen flex items-center justify-center">
-      <div className="auth-form blur-appear">
+      <form className="auth-form blur-appear">
         <h1 className="w-full text-2xl mb-1">
           {t("_pages:auth.signUpConfirmation.title")}
         </h1>
 
-        <p className="w-full text-sm">
-          {email.length
-            ? t("_pages:auth.signUpConfirmation.descriptionWithEmail", { email })
-            : t("_pages:auth.signUpConfirmation.description")}
-        </p>
+        <div className="form-container w-full">
+          <p className="w-full text-sm">
+            {email.length
+              ? t("_pages:auth.signUpConfirmation.descriptionWithEmail", {
+                  email,
+                })
+              : t("_pages:auth.signUpConfirmation.description")}
+          </p>
+        </div>
 
-        <div className="flex mt-4 w-full">
+        <div className="flex max-xs:flex-col gap-3 mt-4 w-full">
           <Button
             type="button"
             color="primary"
@@ -47,7 +51,7 @@ export function SignUpConfirmation() {
             {t("_pages:auth.signUpConfirmation.cta")}
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

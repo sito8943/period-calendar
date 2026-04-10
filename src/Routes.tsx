@@ -2,7 +2,12 @@ import loadable from "@loadable/component";
 
 // layouts
 import { Auth, View } from "./layouts";
-import { BrowserRouter, Routes as ReactRoutes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes as ReactRoutes,
+} from "react-router-dom";
 import { AppRoute } from "lib";
 
 // views
@@ -67,6 +72,10 @@ export const Routes = () => {
     <BrowserRouter>
       <ReactRoutes>
         <Route path={AppRoute.AuthRoot} element={<Auth />}>
+          <Route
+            index
+            element={<Navigate to={AppRoute.SignIn} replace />}
+          />
           <Route path={AppRoute.SignIn} element={<SignIn />} />
           <Route path={AppRoute.SignUp} element={<SignUp />} />
           <Route
