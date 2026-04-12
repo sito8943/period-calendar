@@ -35,6 +35,13 @@
       "logPeriod": "Registrar periodo",
       "dailyLog": "Registar registro diario"
     },
+    "calendarDayInfo": {
+      "periodDay": "Dia de periodo",
+      "predictedDay": "Periodo estimado",
+      "fertileDay": "Dia fertil estimado",
+      "ovulationDay": "Dia de ovulacion estimado",
+      "dailyLogRecorded": "Registro diario"
+    },
     "stats": {
       "avgCycle": "Ciclo promedio",
       "avgDuration": "Duracion promedio",

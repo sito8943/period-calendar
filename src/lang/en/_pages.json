@@ -35,6 +35,13 @@
       "logPeriod": "Log period",
       "dailyLog": "Add daily log"
     },
+    "calendarDayInfo": {
+      "periodDay": "Period day",
+      "predictedDay": "Estimated period",
+      "fertileDay": "Estimated fertile day",
+      "ovulationDay": "Estimated ovulation day",
+      "dailyLogRecorded": "Daily log recorded"
+    },
     "stats": {
       "avgCycle": "Avg. cycle",
       "avgDuration": "Avg. duration",

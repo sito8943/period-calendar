@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { CalendarDayProps } from "./types";
 
 /**
@@ -6,6 +7,7 @@ import type { CalendarDayProps } from "./types";
  * @returns A styled div representing the calendar day, with different styles based on its status (current month, today, period day, predicted day).
  */
 export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
+  const { t } = useTranslation();
   const {
     date,
     isCurrentMonth,
@@ -42,6 +44,16 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     colorClasses = "text-text";
   }
 
+  const tooltip = isCurrentMonth
+    ? isOvulationDay
+      ? t("_pages:calendar.ovulation")
+      : isFertileDay
+        ? t("_pages:calendar.fertileDays")
+        : isPredictedDay
+          ? t("_pages:calendar.prediction")
+          : undefined
+    : undefined;
+
   const isSpecialDay =
     isToday || isPeriodDay || isPredictedDay || isFertileDay || isOvulationDay;
   const interactiveClasses = onClick
@@ -67,6 +79,7 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
       onClick={onClick}
       disabled={!onClick}
       aria-label={ariaLabel}
+      title={tooltip}
       className={`${baseClasses} ${colorClasses} ${interactiveClasses}`}
     >
       {date.getDate()}

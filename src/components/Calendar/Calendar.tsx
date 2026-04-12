@@ -269,6 +269,7 @@ export function Calendar({
                         onDayClick(
                           toISODateString(day.date),
                           event.currentTarget,
+                          day,
                         )
                     : undefined
                 }

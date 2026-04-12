@@ -18,7 +18,7 @@ export type CalendarProps = {
   dailyLogs: DailyLog[];
   defaultCycleLength: number;
   defaultPeriodLength: number;
-  onDayClick?: (date: string, anchorEl: HTMLButtonElement) => void;
+  onDayClick?: (date: string, anchorEl: HTMLButtonElement, dayData: CalendarDayData) => void;
 };
 
 export type CalendarDayProps = {

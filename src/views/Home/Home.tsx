@@ -15,6 +15,7 @@ import { AppRoute, DEFAULT_SETTINGS, getDailyLogRoute, toISODateString } from "l
 
 // components
 import { Calendar, PredictionCard } from "components";
+import type { CalendarDayData } from "components";
 import { CalendarDayActionsDropdown } from "./CalendarDayActionsDropdown";
 
 // constants
@@ -27,6 +28,9 @@ export function Home() {
   const { data: dailyLogs = [] } = useDailyLogsList();
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(
+    null,
+  );
+  const [selectedDayData, setSelectedDayData] = useState<CalendarDayData | null>(
     null,
   );
   const [calendarActionAnchorEl, setCalendarActionAnchorEl] =
@@ -84,11 +88,13 @@ export function Home() {
   const goToLog = useCallback(() => navigate(AppRoute.PeriodLog), [navigate]);
   const closeCalendarDayActions = useCallback(() => {
     setSelectedCalendarDate(null);
+    setSelectedDayData(null);
     setCalendarActionAnchorEl(null);
   }, []);
   const openCalendarDayActions = useCallback(
-    (date: string, anchorEl: HTMLButtonElement) => {
+    (date: string, anchorEl: HTMLButtonElement, dayData: CalendarDayData) => {
       setSelectedCalendarDate(date);
+      setSelectedDayData(dayData);
       setCalendarActionAnchorEl(anchorEl);
     },
     [],
@@ -154,6 +160,7 @@ export function Home() {
         open={showCalendarDayActions}
         anchorEl={calendarActionAnchorEl}
         selectedDate={selectedCalendarDate}
+        dayData={selectedDayData}
         onClose={closeCalendarDayActions}
       />
 

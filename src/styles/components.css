@@ -291,3 +291,52 @@
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }
+
+/* Calendar day info section (dropdown) */
+
+.day-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 8px;
+}
+
+.day-info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.day-info-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+.day-info-dot--period {
+  background-color: var(--color-period-soft);
+}
+
+.day-info-dot--prediction {
+  background-color: var(--color-prediction);
+}
+
+.day-info-dot--fertile {
+  background-color: var(--color-fertile);
+}
+
+.day-info-dot--ovulation {
+  background-color: var(--color-ovulation);
+}
+
+.day-info-dot--daily-log {
+  background-color: var(--color-primary);
+}
+
+.day-info-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
