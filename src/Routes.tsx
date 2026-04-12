@@ -9,6 +9,7 @@ import {
   Routes as ReactRoutes,
 } from "react-router-dom";
 import { AppRoute } from "lib";
+import { useFeatureFlags } from "providers";
 
 // views
 const SignIn = loadable(() =>
@@ -61,6 +62,31 @@ const Profile = loadable(() =>
     default: module.Profile,
   })),
 );
+const About = loadable(() =>
+  import("views").then((module) => ({
+    default: module.About,
+  })),
+);
+const CookiesPolicy = loadable(() =>
+  import("views").then((module) => ({
+    default: module.CookiesPolicy,
+  })),
+);
+const TermsAndConditions = loadable(() =>
+  import("views").then((module) => ({
+    default: module.TermsAndConditions,
+  })),
+);
+const PrivacyPolicy = loadable(() =>
+  import("views").then((module) => ({
+    default: module.PrivacyPolicy,
+  })),
+);
+const FeatureUnavailable = loadable(() =>
+  import("views").then((module) => ({
+    default: module.FeatureUnavailable,
+  })),
+);
 const NotFound = loadable(() =>
   import("views").then((module) => ({
     default: module.NotFound,
@@ -68,6 +94,8 @@ const NotFound = loadable(() =>
 );
 
 export const Routes = () => {
+  const { isFeatureEnabled } = useFeatureFlags();
+
   return (
     <BrowserRouter>
       <ReactRoutes>
@@ -91,11 +119,96 @@ export const Routes = () => {
         <Route path={AppRoute.SignOut} element={<SignOut />} />
         <Route path={AppRoute.Home} element={<View />}>
           <Route index element={<Home />} />
-          <Route path={AppRoute.PeriodLog} element={<PeriodLog />} />
-          <Route path={AppRoute.PeriodLogById} element={<PeriodLog />} />
-          <Route path={AppRoute.DailyLogByDate} element={<DailyLog />} />
-          <Route path={AppRoute.History} element={<History />} />
-          <Route path={AppRoute.Profile} element={<Profile />} />
+          <Route
+            path={AppRoute.PeriodLog}
+            element={
+              isFeatureEnabled("periodLogEnabled") ? (
+                <PeriodLog />
+              ) : (
+                <FeatureUnavailable module="periodLog" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.PeriodLogById}
+            element={
+              isFeatureEnabled("periodLogEnabled") ? (
+                <PeriodLog />
+              ) : (
+                <FeatureUnavailable module="periodLog" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.DailyLogByDate}
+            element={
+              isFeatureEnabled("dailyLogEnabled") ? (
+                <DailyLog />
+              ) : (
+                <FeatureUnavailable module="dailyLog" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.History}
+            element={
+              isFeatureEnabled("historyEnabled") ? (
+                <History />
+              ) : (
+                <FeatureUnavailable module="history" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.Profile}
+            element={
+              isFeatureEnabled("profileEnabled") ? (
+                <Profile />
+              ) : (
+                <FeatureUnavailable module="profile" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.About}
+            element={
+              isFeatureEnabled("aboutEnabled") ? (
+                <About />
+              ) : (
+                <FeatureUnavailable module="about" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.CookiesPolicy}
+            element={
+              isFeatureEnabled("cookiesPolicyEnabled") ? (
+                <CookiesPolicy />
+              ) : (
+                <FeatureUnavailable module="cookiesPolicy" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.TermsAndConditions}
+            element={
+              isFeatureEnabled("termsAndConditionsEnabled") ? (
+                <TermsAndConditions />
+              ) : (
+                <FeatureUnavailable module="termsAndConditions" />
+              )
+            }
+          />
+          <Route
+            path={AppRoute.PrivacyPolicy}
+            element={
+              isFeatureEnabled("privacyPolicyEnabled") ? (
+                <PrivacyPolicy />
+              ) : (
+                <FeatureUnavailable module="privacyPolicy" />
+              )
+            }
+          />
           <Route path={AppRoute.NotFound} element={<NotFound />} />
         </Route>
       </ReactRoutes>

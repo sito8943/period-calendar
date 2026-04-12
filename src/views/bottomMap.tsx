@@ -1,7 +1,7 @@
 import { faHome, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
-import { AppRoute } from "lib";
+import { AppRoute, type FeatureFlagKey } from "lib";
 import { PageId } from "./sitemap";
-import type { BottomNavItemType } from "./types";
+import type { BottomNavItemType, IsFeatureEnabled } from "./types";
 
 export const bottomMap: BottomNavItemType[] = [
   {
@@ -19,3 +19,18 @@ export const bottomMap: BottomNavItemType[] = [
     position: "right",
   },
 ];
+
+const bottomFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
+  [PageId.History]: "historyEnabled",
+};
+
+export const getFeatureFilteredBottomMap = (
+  isFeatureEnabled: IsFeatureEnabled,
+): BottomNavItemType[] => {
+  return bottomMap.filter((item) => {
+    const dependency = bottomFeatureDependencies[item.page];
+    if (!dependency) return true;
+
+    return isFeatureEnabled(dependency);
+  });
+};

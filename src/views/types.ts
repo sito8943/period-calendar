@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import type { PageId } from "./sitemap";
+import type { FeatureFlagKey } from "lib";
 
 export type ViewPageType = {
   key: PageId;
@@ -33,3 +34,5 @@ export type BottomNavItemType = {
   icon: IconDefinition;
   position: "left" | "right";
 };
+
+export type IsFeatureEnabled = (key: FeatureFlagKey) => boolean;

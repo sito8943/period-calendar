@@ -7,7 +7,11 @@
     "auth": {
       "signIn": "Iniciar sesion",
       "signOut": "Cerrar sesion"
-    }
+    },
+    "about": "Acerca de Period Calendar",
+    "terms-and-conditions": "Terminos y Condiciones",
+    "cookies-policy": "Politica de Cookies",
+    "privacy-policy": "Politica de Privacidad"
   },
   "home": {
     "title": "Inicio",
@@ -286,5 +290,138 @@
   "notFound": {
     "title": "No encontrado",
     "body": "La pagina que buscas no existe"
+  },
+  "about": {
+    "title": "Acerca de Period Calendar",
+    "body": "<p><strong>Period Calendar</strong> es una app para registrar tu ciclo y tus notas diarias en un solo lugar, con soporte offline y sincronizacion opcional.</p><p>La app esta pensada para seguimiento personal y organizacion de informacion. <strong>No sustituye consejo medico profesional</strong>.</p><p>Proyecto desarrollado por <a>https://sito8943.com</a>.</p>",
+    "legal": {
+      "title": "Informacion legal",
+      "body": "Revisa estas paginas para conocer las condiciones de uso, privacidad y tecnologias de almacenamiento.",
+      "links": {
+        "terms": "Terminos y Condiciones",
+        "privacy": "Politica de Privacidad",
+        "cookies": "Politica de Cookies"
+      },
+      "updated": "Revision legal: 12 de abril de 2026."
+    }
+  },
+  "termsAndConditions": {
+    "title": "Terminos y Condiciones",
+    "body": "<p>Al usar <strong>Period Calendar</strong> aceptas estos terminos. Si no estas de acuerdo, debes dejar de usar la app.</p><p><strong>Ultima actualizacion:</strong> 12 de abril de 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Objeto del servicio",
+        "body": "<p>Period Calendar permite registrar y consultar informacion de seguimiento personal del ciclo y anotaciones diarias.</p>"
+      },
+      {
+        "title": "2. Uso personal",
+        "body": "<p>La app esta orientada a uso personal. El usuario es responsable de la informacion que introduce y de su correcta interpretacion.</p>"
+      },
+      {
+        "title": "3. Sin diagnostico medico",
+        "body": "<p>Los datos, calculos y estimaciones de la app son orientativos. <strong>No constituyen diagnostico, tratamiento ni recomendacion medica.</strong></p>"
+      },
+      {
+        "title": "4. Cuenta y acceso",
+        "body": "<ul><li>Eres responsable de custodiar tus credenciales.</li><li>Debes proporcionar datos veraces y actualizados.</li><li>El modo invitado puede tener limitaciones.</li></ul>"
+      },
+      {
+        "title": "5. Disponibilidad y cambios",
+        "body": "<p>Podemos realizar mejoras, cambios o tareas de mantenimiento que afecten temporalmente a la disponibilidad del servicio.</p>"
+      },
+      {
+        "title": "6. Privacidad y cookies",
+        "body": "<p>El tratamiento de datos se describe en la <a href=\"/privacy-policy\">Politica de Privacidad</a> y el uso de almacenamiento/cookies en la <a href=\"/cookies-policy\">Politica de Cookies</a>.</p>"
+      },
+      {
+        "title": "7. Limitacion de responsabilidad",
+        "body": "<p>La app se ofrece <strong>tal cual</strong> y segun disponibilidad. No nos hacemos responsables de decisiones tomadas exclusivamente con base en la informacion registrada en la app.</p>"
+      },
+      {
+        "title": "8. Contacto",
+        "body": "<p>Para consultas legales o tecnicas, puedes contactar mediante <a href=\"https://sito8943.com\">https://sito8943.com</a>.</p>"
+      }
+    ]
+  },
+  "cookiesPolicy": {
+    "title": "Politica de Cookies",
+    "body": "<p>Esta politica explica el uso de cookies y almacenamiento local en <strong>Period Calendar</strong>.</p><p><strong>Ultima actualizacion:</strong> 12 de abril de 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Tecnologias utilizadas",
+        "body": "<ul><li><strong>Cookies tecnicas</strong> para funciones basicas de sesion cuando aplica.</li><li><strong>localStorage</strong> para preferencias y estado de la app.</li><li><strong>IndexedDB</strong> para persistencia local y funcionamiento offline.</li></ul>"
+      },
+      {
+        "title": "2. Finalidad",
+        "body": "<ul><li>Mantener sesion y preferencias.</li><li>Permitir uso offline y posterior sincronizacion.</li><li>Mejorar estabilidad tecnica y experiencia de uso.</li></ul>"
+      },
+      {
+        "title": "3. Base legal",
+        "body": "<p>Las tecnologias necesarias para prestar el servicio solicitado se usan bajo la base legal aplicable para funciones tecnicas esenciales.</p>"
+      },
+      {
+        "title": "4. Gestion por parte del usuario",
+        "body": "<p>Puedes borrar o bloquear cookies y almacenamiento local desde la configuracion de tu navegador.</p>"
+      },
+      {
+        "title": "5. Mas informacion",
+        "body": "<p>Para mas detalle sobre datos personales, revisa la <a href=\"/privacy-policy\">Politica de Privacidad</a>.</p>"
+      }
+    ]
+  },
+  "privacyPolicy": {
+    "title": "Politica de Privacidad",
+    "body": "<p>Esta politica describe como tratamos los datos personales en <strong>Period Calendar</strong>.</p><p><strong>Ultima actualizacion:</strong> 12 de abril de 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Responsable",
+        "body": "<p>Responsable del proyecto: sito8943. Contacto: <a href=\"https://sito8943.com\">https://sito8943.com</a>.</p>"
+      },
+      {
+        "title": "2. Datos tratados",
+        "body": "<ul><li>Datos de cuenta (si usas autenticacion).</li><li>Preferencias de perfil (idioma, tema y ajustes).</li><li>Registros de seguimiento y notas creadas por el usuario.</li><li>Metadatos tecnicos para funcionamiento y sincronizacion.</li></ul>"
+      },
+      {
+        "title": "3. Finalidades",
+        "body": "<ul><li>Prestar y mantener el servicio.</li><li>Permitir almacenamiento local y uso offline.</li><li>Sincronizar datos cuando el usuario utiliza acceso autenticado.</li><li>Atender soporte tecnico y seguridad basica del servicio.</li></ul>"
+      },
+      {
+        "title": "4. Base juridica",
+        "body": "<p>Tratamos datos para ejecutar el servicio solicitado y por interes legitimo en seguridad y continuidad tecnica.</p>"
+      },
+      {
+        "title": "5. Conservacion",
+        "body": "<p>Los datos se conservan mientras la cuenta siga activa o hasta su eliminacion por el usuario, salvo obligaciones legales aplicables.</p>"
+      },
+      {
+        "title": "6. Derechos",
+        "body": "<p>Puedes solicitar acceso, rectificacion, supresion, oposicion, limitacion o portabilidad cuando aplique, usando el canal de contacto del proyecto.</p>"
+      },
+      {
+        "title": "7. Seguridad",
+        "body": "<p>Aplicamos medidas tecnicas y organizativas razonables para proteger la informacion frente a accesos no autorizados, perdida o alteracion.</p>"
+      },
+      {
+        "title": "8. Reclamaciones",
+        "body": "<p>Si consideras que el tratamiento no es correcto, puedes presentar reclamacion ante la autoridad de control competente (en Espana, AEPD: <a href=\"https://www.aepd.es\">https://www.aepd.es</a>).</p>"
+      }
+    ]
+  },
+  "featureFlags": {
+    "route": {
+      "title": "Funcionalidad no disponible",
+      "body": "El modulo de {{module}} no esta habilitado en esta app.",
+      "cta": "Volver al inicio"
+    },
+    "modules": {
+      "history": "historial",
+      "periodLog": "registro de periodo",
+      "dailyLog": "registro diario",
+      "profile": "perfil",
+      "about": "acerca de",
+      "termsAndConditions": "terminos y condiciones",
+      "cookiesPolicy": "politica de cookies",
+      "privacyPolicy": "politica de privacidad"
+    }
   }
 }

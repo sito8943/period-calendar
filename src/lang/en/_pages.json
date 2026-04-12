@@ -7,7 +7,11 @@
     "auth": {
       "signIn": "Sign in",
       "signOut": "Sign out"
-    }
+    },
+    "about": "About Period Calendar",
+    "terms-and-conditions": "Terms and Conditions",
+    "cookies-policy": "Cookies Policy",
+    "privacy-policy": "Privacy Policy"
   },
   "home": {
     "title": "Home",
@@ -286,5 +290,138 @@
   "notFound": {
     "title": "Not found",
     "body": "The page you are looking for does not exist"
+  },
+  "about": {
+    "title": "About Period Calendar",
+    "body": "<p><strong>Period Calendar</strong> helps you track your cycle and daily notes in one place, with offline support and optional synchronization.</p><p>The app is intended for personal tracking and organization. <strong>It is not a substitute for professional medical advice</strong>.</p><p>Project created by <a>https://sito8943.com</a>.</p>",
+    "legal": {
+      "title": "Legal information",
+      "body": "Review these pages to understand terms of use, privacy, and storage technologies.",
+      "links": {
+        "terms": "Terms and Conditions",
+        "privacy": "Privacy Policy",
+        "cookies": "Cookies Policy"
+      },
+      "updated": "Legal review: April 12, 2026."
+    }
+  },
+  "termsAndConditions": {
+    "title": "Terms and Conditions",
+    "body": "<p>By using <strong>Period Calendar</strong>, you agree to these terms. If you do not agree, you should stop using the app.</p><p><strong>Last updated:</strong> April 12, 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Service scope",
+        "body": "<p>Period Calendar allows users to record and consult personal cycle tracking information and daily notes.</p>"
+      },
+      {
+        "title": "2. Personal use",
+        "body": "<p>The app is designed for personal use. Users are responsible for the information they enter and how they interpret it.</p>"
+      },
+      {
+        "title": "3. No medical diagnosis",
+        "body": "<p>App data and estimations are informational only. <strong>They do not constitute medical diagnosis, treatment, or medical advice.</strong></p>"
+      },
+      {
+        "title": "4. Account and access",
+        "body": "<ul><li>You are responsible for keeping your credentials secure.</li><li>You must provide accurate and updated information.</li><li>Guest mode may have functional limitations.</li></ul>"
+      },
+      {
+        "title": "5. Availability and changes",
+        "body": "<p>We may perform improvements, changes, or maintenance that can temporarily affect service availability.</p>"
+      },
+      {
+        "title": "6. Privacy and cookies",
+        "body": "<p>Data handling is described in the <a href=\"/privacy-policy\">Privacy Policy</a>, and storage/cookies usage is described in the <a href=\"/cookies-policy\">Cookies Policy</a>.</p>"
+      },
+      {
+        "title": "7. Limitation of liability",
+        "body": "<p>The app is provided <strong>as is</strong> and as available. We are not responsible for decisions made solely based on information recorded in the app.</p>"
+      },
+      {
+        "title": "8. Contact",
+        "body": "<p>For legal or technical questions, contact us at <a href=\"https://sito8943.com\">https://sito8943.com</a>.</p>"
+      }
+    ]
+  },
+  "cookiesPolicy": {
+    "title": "Cookies Policy",
+    "body": "<p>This policy explains how cookies and local storage technologies are used in <strong>Period Calendar</strong>.</p><p><strong>Last updated:</strong> April 12, 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Technologies used",
+        "body": "<ul><li><strong>Technical cookies</strong> for basic session functions when applicable.</li><li><strong>localStorage</strong> for preferences and app state.</li><li><strong>IndexedDB</strong> for local persistence and offline functionality.</li></ul>"
+      },
+      {
+        "title": "2. Purpose",
+        "body": "<ul><li>Keep sessions and preferences.</li><li>Enable offline mode and later synchronization.</li><li>Improve technical stability and user experience.</li></ul>"
+      },
+      {
+        "title": "3. Legal basis",
+        "body": "<p>Technologies required to deliver the requested service are used under the applicable legal basis for essential technical functionality.</p>"
+      },
+      {
+        "title": "4. User control",
+        "body": "<p>You can clear or block cookies and local storage from your browser settings.</p>"
+      },
+      {
+        "title": "5. More information",
+        "body": "<p>For details about personal data handling, see the <a href=\"/privacy-policy\">Privacy Policy</a>.</p>"
+      }
+    ]
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "body": "<p>This policy explains how personal data is handled in <strong>Period Calendar</strong>.</p><p><strong>Last updated:</strong> April 12, 2026.</p>",
+    "sections": [
+      {
+        "title": "1. Controller",
+        "body": "<p>Project controller: sito8943. Contact: <a href=\"https://sito8943.com\">https://sito8943.com</a>.</p>"
+      },
+      {
+        "title": "2. Data processed",
+        "body": "<ul><li>Account data (when authentication is used).</li><li>Profile preferences (language, theme, and settings).</li><li>User-created tracking records and notes.</li><li>Technical metadata for app operation and synchronization.</li></ul>"
+      },
+      {
+        "title": "3. Purposes",
+        "body": "<ul><li>Provide and maintain the service.</li><li>Support local storage and offline usage.</li><li>Synchronize data when authenticated access is used.</li><li>Provide technical support and baseline service security.</li></ul>"
+      },
+      {
+        "title": "4. Legal basis",
+        "body": "<p>Data is processed to provide the requested service and under legitimate interest for security and technical continuity.</p>"
+      },
+      {
+        "title": "5. Retention",
+        "body": "<p>Data is stored while the account is active or until deletion is requested by the user, unless legal obligations require otherwise.</p>"
+      },
+      {
+        "title": "6. User rights",
+        "body": "<p>You may request access, rectification, erasure, objection, restriction, or portability where applicable through the project contact channel.</p>"
+      },
+      {
+        "title": "7. Security",
+        "body": "<p>Reasonable technical and organizational measures are applied to protect information against unauthorized access, loss, or alteration.</p>"
+      },
+      {
+        "title": "8. Complaints",
+        "body": "<p>If you believe processing is not compliant, you may file a complaint with the competent supervisory authority (in Spain, AEPD: <a href=\"https://www.aepd.es\">https://www.aepd.es</a>).</p>"
+      }
+    ]
+  },
+  "featureFlags": {
+    "route": {
+      "title": "Feature unavailable",
+      "body": "The {{module}} module is not enabled in this app.",
+      "cta": "Back to home"
+    },
+    "modules": {
+      "history": "history",
+      "periodLog": "period log",
+      "dailyLog": "daily log",
+      "profile": "profile",
+      "about": "about",
+      "termsAndConditions": "terms and conditions",
+      "cookiesPolicy": "cookies policy",
+      "privacyPolicy": "privacy policy"
+    }
   }
 }

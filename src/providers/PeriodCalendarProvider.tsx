@@ -11,6 +11,7 @@ import {
 
 import type { BasicProviderPropTypes } from "./types";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import { FeatureFlagsProvider } from "./FeatureFlags";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,7 +42,7 @@ export const PeriodCalendarProvider = ({
   return (
     <QueryClientProvider client={queryClient}>
       <TranslationProvider t={t} language={i18n.language}>
-        {content}
+        <FeatureFlagsProvider>{content}</FeatureFlagsProvider>
       </TranslationProvider>
     </QueryClientProvider>
   );

@@ -11,6 +11,10 @@ export const AppRoute = {
   DailyLogByDate: "/daily-log/:date",
   History: "/history",
   Profile: "/profile",
+  About: "/about-us",
+  CookiesPolicy: "/cookies-policy",
+  TermsAndConditions: "/terms-and-conditions",
+  PrivacyPolicy: "/privacy-policy",
   AuthNotFound: "*",
   NotFound: "*",
 } as const;

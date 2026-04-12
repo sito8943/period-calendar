@@ -33,12 +33,14 @@ import {
   setPeriodTheme,
   toBaseAppLanguage,
 } from "lib";
-import { bottomMap } from "../../views/bottomMap";
+import { getFeatureFilteredBottomMap } from "../../views/bottomMap";
+import { useFeatureFlags } from "providers";
 
 export function View() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const { isFeatureEnabled } = useFeatureFlags();
   const [showOnboarding, setShowOnboarding] = useState(
     () => !fromLocal(config.storage.onboarding),
   );
@@ -125,7 +127,7 @@ export function View() {
 
   const bottomNavigationItems = useMemo<BottomNavigationItemType[]>(
     () =>
-      bottomMap.map((item) => {
+      getFeatureFilteredBottomMap(isFeatureEnabled).map((item) => {
         const label = t(`_pages:${item.page}.title`);
 
         return {
@@ -137,13 +139,22 @@ export function View() {
           ariaLabel: label,
         };
       }),
-    [t],
+    [isFeatureEnabled, t],
   );
 
   const isBottomNavItemActive = (
     pathname: string,
     item: BottomNavigationItemType,
   ) => (item.to === AppRoute.Home ? pathname === AppRoute.Home : pathname.startsWith(item.to));
+
+  const centerAction = useMemo(() => {
+    if (!isFeatureEnabled("periodLogEnabled")) return undefined;
+
+    return {
+      to: AppRoute.PeriodLog,
+      ariaLabel: t("_pages:home.logPeriod"),
+    };
+  }, [isFeatureEnabled, t]);
 
   return (
     <ConfigProvider
@@ -166,10 +177,7 @@ export function View() {
           <Footer />
           <BottomNavigation
             items={bottomNavigationItems}
-            centerAction={{
-              to: AppRoute.PeriodLog,
-              ariaLabel: t("_pages:home.logPeriod"),
-            }}
+            centerAction={centerAction}
             isItemActive={isBottomNavItemActive}
           />
           <Tooltip id="tooltip" />

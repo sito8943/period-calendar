@@ -1,14 +1,22 @@
 import { t } from "i18next";
-import { AppRoute } from "lib";
+import { AppRoute, type FeatureFlagKey } from "lib";
 
 // types
-import type { NamedViewPageType, ViewPageType } from "./types";
+import type {
+  IsFeatureEnabled,
+  NamedViewPageType,
+  ViewPageType,
+} from "./types";
 
 export const PageId = {
   Home: "home",
   PeriodLog: "period-log",
   History: "history",
   Profile: "profile",
+  About: "about",
+  CookiesPolicy: "cookies-policy",
+  TermsAndConditions: "terms-and-conditions",
+  PrivacyPolicy: "privacy-policy",
   NotFound: "not-found",
 } as const;
 
@@ -32,10 +40,66 @@ export const sitemap: ViewPageType[] = [
     path: AppRoute.Profile,
   },
   {
+    key: PageId.About,
+    path: AppRoute.About,
+  },
+  {
+    key: PageId.CookiesPolicy,
+    path: AppRoute.CookiesPolicy,
+  },
+  {
+    key: PageId.TermsAndConditions,
+    path: AppRoute.TermsAndConditions,
+  },
+  {
+    key: PageId.PrivacyPolicy,
+    path: AppRoute.PrivacyPolicy,
+  },
+  {
     key: PageId.NotFound,
     path: `/${AppRoute.NotFound}`,
   },
 ];
+
+const pageFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
+  [PageId.History]: "historyEnabled",
+  [PageId.PeriodLog]: "periodLogEnabled",
+  [PageId.Profile]: "profileEnabled",
+  [PageId.About]: "aboutEnabled",
+  [PageId.CookiesPolicy]: "cookiesPolicyEnabled",
+  [PageId.TermsAndConditions]: "termsAndConditionsEnabled",
+  [PageId.PrivacyPolicy]: "privacyPolicyEnabled",
+};
+
+const isPageFeatureEnabled = (
+  page: ViewPageType,
+  isFeatureEnabled: IsFeatureEnabled,
+): boolean => {
+  const dependency = pageFeatureDependencies[page.key];
+  if (!dependency) return true;
+
+  return isFeatureEnabled(dependency);
+};
+
+const filterSitemapByFeatures = (
+  routes: ViewPageType[],
+  isFeatureEnabled: IsFeatureEnabled,
+): ViewPageType[] => {
+  return routes
+    .filter((route) => isPageFeatureEnabled(route, isFeatureEnabled))
+    .map((route) => ({
+      ...route,
+      children: route.children
+        ? filterSitemapByFeatures(route.children, isFeatureEnabled)
+        : undefined,
+    }));
+};
+
+export const getFeatureFilteredSitemap = (
+  isFeatureEnabled: IsFeatureEnabled,
+): ViewPageType[] => {
+  return filterSitemapByFeatures(sitemap, isFeatureEnabled);
+};
 
 const pathMap = sitemap.reduce(
   (acc, { key, path }) => {
