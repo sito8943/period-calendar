@@ -5,4 +5,5 @@ export interface AnimatedDropdownProps {
   open: boolean;
   onClose: () => void;
   anchorEl?: HTMLElement | null;
+  className?: string;
 }

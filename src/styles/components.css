@@ -340,3 +340,9 @@
   font-size: 0.75rem;
   color: var(--color-text-muted);
 }
+
+.calendar-day-legend-dropdown {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}

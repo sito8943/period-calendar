@@ -1,7 +1,15 @@
-import { Dropdown } from "@sito/dashboard-app";
 import { useCallback, useEffect, useRef, useState } from "react";
+
+// @sito/dashboard-app
+import { Dropdown } from "@sito/dashboard-app";
+
+// constants
 import { ANIMATED_DROPDOWN_CLASSNAMES } from "./constants";
+
+// types
 import type { AnimatedDropdownProps } from "./types";
+
+// utils
 import { getAnimatedDropdownCloseDelayMs } from "./utils";
 
 export function AnimatedDropdown({
@@ -9,12 +17,12 @@ export function AnimatedDropdown({
   open,
   onClose,
   anchorEl,
+  className,
 }: AnimatedDropdownProps) {
   const [isVisible, setIsVisible] = useState(open);
   const [isClosing, setIsClosing] = useState(false);
-  const [persistedAnchorEl, setPersistedAnchorEl] = useState<HTMLElement | null>(
-    anchorEl ?? null,
-  );
+  const [persistedAnchorEl, setPersistedAnchorEl] =
+    useState<HTMLElement | null>(anchorEl ?? null);
 
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
@@ -79,12 +87,19 @@ export function AnimatedDropdown({
     onClose();
   }, [isClosing, onClose]);
 
-  const resolvedAnchorEl = open ? anchorEl ?? persistedAnchorEl : persistedAnchorEl;
+  const resolvedAnchorEl = open
+    ? (anchorEl ?? persistedAnchorEl)
+    : persistedAnchorEl;
 
   if (!isVisible || !resolvedAnchorEl) return null;
 
   return (
-    <Dropdown open onClose={handleClose} anchorEl={resolvedAnchorEl}>
+    <Dropdown
+      open
+      onClose={handleClose}
+      anchorEl={resolvedAnchorEl}
+      className={className}
+    >
       <div ref={contentRef} className={ANIMATED_DROPDOWN_CLASSNAMES.content}>
         {children}
       </div>

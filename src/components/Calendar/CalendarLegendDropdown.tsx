@@ -77,6 +77,7 @@ export function CalendarLegendDropdown({
         open={isOpen}
         onClose={handleDropdownClose}
         anchorEl={anchorEl}
+        className="calendar-day-legend-dropdown"
       >
         <div
           className="calendar-legend-dropdown"
