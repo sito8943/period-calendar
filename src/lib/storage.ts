@@ -1,4 +1,4 @@
-import { IndexedDBClient } from "@sito/dashboard-app";
+import { IndexedDBClient, SortOrder } from "@sito/dashboard-app";
 import type { BaseEntityDto, BaseFilterDto } from "@sito/dashboard-app";
 
 import type {
@@ -1074,7 +1074,7 @@ async function getProfileSettingsFromOfflineStore(): Promise<ProfileSettings> {
         currentPage: 0,
         pageSize: 1,
         sortingBy: "updatedAt",
-        sortingOrder: "desc",
+        sortingOrder: SortOrder.DESC,
       },
       { softDeleteScope: "ACTIVE" },
     );
