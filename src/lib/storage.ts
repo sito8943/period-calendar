@@ -8,6 +8,7 @@ import type {
   FlowLevel,
   MoodLevel,
   Period,
+  ProfileLanguage,
   ProfileSettings,
   Settings,
   SexualActivity,
@@ -29,6 +30,7 @@ import {
   getPeriodsSupabaseClient,
   getSupabaseSessionUserId,
   isSupabaseConfigured,
+  supabase,
 } from "./supabase";
 import type {
   DailyLogSupabaseAddDto,
@@ -42,11 +44,12 @@ const STORAGE_KEYS = {
   dailyLogs: "period-calendar:daily-logs",
   settings: "period-calendar:settings",
   profile: "period-calendar:profile",
+  mirrorUserId: "period-calendar:mirror-user-id",
   migrationV2: "period-calendar:indexeddb-client-migrated:v2",
 } as const;
 
 const OFFLINE_DB_NAME = "period-calendar-offline-db";
-const OFFLINE_DB_VERSION = 1;
+const OFFLINE_DB_VERSION = 2;
 
 const LEGACY_DB_NAME = "period-calendar-db";
 const LEGACY_STORES = {
@@ -81,6 +84,15 @@ type DailyLogEntityDto = BaseEntityDto & {
 type DailyLogEntityAddDto = Omit<DailyLogEntityDto, "id">;
 type DailyLogImportPreviewDto = { existing?: boolean };
 
+type ProfileSettingsEntityDto = BaseEntityDto & {
+  name: string;
+  partnerName: string;
+  language: ProfileLanguage;
+};
+
+type ProfileSettingsEntityAddDto = Omit<ProfileSettingsEntityDto, "id">;
+type ProfileSettingsImportPreviewDto = { existing?: boolean };
+
 class PeriodsIndexedDbClient extends IndexedDBClient<
   "periods",
   PeriodEntityDto,
@@ -109,8 +121,23 @@ class DailyLogsIndexedDbClient extends IndexedDBClient<
   }
 }
 
+class ProfileSettingsIndexedDbClient extends IndexedDBClient<
+  "profileSettings",
+  ProfileSettingsEntityDto,
+  ProfileSettingsEntityDto,
+  ProfileSettingsEntityAddDto,
+  ProfileSettingsEntityDto,
+  OfflineFilterDto,
+  ProfileSettingsImportPreviewDto
+> {
+  constructor() {
+    super("profileSettings", OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+  }
+}
+
 const periodsClient = new PeriodsIndexedDbClient();
 const dailyLogsClient = new DailyLogsIndexedDbClient();
+const profileSettingsClient = new ProfileSettingsIndexedDbClient();
 
 let migrationPromise: Promise<void> | null = null;
 
@@ -238,6 +265,9 @@ const normalizeSleepHours = (value: unknown): number | null => {
 const normalizeString = (value: unknown): string =>
   typeof value === "string" ? value : "";
 
+const normalizeProfileLanguage = (value: unknown): ProfileLanguage =>
+  String(value).toLowerCase().startsWith("en") ? "en" : "es";
+
 const toPeriodModel = (entity: PeriodEntityDto): Period => ({
   id: String(entity.id),
   startDate: entity.startDate,
@@ -259,6 +289,57 @@ const toDailyLogModel = (entity: DailyLogEntityDto): DailyLog => ({
   createdAt: entity.createdAt.toISOString(),
   updatedAt: entity.updatedAt.toISOString(),
 });
+
+const toProfileSettingsModel = (
+  entity: ProfileSettingsEntityDto,
+): ProfileSettings => ({
+  name: entity.name,
+  partnerName: entity.partnerName,
+  language: normalizeProfileLanguage(entity.language),
+  updatedAt: entity.updatedAt.toISOString(),
+});
+
+const toProfileSettingsEntityDto = (
+  profile: ProfileSettings,
+): ProfileSettingsEntityDto => ({
+  id: 1,
+  name: profile.name,
+  partnerName: profile.partnerName,
+  language: normalizeProfileLanguage(profile.language),
+  createdAt: parseDateOrFallback(profile.updatedAt, new Date()),
+  updatedAt: parseDateOrFallback(profile.updatedAt, new Date()),
+  deletedAt: null,
+});
+
+const normalizeComparableDailyLog = (dailyLog: DailyLog) => ({
+  id: dailyLog.id,
+  date: dailyLog.date,
+  flow: dailyLog.flow,
+  symptoms: [...new Set(dailyLog.symptoms)].sort(),
+  sexualActivity: dailyLog.sexualActivity,
+  mood: dailyLog.mood,
+  sleepHours: dailyLog.sleepHours,
+  sleepQuality: dailyLog.sleepQuality,
+  notes: dailyLog.notes,
+  createdAt: dailyLog.createdAt,
+  updatedAt: dailyLog.updatedAt,
+});
+
+const arePeriodsEqual = (left: Period[], right: Period[]): boolean =>
+  JSON.stringify(left) === JSON.stringify(right);
+
+const areDailyLogsEqual = (left: DailyLog[], right: DailyLog[]): boolean =>
+  JSON.stringify(left.map(normalizeComparableDailyLog)) ===
+  JSON.stringify(right.map(normalizeComparableDailyLog));
+
+const areProfileSettingsEqual = (
+  left: ProfileSettings,
+  right: ProfileSettings,
+): boolean =>
+  left.name === right.name &&
+  left.partnerName === right.partnerName &&
+  left.language === right.language &&
+  left.updatedAt === right.updatedAt;
 
 const toPeriodEntityAddDto = (payload: {
   startDate: string;
@@ -378,6 +459,27 @@ function savePeriodsToLocalStorage(periods: Period[]): void {
 function saveDailyLogsToLocalStorage(dailyLogs: DailyLog[]): void {
   if (!isBrowser()) return;
   window.localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
+}
+
+function getProfileSettingsFromLocalStorage(): ProfileSettings {
+  if (!isBrowser()) return DEFAULT_PROFILE_SETTINGS;
+
+  const raw = window.localStorage.getItem(STORAGE_KEYS.profile);
+  if (!raw) return DEFAULT_PROFILE_SETTINGS;
+
+  try {
+    return {
+      ...DEFAULT_PROFILE_SETTINGS,
+      ...(JSON.parse(raw) as Partial<ProfileSettings>),
+    };
+  } catch {
+    return DEFAULT_PROFILE_SETTINGS;
+  }
+}
+
+function saveProfileSettingsToLocalStorage(profile: ProfileSettings): void {
+  if (!isBrowser()) return;
+  window.localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile));
 }
 
 function addPeriodInLocalStorage(dto: AddPeriodDto): Period {
@@ -680,6 +782,123 @@ const getCurrentSupabaseUserId = async (): Promise<string | null> => {
   }
 };
 
+const upsertPeriodInLocalStorage = (period: Period): void => {
+  const periods = getPeriodsFromLocalStorage();
+  const index = periods.findIndex((item) => item.id === period.id);
+
+  if (index >= 0) {
+    periods[index] = period;
+  } else {
+    periods.push(period);
+  }
+
+  savePeriodsToLocalStorage(periods.sort(byPeriodStartDateDesc));
+};
+
+const removePeriodFromLocalStorage = (id: string): void => {
+  const periods = getPeriodsFromLocalStorage().filter((item) => item.id !== id);
+  savePeriodsToLocalStorage(periods);
+};
+
+const upsertDailyLogInLocalStorage = (dailyLog: DailyLog): void => {
+  const dailyLogs = getDailyLogsFromLocalStorage();
+  const index = dailyLogs.findIndex((item) => item.id === dailyLog.id);
+
+  if (index >= 0) {
+    dailyLogs[index] = dailyLog;
+  } else {
+    dailyLogs.push(dailyLog);
+  }
+
+  saveDailyLogsToLocalStorage(dailyLogs.sort(byDailyLogDateDesc));
+};
+
+const removeDailyLogFromLocalStorage = (id: string): void => {
+  const dailyLogs = getDailyLogsFromLocalStorage().filter((item) => item.id !== id);
+  saveDailyLogsToLocalStorage(dailyLogs);
+};
+
+const toPeriodEntityDto = (period: Period): PeriodEntityDto | null => {
+  const id = Number(period.id);
+  if (!Number.isInteger(id) || id <= 0) return null;
+
+  return {
+    id,
+    startDate: period.startDate,
+    endDate: period.endDate,
+    createdAt: parseDateOrFallback(period.createdAt, new Date()),
+    updatedAt: parseDateOrFallback(period.updatedAt, new Date()),
+    deletedAt: null,
+  };
+};
+
+const toDailyLogEntityDto = (dailyLog: DailyLog): DailyLogEntityDto | null => {
+  const id = Number(dailyLog.id);
+  if (!Number.isInteger(id) || id <= 0) return null;
+
+  return {
+    id,
+    date: dailyLog.date,
+    flow: dailyLog.flow,
+    symptoms: [...new Set(dailyLog.symptoms)],
+    sexualActivity: dailyLog.sexualActivity,
+    mood: dailyLog.mood,
+    sleepHours: dailyLog.sleepHours,
+    sleepQuality: dailyLog.sleepQuality,
+    notes: dailyLog.notes,
+    createdAt: parseDateOrFallback(dailyLog.createdAt, new Date()),
+    updatedAt: parseDateOrFallback(dailyLog.updatedAt, new Date()),
+    deletedAt: null,
+  };
+};
+
+async function clearOfflineMirrorForDifferentUser(): Promise<void> {
+  if (!isBrowser()) return;
+
+  window.localStorage.removeItem(STORAGE_KEYS.periods);
+  window.localStorage.removeItem(STORAGE_KEYS.dailyLogs);
+  window.localStorage.removeItem(STORAGE_KEYS.profile);
+  window.localStorage.removeItem(STORAGE_KEYS.settings);
+
+  if (!isIndexedDbSupported()) return;
+
+  await ensureOfflineMigration();
+
+  try {
+    const [periodsResult, dailyLogsResult, profileResult] = await Promise.all([
+      periodsClient.get(undefined, { softDeleteScope: "ACTIVE" }),
+      dailyLogsClient.get(undefined, { softDeleteScope: "ACTIVE" }),
+      profileSettingsClient.get(undefined, { softDeleteScope: "ACTIVE" }),
+    ]);
+
+    const periodIds = periodsResult.items.map((item) => item.id);
+    const dailyLogIds = dailyLogsResult.items.map((item) => item.id);
+    const profileIds = profileResult.items.map((item) => item.id);
+
+    if (periodIds.length > 0) await periodsClient.softDelete(periodIds);
+    if (dailyLogIds.length > 0) await dailyLogsClient.softDelete(dailyLogIds);
+    if (profileIds.length > 0) await profileSettingsClient.softDelete(profileIds);
+  } catch (error) {
+    console.error("Failed to clear mirror data for different user", error);
+  }
+}
+
+async function ensureMirrorUserScope(userId: string): Promise<void> {
+  if (!isBrowser()) return;
+
+  const previousUserId = window.localStorage.getItem(STORAGE_KEYS.mirrorUserId);
+
+  if (!previousUserId) {
+    window.localStorage.setItem(STORAGE_KEYS.mirrorUserId, userId);
+    return;
+  }
+
+  if (previousUserId === userId) return;
+
+  await clearOfflineMirrorForDifferentUser();
+  window.localStorage.setItem(STORAGE_KEYS.mirrorUserId, userId);
+}
+
 async function getPeriodsFromOfflineStore(): Promise<Period[]> {
   if (!isIndexedDbSupported()) return getPeriodsFromLocalStorage();
 
@@ -691,6 +910,48 @@ async function getPeriodsFromOfflineStore(): Promise<Period[]> {
   } catch (error) {
     console.error("Failed to read periods from IndexedDBClient", error);
     return getPeriodsFromLocalStorage();
+  }
+}
+
+async function upsertPeriodInOfflineMirror(period: Period): Promise<void> {
+  upsertPeriodInLocalStorage(period);
+
+  if (!isIndexedDbSupported()) return;
+  await ensureOfflineMigration();
+
+  const payload = toPeriodEntityDto(period);
+  if (!payload) return;
+
+  await periodsClient.update(payload);
+}
+
+async function removePeriodFromOfflineMirror(id: string): Promise<void> {
+  removePeriodFromLocalStorage(id);
+
+  if (!isIndexedDbSupported()) return;
+  await ensureOfflineMigration();
+
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) return;
+  await periodsClient.softDelete([numericId]);
+}
+
+async function syncPeriodsMirrorWithRemote(remotePeriods: Period[]): Promise<void> {
+  const normalizedRemotePeriods = [...remotePeriods].sort(byPeriodStartDateDesc);
+  const cachedPeriods = await getPeriodsFromOfflineStore();
+
+  if (arePeriodsEqual(cachedPeriods, normalizedRemotePeriods)) return;
+
+  const remoteIds = new Set(normalizedRemotePeriods.map((item) => item.id));
+
+  for (const period of normalizedRemotePeriods) {
+    await upsertPeriodInOfflineMirror(period);
+  }
+
+  for (const cachedPeriod of cachedPeriods) {
+    if (!remoteIds.has(cachedPeriod.id)) {
+      await removePeriodFromOfflineMirror(cachedPeriod.id);
+    }
   }
 }
 
@@ -759,12 +1020,104 @@ async function getDailyLogsFromOfflineStore(): Promise<DailyLog[]> {
   }
 }
 
+async function upsertDailyLogInOfflineMirror(dailyLog: DailyLog): Promise<void> {
+  upsertDailyLogInLocalStorage(dailyLog);
+
+  if (!isIndexedDbSupported()) return;
+  await ensureOfflineMigration();
+
+  const payload = toDailyLogEntityDto(dailyLog);
+  if (!payload) return;
+
+  await dailyLogsClient.update(payload);
+}
+
+async function removeDailyLogFromOfflineMirror(id: string): Promise<void> {
+  removeDailyLogFromLocalStorage(id);
+
+  if (!isIndexedDbSupported()) return;
+  await ensureOfflineMigration();
+
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId <= 0) return;
+  await dailyLogsClient.softDelete([numericId]);
+}
+
+async function syncDailyLogsMirrorWithRemote(remoteDailyLogs: DailyLog[]): Promise<void> {
+  const normalizedRemoteDailyLogs = [...remoteDailyLogs].sort(byDailyLogDateDesc);
+  const cachedDailyLogs = await getDailyLogsFromOfflineStore();
+
+  if (areDailyLogsEqual(cachedDailyLogs, normalizedRemoteDailyLogs)) return;
+
+  const remoteIds = new Set(normalizedRemoteDailyLogs.map((item) => item.id));
+
+  for (const dailyLog of normalizedRemoteDailyLogs) {
+    await upsertDailyLogInOfflineMirror(dailyLog);
+  }
+
+  for (const cachedDailyLog of cachedDailyLogs) {
+    if (!remoteIds.has(cachedDailyLog.id)) {
+      await removeDailyLogFromOfflineMirror(cachedDailyLog.id);
+    }
+  }
+}
+
+async function getProfileSettingsFromOfflineStore(): Promise<ProfileSettings> {
+  const localProfileSettings = getProfileSettingsFromLocalStorage();
+  if (!isIndexedDbSupported()) return localProfileSettings;
+
+  await ensureOfflineMigration();
+
+  try {
+    const result = await profileSettingsClient.get(
+      {
+        currentPage: 0,
+        pageSize: 1,
+        sortingBy: "updatedAt",
+        sortingOrder: "desc",
+      },
+      { softDeleteScope: "ACTIVE" },
+    );
+
+    const latestProfile = result.items[0];
+    if (!latestProfile) return localProfileSettings;
+
+    return toProfileSettingsModel(latestProfile);
+  } catch (error) {
+    console.error("Failed to read profile settings from IndexedDBClient", error);
+    return localProfileSettings;
+  }
+}
+
+async function saveProfileSettingsToOfflineStore(
+  profile: ProfileSettings,
+): Promise<void> {
+  saveProfileSettingsToLocalStorage(profile);
+  if (!isIndexedDbSupported()) return;
+
+  await ensureOfflineMigration();
+
+  try {
+    await profileSettingsClient.update(toProfileSettingsEntityDto(profile));
+  } catch (error) {
+    console.error("Failed to write profile settings to IndexedDBClient", error);
+  }
+}
+
+async function syncProfileSettingsMirrorWithRemote(
+  profile: ProfileSettings,
+): Promise<void> {
+  const cachedProfile = await getProfileSettingsFromOfflineStore();
+  if (areProfileSettingsEqual(cachedProfile, profile)) return;
+  await saveProfileSettingsToOfflineStore(profile);
+}
+
 async function addDailyLogToOfflineStore(dto: AddDailyLogDto): Promise<DailyLog> {
   if (!isIndexedDbSupported()) return addDailyLogInLocalStorage(dto);
 
   await ensureOfflineMigration();
 
-  const existingDailyLogs = await getDailyLogs();
+  const existingDailyLogs = await getDailyLogsFromOfflineStore();
   const duplicateDate = existingDailyLogs.find((item) => item.date === dto.date);
   if (duplicateDate) {
     throw new Error("A daily log already exists for this date");
@@ -794,7 +1147,7 @@ async function updateDailyLogInOfflineStore(
 
   const id = parseNumericId(dto.id);
 
-  const existingDailyLogs = await getDailyLogs();
+  const existingDailyLogs = await getDailyLogsFromOfflineStore();
   const duplicateDate = existingDailyLogs.find(
     (item) => item.date === dto.date && item.id !== dto.id,
   );
@@ -1083,13 +1436,92 @@ async function deleteDailyLogFromSupabase(id: string): Promise<void> {
   await dailyLogsSupabaseClient.softDelete([numericId]);
 }
 
+type ProfileSettingsSupabaseRow = {
+  name: string | null;
+  partner_name: string | null;
+  language: string | null;
+  updated_at: string | null;
+};
+
+const mapProfileSettingsSupabaseRow = (
+  row: ProfileSettingsSupabaseRow | null,
+): ProfileSettings | null => {
+  if (!row) return null;
+
+  return {
+    name: row.name ?? "",
+    partnerName: row.partner_name ?? "",
+    language: normalizeProfileLanguage(row.language),
+    updatedAt: row.updated_at ?? "",
+  };
+};
+
+async function getProfileSettingsFromSupabase(
+  userId: string,
+): Promise<ProfileSettings | null> {
+  if (!supabase) {
+    throw new Error("Supabase client is not available");
+  }
+
+  const { data, error } = await supabase
+    .from("profile_settings")
+    .select("name, partner_name, language, updated_at")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw error;
+  }
+
+  return mapProfileSettingsSupabaseRow(
+    (data as ProfileSettingsSupabaseRow | null) ?? null,
+  );
+}
+
+async function saveProfileSettingsToSupabase(
+  userId: string,
+  profile: ProfileSettings,
+): Promise<ProfileSettings> {
+  if (!supabase) {
+    throw new Error("Supabase client is not available");
+  }
+
+  const payload = {
+    user_id: userId,
+    name: profile.name,
+    partner_name: profile.partnerName,
+    language: profile.language,
+    updated_at: profile.updatedAt,
+  };
+
+  const { data, error } = await supabase
+    .from("profile_settings")
+    .upsert(payload, { onConflict: "user_id" })
+    .select("name, partner_name, language, updated_at")
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  const saved = mapProfileSettingsSupabaseRow(
+    (data as ProfileSettingsSupabaseRow | null) ?? null,
+  );
+  if (!saved) return profile;
+  return saved;
+}
+
 export async function getPeriods(): Promise<Period[]> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await getPeriodsFromSupabase(userId);
+      const periods = await getPeriodsFromSupabase(userId);
+      await syncPeriodsMirrorWithRemote(periods);
+      return periods;
     } catch (error) {
       console.error("Supabase periods read failed, using offline store", error);
     }
@@ -1102,9 +1534,13 @@ export async function addPeriod(dto: AddPeriodDto): Promise<Period> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await addPeriodToSupabase(userId, dto);
+      const created = await addPeriodToSupabase(userId, dto);
+      await upsertPeriodInOfflineMirror(created);
+      return created;
     } catch (error) {
       console.error("Supabase add period failed, using offline store", error);
     }
@@ -1117,9 +1553,13 @@ export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await updatePeriodInSupabase(dto);
+      const updated = await updatePeriodInSupabase(dto);
+      await upsertPeriodInOfflineMirror(updated);
+      return updated;
     } catch (error) {
       console.error("Supabase update period failed, using offline store", error);
     }
@@ -1132,9 +1572,12 @@ export async function deletePeriod(id: string): Promise<void> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
       await deletePeriodFromSupabase(id);
+      await removePeriodFromOfflineMirror(id);
       return;
     } catch (error) {
       console.error("Supabase delete period failed, using offline store", error);
@@ -1148,9 +1591,13 @@ export async function getDailyLogs(): Promise<DailyLog[]> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await getDailyLogsFromSupabase(userId);
+      const dailyLogs = await getDailyLogsFromSupabase(userId);
+      await syncDailyLogsMirrorWithRemote(dailyLogs);
+      return dailyLogs;
     } catch (error) {
       console.error("Supabase daily logs read failed, using offline store", error);
     }
@@ -1163,9 +1610,13 @@ export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await addDailyLogToSupabase(userId, dto);
+      const created = await addDailyLogToSupabase(userId, dto);
+      await upsertDailyLogInOfflineMirror(created);
+      return created;
     } catch (error) {
       console.error("Supabase add daily log failed, using offline store", error);
     }
@@ -1178,9 +1629,13 @@ export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> 
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
-      return await updateDailyLogInSupabase(userId, dto);
+      const updated = await updateDailyLogInSupabase(userId, dto);
+      await upsertDailyLogInOfflineMirror(updated);
+      return updated;
     } catch (error) {
       console.error("Supabase update daily log failed, using offline store", error);
     }
@@ -1193,9 +1648,12 @@ export async function deleteDailyLog(id: string): Promise<void> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
+    await ensureMirrorUserScope(userId);
+
     try {
       await ensureSupabaseSeedFromOffline(userId);
       await deleteDailyLogFromSupabase(id);
+      await removeDailyLogFromOfflineMirror(id);
       return;
     } catch (error) {
       console.error("Supabase delete daily log failed, using offline store", error);
@@ -1203,6 +1661,24 @@ export async function deleteDailyLog(id: string): Promise<void> {
   }
 
   await deleteDailyLogFromOfflineStore(id);
+}
+
+export async function getPeriodsMirrorSnapshot(): Promise<Period[]> {
+  const userId = await getCurrentSupabaseUserId();
+  if (userId) {
+    await ensureMirrorUserScope(userId);
+  }
+
+  return getPeriodsFromOfflineStore();
+}
+
+export async function getDailyLogsMirrorSnapshot(): Promise<DailyLog[]> {
+  const userId = await getCurrentSupabaseUserId();
+  if (userId) {
+    await ensureMirrorUserScope(userId);
+  }
+
+  return getDailyLogsFromOfflineStore();
 }
 
 export function getSettings(): Settings {
@@ -1224,24 +1700,57 @@ export function saveSettings(settings: Settings): void {
   window.localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
 }
 
-export function getProfileSettings(): ProfileSettings {
-  if (!isBrowser()) return DEFAULT_PROFILE_SETTINGS;
+export async function getProfileSettings(): Promise<ProfileSettings> {
+  const userId = await getCurrentSupabaseUserId();
 
-  const raw = window.localStorage.getItem(STORAGE_KEYS.profile);
-  if (!raw) return DEFAULT_PROFILE_SETTINGS;
+  if (userId) {
+    await ensureMirrorUserScope(userId);
 
-  try {
-    return {
-      ...DEFAULT_PROFILE_SETTINGS,
-      ...(JSON.parse(raw) as Partial<ProfileSettings>),
-    };
-  } catch {
-    return DEFAULT_PROFILE_SETTINGS;
+    try {
+      const remoteProfileSettings = await getProfileSettingsFromSupabase(userId);
+      if (remoteProfileSettings) {
+        await syncProfileSettingsMirrorWithRemote(remoteProfileSettings);
+        return remoteProfileSettings;
+      }
+    } catch (error) {
+      console.error("Supabase profile settings read failed, using offline store", error);
+    }
   }
+
+  return getProfileSettingsFromOfflineStore();
 }
 
-export function saveProfileSettings(profile: ProfileSettings): void {
-  if (!isBrowser()) return;
+export async function saveProfileSettings(
+  profile: ProfileSettings,
+): Promise<ProfileSettings> {
+  const userId = await getCurrentSupabaseUserId();
+  if (userId) {
+    await ensureMirrorUserScope(userId);
+  }
 
-  window.localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile));
+  await saveProfileSettingsToOfflineStore(profile);
+
+  if (userId) {
+    try {
+      const savedProfileSettings = await saveProfileSettingsToSupabase(
+        userId,
+        profile,
+      );
+      await syncProfileSettingsMirrorWithRemote(savedProfileSettings);
+      return savedProfileSettings;
+    } catch (error) {
+      console.error("Supabase profile settings save failed, using offline store", error);
+    }
+  }
+
+  return profile;
+}
+
+export async function getProfileSettingsMirrorSnapshot(): Promise<ProfileSettings> {
+  const userId = await getCurrentSupabaseUserId();
+  if (userId) {
+    await ensureMirrorUserScope(userId);
+  }
+
+  return getProfileSettingsFromOfflineStore();
 }

@@ -64,10 +64,12 @@ No requiere backend para funcionar.
 Opcionalmente puede usar Supabase cuando existe sesion autenticada y variables de entorno configuradas.
 Setup completo (tablas + RLS, con script SQL listo para pegar en el SQL Editor): `SUPABASE_SETUP.md`.
 
+Con sesion autenticada, el perfil tambien sincroniza en `public.profile_settings`.
+
 Datos funcionales (IndexedDB):
 
 - Base: `period-calendar-offline-db`
-- Stores: `periods`, `dailyLogs`
+- Stores: `periods`, `dailyLogs`, `profileSettings` (mirror cache)
 - Implementacion: `IndexedDBClient` de `@sito/dashboard-app`
 
 Preferencias y estado liviano (`localStorage`):
@@ -109,6 +111,7 @@ period-calendar/
 
 - El estado de datos se maneja con TanStack Query y fuentes locales.
 - `periods` y `daily-logs` usan clientes offline sobre `IndexedDBClient`.
+- Con sesión de Supabase, `periods`, `daily-logs` y `profile_settings` se espejan en IndexedDB para precarga rápida.
 - La migracion inicial combina datos legados de `localStorage` y de la base IndexedDB anterior.
 - El calculo de predicciones/estadisticas vive en `src/lib/cycle.ts`.
 - El formulario de diario valida fechas ISO y evita duplicados por fecha.

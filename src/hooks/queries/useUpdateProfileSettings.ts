@@ -13,13 +13,12 @@ export function useUpdateProfileSettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (profile: Omit<ProfileSettings, "updatedAt">) => {
+    mutationFn: async (profile: Omit<ProfileSettings, "updatedAt">) => {
       const nextProfile: ProfileSettings = {
         ...profile,
         updatedAt: new Date().toISOString(),
       };
-      saveProfileSettings(nextProfile);
-      return Promise.resolve(nextProfile);
+      return saveProfileSettings(nextProfile);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.profile());

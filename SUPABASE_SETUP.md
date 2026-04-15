@@ -52,6 +52,14 @@ create table if not exists public.daily_logs (
   deleted_at timestamptz null
 );
 
+create table if not exists public.profile_settings (
+  user_id uuid primary key references auth.users (id) on delete cascade,
+  name text not null default '',
+  partner_name text not null default '',
+  language text not null default 'es' check (language in ('es', 'en')),
+  updated_at timestamptz not null default timezone('utc', now())
+);
+
 -- Evita duplicar diario activo por día/usuario (la app también lo valida)
 create unique index if not exists daily_logs_user_date_active_uniq
   on public.daily_logs(user_id, date)
@@ -88,12 +96,19 @@ before update on public.daily_logs
 for each row
 execute function public.set_updated_at_timestamp();
 
+drop trigger if exists set_profile_settings_updated_at on public.profile_settings;
+create trigger set_profile_settings_updated_at
+before update on public.profile_settings
+for each row
+execute function public.set_updated_at_timestamp();
+
 -- ======================================
 -- RLS
 -- ======================================
 
 alter table public.periods enable row level security;
 alter table public.daily_logs enable row level security;
+alter table public.profile_settings enable row level security;
 
 drop policy if exists periods_select_own on public.periods;
 create policy periods_select_own
@@ -152,10 +167,33 @@ create policy daily_logs_delete_own
   for delete
   to authenticated
   using (auth.uid() = user_id);
+
+drop policy if exists profile_settings_select_own on public.profile_settings;
+create policy profile_settings_select_own
+  on public.profile_settings
+  for select
+  to authenticated
+  using (auth.uid() = user_id);
+
+drop policy if exists profile_settings_insert_own on public.profile_settings;
+create policy profile_settings_insert_own
+  on public.profile_settings
+  for insert
+  to authenticated
+  with check (auth.uid() = user_id);
+
+drop policy if exists profile_settings_update_own on public.profile_settings;
+create policy profile_settings_update_own
+  on public.profile_settings
+  for update
+  to authenticated
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
 ```
 
 ## 3. Notas de comportamiento en la app
 
 - El borrado es lógico (`deleted_at`) usando `softDelete`.
 - En primer uso autenticado en Supabase, la app intenta sembrar datos locales a Supabase una sola vez por usuario.
+- El perfil del usuario se guarda con `upsert` en `public.profile_settings` por `user_id`.
 - Si no hay sesión de Supabase o falla la conexión, la app sigue operando en modo local.
