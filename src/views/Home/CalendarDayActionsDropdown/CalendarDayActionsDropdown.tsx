@@ -17,9 +17,7 @@ import { getDailyLogRoute, getPeriodLogRouteWithStartDate } from "lib";
 import { CALENDAR_DAY_ACTIONS_DROPDOWN_CLASSNAMES } from "./constants";
 
 // types
-import type { CalendarDayActionsDropdownProps } from "./types";
-
-type DayInfoItem = { label: string; dotClass: string };
+import type { CalendarDayActionsDropdownProps, DayInfoItem } from "./types";
 
 export function CalendarDayActionsDropdown({
   open,

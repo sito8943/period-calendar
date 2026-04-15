@@ -7,3 +7,5 @@ export interface CalendarDayActionsDropdownProps {
   dayData: CalendarDayData | null;
   onClose: () => void;
 }
+
+export type DayInfoItem = { label: string; dotClass: string };
