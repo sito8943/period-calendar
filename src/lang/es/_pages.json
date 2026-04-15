@@ -193,6 +193,8 @@
     },
     "labels": {
       "name": "Nombre",
+      "partnerNameBoy": "Nombre del chico",
+      "partnerNameGirl": "Nombre de la chica",
       "language": "Idioma",
       "theme": "Perfil"
     },
@@ -212,7 +214,8 @@
     },
     "errors": {
       "nameRequired": "El nombre es requerido",
-      "nameMax": "El nombre debe tener como máximo 120 caracteres"
+      "nameMax": "El nombre debe tener como máximo 120 caracteres",
+      "partnerNameMax": "El nombre de la pareja debe tener como máximo 120 caracteres"
     }
   },
   "auth": {

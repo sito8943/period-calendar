@@ -11,7 +11,10 @@ import {
 } from "lib";
 
 // constants
-import { PROFILE_NAME_MAX_LENGTH } from "./constants";
+import {
+  PROFILE_NAME_MAX_LENGTH,
+  PROFILE_PARTNER_NAME_MAX_LENGTH,
+} from "./constants";
 
 export const normalizeProfileLanguage = (
   value?: string | null,
@@ -48,6 +51,14 @@ export const getThemeOptions = (t: TFunction): Option[] => [
   },
 ];
 
+export const getPartnerNameLabel = (
+  theme: PeriodTheme,
+  t: TFunction,
+): string =>
+  theme === "boy"
+    ? t("_pages:profile.labels.partnerNameGirl")
+    : t("_pages:profile.labels.partnerNameBoy");
+
 export function validateProfileName(value: string, t: TFunction): true | string {
   const parsedValue = value.trim();
   if (!parsedValue.length) {
@@ -56,6 +67,20 @@ export function validateProfileName(value: string, t: TFunction): true | string 
   if (parsedValue.length > PROFILE_NAME_MAX_LENGTH) {
     return t("_pages:profile.errors.nameMax");
   }
+  return true;
+}
+
+export function validatePartnerName(value: string, t: TFunction): true | string {
+  const parsedValue = value.trim();
+
+  if (!parsedValue.length) {
+    return true;
+  }
+
+  if (parsedValue.length > PROFILE_PARTNER_NAME_MAX_LENGTH) {
+    return t("_pages:profile.errors.partnerNameMax");
+  }
+
   return true;
 }
 

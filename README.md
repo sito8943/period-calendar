@@ -9,7 +9,7 @@ Aplicacion web para registrar periodos, llevar un diario diario y visualizar pre
 - Calendario mensual con estado por dia y prediccion del siguiente periodo.
 - Estadisticas de ciclo: promedio, variacion y duracion.
 - Historial de periodos con acceso a edicion.
-- Perfil con nombre, idioma (`es`/`en`) y tema (`girl`/`boy`).
+- Perfil con nombre, nombre de pareja, idioma (`es`/`en`) y tema (`girl`/`boy`).
 - Onboarding inicial con seleccion de tema.
 - Interfaz responsive con navegacion inferior para mobile.
 

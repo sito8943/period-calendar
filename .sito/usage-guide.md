@@ -391,6 +391,20 @@ const options: Option[] = [
 />;
 ```
 
+For custom upload UIs (for example profile photo pickers), render only the native input:
+
+```tsx
+<FileInput
+  id="profile-photo-file-input"
+  unstyled
+  inputClassName="hidden"
+  accept="image/jpeg,image/png,image/webp"
+  onChange={(e) => onUpload(e.currentTarget.files?.[0] ?? null)}
+/>
+```
+
+`hiddenContainer` is available as an alias of `unstyled`.
+
 `Option` shape expected by selection components:
 
 ```ts

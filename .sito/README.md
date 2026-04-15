@@ -18,4 +18,4 @@ Canonical docs for this repository:
 Base compatibility:
 
 - `react` / `react-dom` `>=18.2 <20`
-- `@sito/dashboard` `0.0.78`
+- `@sito/dashboard` `0.0.80`

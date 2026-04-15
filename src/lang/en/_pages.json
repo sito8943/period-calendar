@@ -193,6 +193,8 @@
     },
     "labels": {
       "name": "Name",
+      "partnerNameBoy": "Boy's name",
+      "partnerNameGirl": "Girl's name",
       "language": "Language",
       "theme": "Profile"
     },
@@ -212,7 +214,8 @@
     },
     "errors": {
       "nameRequired": "Name is required",
-      "nameMax": "Name must be at most 120 characters"
+      "nameMax": "Name must be at most 120 characters",
+      "partnerNameMax": "Partner name must be at most 120 characters"
     }
   },
   "auth": {

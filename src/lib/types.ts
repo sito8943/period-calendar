@@ -81,6 +81,7 @@ export type ProfileLanguage = "es" | "en";
 
 export interface ProfileSettings {
   name: string;
+  partnerName: string;
   language: ProfileLanguage;
   updatedAt: string;
 }
@@ -92,6 +93,7 @@ export const DEFAULT_SETTINGS: Settings = {
 
 export const DEFAULT_PROFILE_SETTINGS: ProfileSettings = {
   name: "",
+  partnerName: "",
   language: "es",
   updatedAt: "",
 };

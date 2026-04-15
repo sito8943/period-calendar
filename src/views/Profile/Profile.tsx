@@ -24,15 +24,18 @@ import { PageHeader } from "components";
 
 // lib
 import {
+  PROFILE_PARTNER_NAME_MAX_LENGTH,
   PROFILE_NAME_MAX_LENGTH,
 } from "./constants";
 import type { ProfileFormType } from "./types";
 import {
   getErrorMessage,
+  getPartnerNameLabel,
   getLanguageOptions,
   getThemeOptions,
   mapThemeValue,
   normalizeProfileLanguage,
+  validatePartnerName,
   validateProfileName,
 } from "./utils";
 
@@ -56,6 +59,7 @@ export function Profile() {
   const { control, formState, handleSubmit, reset } = useForm<ProfileFormType>({
     defaultValues: {
       name: "",
+      partnerName: "",
       language: normalizeProfileLanguage(
         i18n.resolvedLanguage ?? i18n.language,
       ),
@@ -74,6 +78,7 @@ export function Profile() {
 
     reset({
       name: profileQuery.data.name ?? "",
+      partnerName: profileQuery.data.partnerName ?? "",
       language: profileLanguage,
       theme: getStoredPeriodTheme(),
     });
@@ -83,17 +88,25 @@ export function Profile() {
   const themeOptions = useMemo(() => getThemeOptions(t), [t]);
 
   const currentName = useWatch({ control, name: "name" }) ?? "";
+  const currentPartnerName = useWatch({ control, name: "partnerName" }) ?? "";
+  const currentTheme =
+    useWatch({ control, name: "theme" }) ?? getStoredPeriodTheme();
   const normalizedName = currentName.trim();
+  const normalizedPartnerName = currentPartnerName.trim();
+  const isPartnerNameTooLong =
+    normalizedPartnerName.length > PROFILE_PARTNER_NAME_MAX_LENGTH;
   const formDisabled = profileQuery.isLoading || updateProfile.isPending;
   const saveDisabled =
     formDisabled ||
     !formState.isDirty ||
     !normalizedName.length ||
-    normalizedName.length > PROFILE_NAME_MAX_LENGTH;
+    normalizedName.length > PROFILE_NAME_MAX_LENGTH ||
+    isPartnerNameTooLong;
 
   const onSubmit = handleSubmit(async (values) => {
     const payload = {
       name: values.name.trim(),
+      partnerName: values.partnerName.trim(),
       language: normalizeProfileLanguage(values.language),
     };
 
@@ -155,6 +168,34 @@ export function Profile() {
                   required
                   maxLength={PROFILE_NAME_MAX_LENGTH}
                   label={t("_pages:profile.labels.name")}
+                  value={field.value ?? ""}
+                  helperText={
+                    typeof fieldState.error?.message === "string"
+                      ? fieldState.error.message
+                      : ""
+                  }
+                  state={fieldState.error ? State.error : State.default}
+                  disabled={formDisabled}
+                  onBlur={field.onBlur}
+                  onChange={(event) =>
+                    field.onChange((event.target as HTMLInputElement).value)
+                  }
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="partnerName"
+              disabled={formDisabled}
+              rules={{
+                validate: (value: string) => validatePartnerName(value, t),
+              }}
+              render={({ field, fieldState }) => (
+                <TextInput
+                  id="profile-partner-name"
+                  maxLength={PROFILE_PARTNER_NAME_MAX_LENGTH}
+                  label={getPartnerNameLabel(currentTheme, t)}
                   value={field.value ?? ""}
                   helperText={
                     typeof fieldState.error?.message === "string"

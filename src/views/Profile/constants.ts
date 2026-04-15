@@ -1,1 +1,2 @@
 export const PROFILE_NAME_MAX_LENGTH = 120;
+export const PROFILE_PARTNER_NAME_MAX_LENGTH = 120;
