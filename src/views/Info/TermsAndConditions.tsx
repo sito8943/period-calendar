@@ -20,7 +20,7 @@ export function TermsAndConditions() {
             p: <p />,
             strong: <strong />,
             code: <code className="bg-default px-1 rounded" />,
-            a: <a className="primary underline !font-bold" />,
+            a: <a className="primary underline font-bold!" />,
           }}
         />
       </div>
@@ -28,7 +28,7 @@ export function TermsAndConditions() {
       <section className="mt-6 space-y-6">
         {sections.map((section, index) => (
           <div key={index} className="bg-base p-5 rounded-2xl">
-            <h3 className="text-2xl font-bold">{section.title}</h3>
+            <h3 className="text-2xl max-sm:text-xl font-bold">{section.title}</h3>
             <div className="mt-2 text-text">
               <Trans
                 i18nKey={`_pages:termsAndConditions.sections.${index}.body`}
@@ -38,7 +38,7 @@ export function TermsAndConditions() {
                   ul: <ul className="list-disc ml-4 space-y-1" />,
                   li: <li />,
                   code: <code className="bg-default px-1 rounded" />,
-                  a: <a className="primary underline !font-bold" />,
+                  a: <a className="primary underline font-bold!" />,
                 }}
               />
             </div>
