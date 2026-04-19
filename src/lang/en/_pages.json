@@ -33,7 +33,9 @@
     },
     "calendarDayActions": {
       "logPeriod": "Log period",
-      "dailyLog": "Add daily log"
+      "editPeriod": "Edit period",
+      "dailyLog": "Add daily log",
+      "editDailyLog": "Edit daily log"
     },
     "calendarDayInfo": {
       "periodDay": "Period day",

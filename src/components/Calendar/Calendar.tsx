@@ -161,18 +161,18 @@ export function Calendar({
 
     // Current month days
     for (const date of days) {
-      const isPeriodDay = periods.some((p) => isDateInPeriod(date, p));
+      const period = periods.find((p) => isDateInPeriod(date, p));
       const isOvulationDay =
-        !isPeriodDay && ovulationDaySet.has(toISODateString(date));
+        !period && ovulationDaySet.has(toISODateString(date));
       const isFertileDay =
-        !isPeriodDay &&
+        !period &&
         !isOvulationDay &&
         (monthFertilityPrediction?.fertileWindows.some((window) =>
           isDateInRange(date, window.start, window.end),
         ) ??
           false);
       const isPredictedDay =
-        !isPeriodDay &&
+        !period &&
         !isOvulationDay &&
         !isFertileDay &&
         monthPrediction !== null &&
@@ -183,7 +183,8 @@ export function Calendar({
         isCurrentMonth: true,
         isToday: isSameDay(date, today),
         hasReportedPeriodInMonth: monthHasReportedPeriod,
-        isPeriodDay,
+        isPeriodDay: !!period,
+        periodId: period?.id,
         isPredictedDay,
         isFertileDay,
         isOvulationDay,
@@ -225,7 +226,10 @@ export function Calendar({
   ]);
 
   return (
-    <div ref={calendarRef} className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell">
+    <div
+      ref={calendarRef}
+      className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell"
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button

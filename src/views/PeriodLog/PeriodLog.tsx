@@ -27,13 +27,15 @@ import {
 import { PageHeader } from "components";
 
 // lib
-import { AppRoute, RouteQueryParam, toISODateString } from "lib";
+import {
+  AppRoute,
+  RouteQueryParam,
+  toISODateString,
+  ISO_DATE_PATTERN,
+} from "lib";
 
 // types
 import type { FormValues } from "./types";
-
-// constants
-import { ISO_DATE_PATTERN } from "./constants";
 
 export function PeriodLog() {
   const { t } = useTranslation();
@@ -152,7 +154,7 @@ export function PeriodLog() {
               id="startDate"
               type="date"
               max={todayStr}
-              label={t("_pages:periodLog.startDate")}
+              label={`${t("_pages:periodLog.startDate")}*`}
               value={field.value ?? ""}
               state={fieldState.error ? State.error : State.default}
               helperText={
@@ -186,14 +188,7 @@ export function PeriodLog() {
               id="endDate"
               type="date"
               max={todayStr}
-              label={
-                <>
-                  {t("_pages:periodLog.endDate")}{" "}
-                  <span className="text-text-muted text-xs">
-                    ({t("_pages:periodLog.optional")})
-                  </span>
-                </>
-              }
+              label={t("_pages:periodLog.endDate")}
               value={field.value ?? ""}
               state={fieldState.error ? State.error : State.default}
               helperText={

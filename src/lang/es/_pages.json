@@ -33,7 +33,9 @@
     },
     "calendarDayActions": {
       "logPeriod": "Registrar periodo",
-      "dailyLog": "Registar registro diario"
+      "editPeriod": "Editar periodo",
+      "dailyLog": "Registar registro diario",
+      "editDailyLog": "Editar registro diario"
     },
     "calendarDayInfo": {
       "periodDay": "Dia de periodo",

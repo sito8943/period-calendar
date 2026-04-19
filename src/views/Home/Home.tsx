@@ -8,10 +8,20 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@sito/dashboard-app";
 
 // hooks
-import { usePeriodsList, useSettings, useCycleStats, useDailyLogsList } from "hooks";
+import {
+  usePeriodsList,
+  useSettings,
+  useCycleStats,
+  useDailyLogsList,
+} from "hooks";
 
 // lib
-import { AppRoute, DEFAULT_SETTINGS, getDailyLogRoute, toISODateString } from "lib";
+import {
+  AppRoute,
+  DEFAULT_SETTINGS,
+  getDailyLogRoute,
+  toISODateString,
+} from "lib";
 
 // components
 import { Calendar, PredictionCard } from "components";
@@ -27,12 +37,11 @@ export function Home() {
   const { data: periods = [] } = usePeriodsList();
   const { data: dailyLogs = [] } = useDailyLogsList();
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
-  const [selectedCalendarDate, setSelectedCalendarDate] = useState<string | null>(
-    null,
-  );
-  const [selectedDayData, setSelectedDayData] = useState<CalendarDayData | null>(
-    null,
-  );
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<
+    string | null
+  >(null);
+  const [selectedDayData, setSelectedDayData] =
+    useState<CalendarDayData | null>(null);
   const [calendarActionAnchorEl, setCalendarActionAnchorEl] =
     useState<HTMLElement | null>(null);
 
@@ -43,7 +52,9 @@ export function Home() {
   const nextPeriodMessage = useMemo(() => {
     if (stats.daysUntilNext === null) return t("_pages:home.noData");
     if (stats.daysUntilNext > 0) {
-      return t("_pages:home.alerts.periodInDays", { days: stats.daysUntilNext });
+      return t("_pages:home.alerts.periodInDays", {
+        days: stats.daysUntilNext,
+      });
     }
     if (stats.daysUntilNext === 0) return t("_pages:home.alerts.periodToday");
     return t("_pages:home.daysAgo", { days: Math.abs(stats.daysUntilNext) });
@@ -183,7 +194,9 @@ export function Home() {
             </p>
             <p className="text-lg font-semibold text-text">
               {stats.avgPeriodDuration
-                ? t("_pages:home.stats.days", { count: stats.avgPeriodDuration })
+                ? t("_pages:home.stats.days", {
+                    count: stats.avgPeriodDuration,
+                  })
                 : t("_pages:home.stats.noData")}
             </p>
           </div>
@@ -192,7 +205,9 @@ export function Home() {
 
       {stats.latestCycleVariation && cycleVariationMessage && (
         <div className="bg-base-light rounded-xl p-3 shadow-sm">
-          <p className="text-xs text-text-muted">{t("_pages:home.variation.title")}</p>
+          <p className="text-xs text-text-muted">
+            {t("_pages:home.variation.title")}
+          </p>
           <p className="text-lg font-semibold text-text">
             {t("_pages:home.variation.latestCycle", {
               days: stats.latestCycleVariation.latestCycleLength,
@@ -215,7 +230,7 @@ export function Home() {
           variant="submit"
           color="primary"
           onClick={goToLog}
-          className="!px-6"
+          className="px-6!"
         >
           <FontAwesomeIcon icon={faPlus} className="mr-2" />
           {t("_pages:home.logPeriod")}
@@ -224,7 +239,7 @@ export function Home() {
           variant="submit"
           color="primary"
           onClick={goToTodayDailyLog}
-          className="!px-6"
+          className="px-6!"
         >
           {t("_pages:home.logToday")}
         </Button>

@@ -37,7 +37,6 @@ import {
   SYMPTOM_KEYS,
   formatDate,
   getDailyLogRoute,
-  parseLocalDate,
   toISODateString,
 } from "lib";
 import type {
@@ -51,29 +50,8 @@ import type {
 // types
 import type { DailyLogFormValues } from "./types";
 
-const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
-
-const getErrorMessage = (error: unknown, fallback: string): string => {
-  if (error instanceof Error) return error.message;
-  if (typeof error === "object" && error !== null) {
-    const maybeError = error as { message?: string };
-    if (typeof maybeError.message === "string") return maybeError.message;
-  }
-  return fallback;
-};
-
-const isValidIsoDate = (value: string): boolean => {
-  if (!ISO_DATE_PATTERN.test(value)) return false;
-  const parsed = parseLocalDate(value);
-  return toISODateString(parsed) === value;
-};
-
-const toNullableNumber = (value: string): number | null => {
-  if (!value) return null;
-  const numeric = Number(value);
-  if (Number.isNaN(numeric)) return null;
-  return numeric;
-};
+// utils
+import { getErrorMessage, isValidIsoDate, toNullableNumber } from "./utils";
 
 export function DailyLog() {
   const { t, i18n } = useTranslation();
@@ -344,7 +322,7 @@ export function DailyLog() {
               id="dailyDate"
               type="date"
               max={todayStr}
-              label={t("_pages:dailyLog.date")}
+              label={`${t("_pages:dailyLog.date")}*`}
               value={field.value ?? ""}
               disabled={formDisabled}
               state={fieldState.error ? State.error : State.default}
@@ -367,14 +345,7 @@ export function DailyLog() {
           render={({ field }) => (
             <SelectInput
               id="flow"
-              label={
-                <>
-                  {t("_pages:dailyLog.flow")}{" "}
-                  <span className="text-text-muted text-xs">
-                    ({t("_pages:dailyLog.optional")})
-                  </span>
-                </>
-              }
+              label={t("_pages:dailyLog.flow")}
               value={field.value ?? ""}
               options={flowOptions}
               disabled={formDisabled}
@@ -392,10 +363,7 @@ export function DailyLog() {
           render={({ field }) => (
             <fieldset className="flex flex-col gap-2">
               <legend className="text-sm font-medium text-text mb-1">
-                {t("_pages:dailyLog.symptoms")}{" "}
-                <span className="text-text-muted text-xs">
-                  ({t("_pages:dailyLog.optional")})
-                </span>
+                {t("_pages:dailyLog.symptoms")}
               </legend>
               <div className="grid grid-cols-2 gap-2">
                 {SYMPTOM_KEYS.map((symptom) => {
@@ -429,10 +397,7 @@ export function DailyLog() {
 
         <fieldset className="flex flex-col gap-2">
           <legend className="text-sm font-medium text-text mb-1">
-            {t("_pages:dailyLog.sexualActivity")}{" "}
-            <span className="text-text-muted text-xs">
-              ({t("_pages:dailyLog.optional")})
-            </span>
+            {t("_pages:dailyLog.sexualActivity")}
           </legend>
 
           <Controller
@@ -482,14 +447,7 @@ export function DailyLog() {
             render={({ field }) => (
               <SelectInput
                 id="mood"
-                label={
-                  <>
-                    {t("_pages:dailyLog.mood")}{" "}
-                    <span className="text-text-muted text-xs">
-                      ({t("_pages:dailyLog.optional")})
-                    </span>
-                  </>
-                }
+                label={t("_pages:dailyLog.mood")}
                 value={field.value ?? ""}
                 options={moodOptions}
                 disabled={formDisabled}
@@ -507,14 +465,7 @@ export function DailyLog() {
             render={({ field }) => (
               <SelectInput
                 id="sleepQuality"
-                label={
-                  <>
-                    {t("_pages:dailyLog.sleepQuality")}{" "}
-                    <span className="text-text-muted text-xs">
-                      ({t("_pages:dailyLog.optional")})
-                    </span>
-                  </>
-                }
+                label={t("_pages:dailyLog.sleepQuality")}
                 value={field.value ?? ""}
                 options={sleepQualityOptions}
                 disabled={formDisabled}
@@ -548,14 +499,7 @@ export function DailyLog() {
               min="0"
               max="24"
               inputMode="decimal"
-              label={
-                <>
-                  {t("_pages:dailyLog.sleepHours")}{" "}
-                  <span className="text-text-muted text-xs">
-                    ({t("_pages:dailyLog.optional")})
-                  </span>
-                </>
-              }
+              label={t("_pages:dailyLog.sleepHours")}
               value={field.value ?? ""}
               disabled={formDisabled}
               state={fieldState.error ? State.error : State.default}
@@ -580,14 +524,7 @@ export function DailyLog() {
               id="notes"
               rows={4}
               maxLength={500}
-              label={
-                <>
-                  {t("_pages:dailyLog.notes")}{" "}
-                  <span className="text-text-muted text-xs">
-                    ({t("_pages:dailyLog.optional")})
-                  </span>
-                </>
-              }
+              label={t("_pages:dailyLog.notes")}
               value={field.value ?? ""}
               disabled={formDisabled}
               onBlur={field.onBlur}

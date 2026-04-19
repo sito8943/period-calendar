@@ -2,12 +2,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 // @sito/dashboard-app
-import {
-  Button,
-  State,
-  TextInput,
-  useNotification,
-} from "@sito/dashboard-app";
+import { Button, State, TextInput, useNotification } from "@sito/dashboard-app";
 
 // hooks
 import { useAddPeriod } from "hooks";
@@ -116,14 +111,7 @@ export function OnboardingPeriodForm() {
             id="onboardingEndDate"
             type="date"
             max={todayStr}
-            label={
-              <>
-                {t("_pages:periodLog.endDate")}{" "}
-                <span className="text-text-muted text-xs">
-                  ({t("_pages:periodLog.optional")})
-                </span>
-              </>
-            }
+            label={t("_pages:periodLog.endDate")}
             value={field.value ?? ""}
             state={fieldState.error ? State.error : State.default}
             helperText={

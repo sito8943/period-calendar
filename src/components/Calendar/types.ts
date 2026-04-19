@@ -7,6 +7,7 @@ export type CalendarDayData = {
   isToday: boolean;
   hasReportedPeriodInMonth: boolean;
   isPeriodDay: boolean;
+  periodId?: string;
   isPredictedDay: boolean;
   isFertileDay: boolean;
   isOvulationDay: boolean;
@@ -18,7 +19,11 @@ export type CalendarProps = {
   dailyLogs: DailyLog[];
   defaultCycleLength: number;
   defaultPeriodLength: number;
-  onDayClick?: (date: string, anchorEl: HTMLButtonElement, dayData: CalendarDayData) => void;
+  onDayClick?: (
+    date: string,
+    anchorEl: HTMLButtonElement,
+    dayData: CalendarDayData,
+  ) => void;
 };
 
 export type CalendarDayProps = {

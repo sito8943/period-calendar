@@ -11,7 +11,11 @@ import {
 import type { BaseDto, ActionPropsType } from "@sito/dashboard-app";
 import { Actions } from "@sito/dashboard-app";
 import { AnimatedDropdown } from "components";
-import { getDailyLogRoute, getPeriodLogRouteWithStartDate } from "lib";
+import {
+  getDailyLogRoute,
+  getPeriodLogDetailRoute,
+  getPeriodLogRouteWithStartDate,
+} from "lib";
 
 // constants
 import { CALENDAR_DAY_ACTIONS_DROPDOWN_CLASSNAMES } from "./constants";
@@ -31,9 +35,10 @@ export function CalendarDayActionsDropdown({
 
   const handleLogPeriod = useCallback(() => {
     if (!selectedDate) return;
-    navigate(getPeriodLogRouteWithStartDate(selectedDate));
+    if (dayData?.periodId) navigate(getPeriodLogDetailRoute(dayData?.periodId));
+    else navigate(getPeriodLogRouteWithStartDate(selectedDate));
     onClose();
-  }, [navigate, onClose, selectedDate]);
+  }, [dayData?.periodId, navigate, onClose, selectedDate]);
 
   const handleLogDailyLog = useCallback(() => {
     if (!selectedDate) return;
@@ -82,19 +87,30 @@ export function CalendarDayActionsDropdown({
       {
         id: "log-period",
         icon: <FontAwesomeIcon icon={faCalendarPlus} />,
-        tooltip: t("_pages:home.calendarDayActions.logPeriod"),
+        tooltip: t(
+          `_pages:home.calendarDayActions.${dayData?.hasReportedPeriodInMonth ? "editPeriod" : "logPeriod"}`,
+        ),
         onClick: handleLogPeriod,
         disabled: selectedDate === null,
       },
       {
         id: "log-daily-log",
         icon: <FontAwesomeIcon icon={faClipboardCheck} />,
-        tooltip: t("_pages:home.calendarDayActions.dailyLog"),
+        tooltip: t(
+          `_pages:home.calendarDayActions.${dayData?.hasDailyLog ? "editDailyLog" : "dailyLog"}`,
+        ),
         onClick: handleLogDailyLog,
         disabled: selectedDate === null,
       },
     ],
-    [handleLogDailyLog, handleLogPeriod, selectedDate, t],
+    [
+      dayData?.hasDailyLog,
+      dayData?.hasReportedPeriodInMonth,
+      handleLogDailyLog,
+      handleLogPeriod,
+      selectedDate,
+      t,
+    ],
   );
 
   return (
