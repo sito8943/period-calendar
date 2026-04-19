@@ -125,7 +125,7 @@
 .daily-log-dot {
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: 25px;
   width: 0.375rem;
   height: 0.375rem;
   border-radius: 9999px;

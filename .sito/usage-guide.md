@@ -453,6 +453,17 @@ import { useRef, useState } from "react";
   onClick={() => console.log("view")}
 />;
 
+{
+  /* Prevent click from bubbling to parent handlers (e.g. row onClick) */
+}
+<Action
+  id="edit"
+  tooltip="Edit"
+  icon={<span>E</span>}
+  onClick={() => console.log("edit")}
+  stopPropagation
+/>;
+
 <Actions
   actions={[
     { id: "edit", tooltip: "Edit", icon: <span>E</span>, onClick: () => {} },
@@ -489,6 +500,7 @@ function ExampleDropdown() {
         open={open}
         onClose={() => setOpen(false)}
         anchorEl={triggerRef.current}
+        closeOnClick
       >
         <ul>
           <li>Item 1</li>
