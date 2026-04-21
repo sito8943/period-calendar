@@ -8,7 +8,7 @@ import {
   readPersistedFeatureFlags,
 } from "lib";
 import type { FeatureFlagsContextType } from "./types";
-import { FeatureFlagsContext } from "./useFeatureFlags";
+import { FeatureFlagsContext } from "./FeatureFlagsContext";
 import { config } from "../../config";
 
 export const FeatureFlagsProvider = ({ children }: BasicProviderPropTypes) => {

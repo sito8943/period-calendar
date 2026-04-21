@@ -343,7 +343,7 @@
       },
       {
         "title": "6. Privacy and cookies",
-        "body": "<p>Data handling is described in the <a href=\"/privacy-policy\">Privacy Policy</a>, and storage/cookies usage is described in the <a href=\"/cookies-policy\">Cookies Policy</a>.</p>"
+        "body": "<p>Data handling is described in the <a href=\"{{privacyPolicyHref}}\">Privacy Policy</a>, and storage/cookies usage is described in the <a href=\"{{cookiesPolicyHref}}\">Cookies Policy</a>.</p>"
       },
       {
         "title": "7. Limitation of liability",
@@ -377,7 +377,7 @@
       },
       {
         "title": "5. More information",
-        "body": "<p>For details about personal data handling, see the <a href=\"/privacy-policy\">Privacy Policy</a>.</p>"
+        "body": "<p>For details about personal data handling, see the <a href=\"{{privacyPolicyHref}}\">Privacy Policy</a>.</p>"
       }
     ]
   },

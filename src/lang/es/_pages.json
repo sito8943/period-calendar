@@ -343,7 +343,7 @@
       },
       {
         "title": "6. Privacidad y cookies",
-        "body": "<p>El tratamiento de datos se describe en la <a href=\"/privacy-policy\">Politica de Privacidad</a> y el uso de almacenamiento/cookies en la <a href=\"/cookies-policy\">Politica de Cookies</a>.</p>"
+        "body": "<p>El tratamiento de datos se describe en la <a href=\"{{privacyPolicyHref}}\">Politica de Privacidad</a> y el uso de almacenamiento/cookies en la <a href=\"{{cookiesPolicyHref}}\">Politica de Cookies</a>.</p>"
       },
       {
         "title": "7. Limitacion de responsabilidad",
@@ -377,7 +377,7 @@
       },
       {
         "title": "5. Mas informacion",
-        "body": "<p>Para mas detalle sobre datos personales, revisa la <a href=\"/privacy-policy\">Politica de Privacidad</a>.</p>"
+        "body": "<p>Para mas detalle sobre datos personales, revisa la <a href=\"{{privacyPolicyHref}}\">Politica de Privacidad</a>.</p>"
       }
     ]
   },

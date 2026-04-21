@@ -1,4 +1,5 @@
 import { Trans, useTranslation } from "react-i18next";
+import { AppRoute } from "lib";
 import type { TermsSection } from "./types";
 
 export function CookiesPolicy() {
@@ -31,6 +32,10 @@ export function CookiesPolicy() {
             <div className="mt-2 text-text">
               <Trans
                 i18nKey={`_pages:cookiesPolicy.sections.${index}.body`}
+                values={{
+                  privacyPolicyHref: AppRoute.PrivacyPolicy,
+                  cookiesPolicyHref: AppRoute.CookiesPolicy,
+                }}
                 components={{
                   p: <p />,
                   strong: <strong />,
