@@ -2,9 +2,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+
 import { IconButton } from "@sito/dashboard-app";
-import { AnimatedDropdown } from "../AnimatedDropdown";
-import { CALENDAR_LEGEND_DROPDOWN_CLOSE_DELAY_MS } from "./constants";
+
+import { AnimatedDropdown } from "../../AnimatedDropdown";
+import { CALENDAR_LEGEND_DROPDOWN_CLOSE_DELAY_MS } from "../constants";
 import type { CalendarLegendDropdownProps } from "./types";
 
 export function CalendarLegendDropdown({
@@ -84,7 +86,9 @@ export function CalendarLegendDropdown({
           onMouseEnter={clearCloseTimeout}
           onMouseLeave={scheduleClose}
         >
-          <p className="calendar-legend-title">{t("_pages:calendar.legendTitle")}</p>
+          <p className="calendar-legend-title">
+            {t("_pages:calendar.legendTitle")}
+          </p>
           <div className="calendar-legend-list">
             <div className="calendar-legend-row">
               <span className="w-3 h-3 legend-dot legend-dot-today" />

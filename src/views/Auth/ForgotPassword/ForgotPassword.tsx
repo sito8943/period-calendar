@@ -3,6 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
+// @sito/dashboard-app
 import {
   Button,
   Loading,
@@ -12,10 +13,17 @@ import {
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
 
+// lib
 import { AppRoute, supabase } from "lib";
+
+// types
 import type { ForgotPasswordFormType } from "./types";
+
+// utils
 import { mapForgotPasswordErrorKey } from "./utils";
-import "./styles.css";
+
+// styles
+import "../styles.css";
 
 export function ForgotPassword() {
   const { t } = useTranslation();
@@ -41,7 +49,9 @@ export function ForgotPassword() {
   const onSubmit = handleSubmit(async (values) => {
     if (!supabase) {
       showErrorNotification({
-        message: t("_accessibility:errors.forgotPassword.supabaseNotConfigured"),
+        message: t(
+          "_accessibility:errors.forgotPassword.supabaseNotConfigured",
+        ),
       });
       return;
     }
@@ -126,7 +136,7 @@ export function ForgotPassword() {
             type="submit"
             color="primary"
             variant="submit"
-            className="!px-8"
+            className="px-8!"
             disabled={formState.isSubmitting}
             aria-label={t("_accessibility:ariaLabels.submit")}
           >
@@ -134,7 +144,7 @@ export function ForgotPassword() {
               <Loading
                 color="stroke-base"
                 loaderClass="!w-6"
-                className="!w-auto"
+                className="w-auto!"
                 strokeWidth="6"
               />
             )}

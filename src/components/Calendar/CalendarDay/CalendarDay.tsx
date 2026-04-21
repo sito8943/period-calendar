@@ -1,4 +1,7 @@
-import { useTranslation } from "react-i18next";
+// @sito/dashboard-app
+import { useTranslation } from "@sito/dashboard-app";
+
+// types
 import type { CalendarDayProps } from "./types";
 
 /**
@@ -95,8 +98,8 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
           aria-hidden
         />
       )}
-      {isOvulationDay && (
-        hasReportedPeriodInMonth ? (
+      {isOvulationDay &&
+        (hasReportedPeriodInMonth ? (
           <span
             className={`ovulation-indicator ${isToday ? "ovulation-indicator-on-today" : ""}`}
             aria-hidden
@@ -106,13 +109,8 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
             className={`ovulation-prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
             aria-hidden
           />
-        )
-      )}
-      {hasDailyLog && (
-        <span
-          className={`daily-log-dot ${dailyLogDotClass}`}
-        />
-      )}
+        ))}
+      {hasDailyLog && <span className={`daily-log-dot ${dailyLogDotClass}`} />}
     </button>
   );
 }

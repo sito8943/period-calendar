@@ -1,5 +1,9 @@
 import { Trans, useTranslation } from "react-i18next";
+
+// lib
 import { AppRoute } from "lib";
+
+// types
 import type { TermsSection } from "./types";
 
 export function TermsAndConditions() {
@@ -29,7 +33,9 @@ export function TermsAndConditions() {
       <section className="mt-6 space-y-6">
         {sections.map((section, index) => (
           <div key={index} className="bg-base p-5 rounded-2xl">
-            <h3 className="text-2xl max-sm:text-xl font-bold">{section.title}</h3>
+            <h3 className="text-2xl max-sm:text-xl font-bold">
+              {section.title}
+            </h3>
             <div className="mt-2 text-text">
               <Trans
                 i18nKey={`_pages:termsAndConditions.sections.${index}.body`}

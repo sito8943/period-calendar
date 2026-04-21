@@ -1,8 +1,10 @@
 import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+// @sito/dashboard-app
 import { SplashScreen, useOptionalAuthContext } from "@sito/dashboard-app";
 
+// lib
 import { AppRoute } from "lib";
 
 export function SignOut() {

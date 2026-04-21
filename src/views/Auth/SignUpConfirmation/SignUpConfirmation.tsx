@@ -2,10 +2,14 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
+// @sito/dashboard-app
 import { Button, useOptionalAuthContext } from "@sito/dashboard-app";
 
+// lib
 import { AppRoute, RouteQueryParam } from "lib";
-import "./styles.css";
+
+// styles
+import "../styles.css";
 
 export function SignUpConfirmation() {
   const { t } = useTranslation();

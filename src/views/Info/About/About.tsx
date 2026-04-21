@@ -1,5 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+
+// lib
 import { AppRoute } from "lib";
 
 export function About() {
@@ -27,7 +29,9 @@ export function About() {
       </div>
 
       <section className="mt-8 bg-base p-5 rounded-2xl">
-        <h3 className="text-2xl max-sm:text-xl font-bold">{t("_pages:about.legal.title")}</h3>
+        <h3 className="text-2xl max-sm:text-xl font-bold">
+          {t("_pages:about.legal.title")}
+        </h3>
         <p className="mt-2">{t("_pages:about.legal.body")}</p>
         <ul className="mt-4 list-disc list-inside space-y-1">
           <li>

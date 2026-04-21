@@ -1,21 +1,26 @@
 import { Trans, useTranslation } from "react-i18next";
+
+// lib
+import { AppRoute } from "lib";
+
+// types
 import type { TermsSection } from "./types";
 
-export function PrivacyPolicy() {
+export function CookiesPolicy() {
   const { t } = useTranslation();
 
-  const sections = t("_pages:privacyPolicy.sections", {
+  const sections = t("_pages:cookiesPolicy.sections", {
     returnObjects: true,
   }) as TermsSection[];
 
   return (
     <main className="py-10 px-5 gap-5">
       <h2 className="text-4xl max-xs:text-2xl">
-        {t("_pages:privacyPolicy.title")}
+        {t("_pages:cookiesPolicy.title")}
       </h2>
       <div className="text-text mt-2">
         <Trans
-          i18nKey="_pages:privacyPolicy.body"
+          i18nKey="_pages:cookiesPolicy.body"
           components={{
             p: <p />,
             strong: <strong />,
@@ -27,10 +32,16 @@ export function PrivacyPolicy() {
       <section className="mt-6 space-y-6">
         {sections.map((section, index) => (
           <div key={index} className="bg-base p-5 rounded-2xl">
-            <h3 className="text-2xl max-sm:text-xl font-bold">{section.title}</h3>
+            <h3 className="text-2xl max-sm:text-xl font-bold">
+              {section.title}
+            </h3>
             <div className="mt-2 text-text">
               <Trans
-                i18nKey={`_pages:privacyPolicy.sections.${index}.body`}
+                i18nKey={`_pages:cookiesPolicy.sections.${index}.body`}
+                values={{
+                  privacyPolicyHref: AppRoute.PrivacyPolicy,
+                  cookiesPolicyHref: AppRoute.CookiesPolicy,
+                }}
                 components={{
                   p: <p />,
                   strong: <strong />,

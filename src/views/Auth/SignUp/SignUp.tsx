@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
+// @sito/dashboard-app
 import {
   Button,
-  CheckInput,
   Loading,
   PasswordInput,
   State,
@@ -15,25 +15,32 @@ import {
   useNotification,
 } from "@sito/dashboard-app";
 
-import { AppRoute, supabase } from "lib";
-import type { SignInFormType } from "./types";
-import { mapSignInErrorKey } from "./utils";
-import "./styles.css";
+// lib
+import { AppRoute, getSignUpConfirmationRoute, supabase } from "lib";
 
-export function SignIn() {
+// types
+import type { SignUpFormType } from "./types";
+
+// utils
+import { mapSignUpErrorKey } from "./utils";
+
+// styles
+import "../styles.css";
+
+export function SignUp() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const auth = useOptionalAuthContext();
   const accountToken = auth?.account?.token;
   const { showErrorNotification } = useNotification();
-  const rememberMeRef = useRef(false);
 
   const { handleSubmit, control, formState, setError } =
-    useForm<SignInFormType>({
+    useForm<SignUpFormType>({
       defaultValues: {
+        name: "",
         email: "",
         password: "",
-        rememberMe: false,
+        confirmPassword: "",
       },
     });
 
@@ -46,36 +53,51 @@ export function SignIn() {
   const onSubmit = handleSubmit(async (values) => {
     if (!supabase || !auth) {
       showErrorNotification({
-        message: t("_accessibility:errors.signIn.supabaseNotConfigured"),
+        message: t("_accessibility:errors.signUp.supabaseNotConfigured"),
       });
       return;
     }
 
-    rememberMeRef.current = values.rememberMe;
+    if (values.password !== values.confirmPassword) {
+      const errorMessage = t("_accessibility:errors.differentPasswords");
+      setError("confirmPassword", {
+        type: "manual",
+        message: errorMessage,
+      });
+      showErrorNotification({ message: errorMessage });
+      return;
+    }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
+      options: {
+        data: {
+          name: values.name,
+          username: values.name,
+        },
+      },
     });
 
-    if (error || !data.session) {
-      const messageKey = mapSignInErrorKey(error?.message ?? "");
+    if (error) {
+      const messageKey = mapSignUpErrorKey(error.message);
       showErrorNotification({ message: t(messageKey) });
+      return;
+    }
 
-      setError("password", {
-        type: "manual",
-        message: t(messageKey),
-      });
+    if (!data.session) {
+      navigate(getSignUpConfirmationRoute(values.email), { replace: true });
       return;
     }
 
     auth.logUser(
       mapSupabaseSessionToSessionDto(data.session, {
-        defaultUsername: values.email,
+        defaultUsername: values.name,
         defaultEmail: values.email,
       }),
-      rememberMeRef.current,
+      true,
     );
+
     auth.setGuestMode(false);
     navigate(AppRoute.Home, { replace: true });
   });
@@ -84,10 +106,30 @@ export function SignIn() {
     <div className="w-full h-screen flex items-center justify-center">
       <form onSubmit={onSubmit} className="auth-form blur-appear">
         <h1 className="w-full text-2xl mb-1">
-          {t("_pages:auth.signIn.title")}
+          {t("_pages:auth.signUp.title")}
         </h1>
 
         <div className="form-container w-full">
+          <Controller
+            control={control}
+            name="name"
+            rules={{ required: t("_entities:user.name.required") }}
+            render={({ field, fieldState }) => (
+              <TextInput
+                {...field}
+                type="text"
+                id="sign-up-name"
+                value={field.value ?? ""}
+                inputClassName="peer"
+                label={t("_entities:user.name.label")}
+                required
+                disabled={formState.isSubmitting}
+                helperText={fieldState.error?.message}
+                state={fieldState.error ? State.error : State.default}
+              />
+            )}
+          />
+
           <Controller
             control={control}
             name="email"
@@ -96,7 +138,7 @@ export function SignIn() {
               <TextInput
                 {...field}
                 type="email"
-                id="sign-in-email"
+                id="sign-up-email"
                 value={field.value ?? ""}
                 inputClassName="peer"
                 label={t("_entities:user.email.label")}
@@ -115,7 +157,7 @@ export function SignIn() {
             render={({ field, fieldState }) => (
               <PasswordInput
                 {...field}
-                id="sign-in-password"
+                id="sign-up-password"
                 value={field.value ?? ""}
                 inputClassName="peer"
                 label={t("_entities:user.password.label")}
@@ -126,24 +168,22 @@ export function SignIn() {
               />
             )}
           />
-        </div>
 
-        <div className="self-start mt-1">
           <Controller
             control={control}
-            name="rememberMe"
-            render={({ field }) => (
-              <CheckInput
-                id="rememberMe"
-                name={field.name}
-                label={t("_pages:auth.signIn.remember")}
-                checked={!!field.value}
+            name="confirmPassword"
+            rules={{ required: t("_entities:user.confirmPassword.required") }}
+            render={({ field, fieldState }) => (
+              <PasswordInput
+                {...field}
+                id="sign-up-confirm-password"
+                value={field.value ?? ""}
+                inputClassName="peer"
+                label={t("_entities:user.confirmPassword.label")}
+                required
                 disabled={formState.isSubmitting}
-                containerClassName="ml-1"
-                onBlur={field.onBlur}
-                onChange={(event) =>
-                  field.onChange(event.currentTarget.checked)
-                }
+                helperText={fieldState.error?.message}
+                state={fieldState.error ? State.error : State.default}
               />
             )}
           />
@@ -151,24 +191,12 @@ export function SignIn() {
 
         <div className="self-start">
           <p className="ml-1">
-            {t("_pages:auth.signIn.toRegister.question")}
+            {t("_pages:auth.signUp.toLogin.question")}
             <Link
-              to={AppRoute.SignUp}
+              to={AppRoute.SignIn}
               className="ml-1 primary text-sm underline text-left"
             >
-              {t("_pages:auth.signIn.toRegister.link")}
-            </Link>
-          </p>
-        </div>
-
-        <div className="self-start">
-          <p className="ml-1">
-            {t("_pages:auth.signIn.accountRecovery.question")}
-            <Link
-              to={AppRoute.ForgotPassword}
-              className="ml-1 primary text-sm underline text-left"
-            >
-              {t("_pages:auth.signIn.accountRecovery.link")}
+              {t("_pages:auth.signUp.toLogin.link")}
             </Link>
           </p>
         </div>
@@ -178,19 +206,19 @@ export function SignIn() {
             type="submit"
             color="primary"
             variant="submit"
-            className="!px-8"
+            className="px-8!"
             disabled={formState.isSubmitting}
             aria-label={t("_accessibility:ariaLabels.submit")}
           >
             {formState.isSubmitting && (
               <Loading
+                className="w-auto!"
                 color="stroke-base"
                 loaderClass="!w-6"
-                className="!w-auto"
                 strokeWidth="6"
               />
             )}
-            {t("_pages:auth.signIn.submit")}
+            {t("_pages:auth.signUp.submit")}
           </Button>
 
           <Button
@@ -203,7 +231,7 @@ export function SignIn() {
             }}
             aria-label={t("_accessibility:ariaLabels.startAsGuest")}
           >
-            {t("_pages:auth.signIn.guest")}
+            {t("_pages:auth.signUp.guest")}
           </Button>
         </div>
       </form>

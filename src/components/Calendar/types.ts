@@ -1,5 +1,4 @@
 import type { DailyLog, Period } from "lib";
-import type { MouseEvent } from "react";
 
 export type CalendarDayData = {
   date: Date;
@@ -24,14 +23,4 @@ export type CalendarProps = {
     anchorEl: HTMLButtonElement,
     dayData: CalendarDayData,
   ) => void;
-};
-
-export type CalendarDayProps = {
-  day: CalendarDayData;
-  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-  ariaLabel?: string;
-};
-
-export type CalendarLegendDropdownProps = {
-  monthHasReportedPeriod: boolean;
 };

@@ -4,7 +4,9 @@ import { useMemo, useState } from "react";
 import { Drawer, Navbar } from "@sito/dashboard-app";
 
 // menu
-import { getFeatureFilteredMenuMap } from "../../views/menuMap";
+import { getFeatureFilteredMenuMap } from "../../../views/menuMap";
+
+// providers
 import { useFeatureFlags } from "providers";
 
 function Header() {
