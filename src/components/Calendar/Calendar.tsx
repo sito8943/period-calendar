@@ -44,6 +44,9 @@ export function Calendar({
   defaultPeriodLength,
   onDayClick,
 }: CalendarProps) {
+
+  console.log(dailyLogs)
+
   const { i18n, t } = useTranslation();
   const today = useMemo(() => new Date(), []);
   const dailyLogDateSet = useMemo(

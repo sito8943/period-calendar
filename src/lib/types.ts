@@ -1,3 +1,5 @@
+import type { PeriodTheme } from "./theme";
+
 export interface Period {
   id: string;
   startDate: string; // YYYY-MM-DD
@@ -83,6 +85,7 @@ export interface ProfileSettings {
   name: string;
   partnerName: string;
   language: ProfileLanguage;
+  theme: PeriodTheme;
   updatedAt: string;
 }
 
@@ -95,5 +98,6 @@ export const DEFAULT_PROFILE_SETTINGS: ProfileSettings = {
   name: "",
   partnerName: "",
   language: "es",
+  theme: "girl",
   updatedAt: "",
 };

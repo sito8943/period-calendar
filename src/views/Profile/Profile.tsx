@@ -75,12 +75,19 @@ export function Profile() {
     const profileLanguage = profileQuery.data.updatedAt
       ? normalizeProfileLanguage(profileQuery.data.language)
       : fallbackLanguage;
+    const profileTheme = profileQuery.data.theme ?? getStoredPeriodTheme();
+    const themedLanguage = getThemedLanguage(profileLanguage, profileTheme);
+
+    setPeriodTheme(profileTheme);
+    if (i18n.language !== themedLanguage) {
+      void i18n.changeLanguage(themedLanguage);
+    }
 
     reset({
       name: profileQuery.data.name ?? "",
       partnerName: profileQuery.data.partnerName ?? "",
       language: profileLanguage,
-      theme: getStoredPeriodTheme(),
+      theme: profileTheme,
     });
   }, [i18n.language, i18n.resolvedLanguage, profileQuery.data, reset]);
 
@@ -108,6 +115,7 @@ export function Profile() {
       name: values.name.trim(),
       partnerName: values.partnerName.trim(),
       language: normalizeProfileLanguage(values.language),
+      theme: values.theme,
     };
 
     try {

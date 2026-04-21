@@ -37,5 +37,6 @@ export function useProfileSettings() {
   return useQuery({
     ...PeriodQueryKeys.profile(),
     queryFn: async () => getProfileSettings(),
+    refetchOnMount: "always",
   });
 }

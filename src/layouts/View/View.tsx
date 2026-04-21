@@ -1,9 +1,10 @@
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import type { To } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { ComponentType } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 // @sito/dashboard-app
 import {
@@ -15,10 +16,13 @@ import {
   Notification,
   Onboarding,
   toLocal,
+  useOptionalAuthContext,
 } from "@sito/dashboard-app";
 import type { BaseLinkPropsType } from "@sito/dashboard-app";
 import type { BottomNavigationItemType } from "@sito/dashboard-app";
 import type { OnboardingStepType } from "@sito/dashboard-app";
+
+import { PeriodQueryKeys, useProfileSettings } from "hooks";
 
 // components
 import Header from "./Header";
@@ -40,7 +44,12 @@ export function View() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
+  const auth = useOptionalAuthContext();
+  const accountToken = auth?.account?.token ?? null;
+  const previousAccountTokenRef = useRef<string | null>(accountToken);
   const { isFeatureEnabled } = useFeatureFlags();
+  const { data: profileSettings } = useProfileSettings();
   const [showOnboarding, setShowOnboarding] = useState(
     () => !fromLocal(config.storage.onboarding),
   );
@@ -50,6 +59,47 @@ export function View() {
     if (!showOnboarding) return;
     toLocal(config.storage.onboarding, true);
   }, [showOnboarding]);
+
+  useEffect(() => {
+    const previousAccountToken = previousAccountTokenRef.current;
+    if (previousAccountToken === accountToken) return;
+
+    previousAccountTokenRef.current = accountToken;
+
+    void queryClient.invalidateQueries(PeriodQueryKeys.list());
+    void queryClient.invalidateQueries(PeriodQueryKeys.dailyLogsList());
+    void queryClient.invalidateQueries(PeriodQueryKeys.profile());
+  }, [accountToken, queryClient]);
+
+  useEffect(() => {
+    if (!profileSettings) return;
+
+    const fallbackLanguage = toBaseAppLanguage(
+      i18n.resolvedLanguage ?? i18n.language,
+    );
+    const profileLanguage = profileSettings.updatedAt
+      ? toBaseAppLanguage(profileSettings.language)
+      : fallbackLanguage;
+    const profileTheme = profileSettings.theme ?? getStoredPeriodTheme();
+    const themedLanguage = getThemedLanguage(profileLanguage, profileTheme);
+
+    setSelectedTheme((currentTheme) =>
+      currentTheme === profileTheme ? currentTheme : profileTheme,
+    );
+
+    if (getStoredPeriodTheme() !== profileTheme) {
+      setPeriodTheme(profileTheme);
+    }
+
+    if (i18n.language !== themedLanguage) {
+      void i18n.changeLanguage(themedLanguage);
+    }
+  }, [
+    i18n,
+    i18n.language,
+    i18n.resolvedLanguage,
+    profileSettings,
+  ]);
 
   useEffect(() => {
     const theme = getStoredPeriodTheme();

@@ -18,6 +18,7 @@ import type {
   UpdateDailyLogDto,
   UpdatePeriodDto,
 } from "./types";
+import type { PeriodTheme } from "./theme";
 import {
   DEFAULT_PROFILE_SETTINGS,
   DEFAULT_SETTINGS,
@@ -44,12 +45,18 @@ const STORAGE_KEYS = {
   dailyLogs: "period-calendar:daily-logs",
   settings: "period-calendar:settings",
   profile: "period-calendar:profile",
+  theme: "period-calendar:theme",
   mirrorUserId: "period-calendar:mirror-user-id",
   migrationV2: "period-calendar:indexeddb-client-migrated:v2",
 } as const;
 
 const OFFLINE_DB_NAME = "period-calendar-offline-db";
 const OFFLINE_DB_VERSION = 2;
+const OFFLINE_REQUIRED_STORES = [
+  "periods",
+  "dailyLogs",
+  "profileSettings",
+] as const;
 
 const LEGACY_DB_NAME = "period-calendar-db";
 const LEGACY_STORES = {
@@ -61,6 +68,7 @@ const MIGRATION_DONE_VALUE = "done";
 const SUPABASE_MIGRATION_VERSION = "v1";
 
 type OfflineFilterDto = BaseFilterDto;
+type OfflineStoreName = (typeof OFFLINE_REQUIRED_STORES)[number];
 
 type PeriodEntityDto = BaseEntityDto & {
   startDate: string;
@@ -88,6 +96,7 @@ type ProfileSettingsEntityDto = BaseEntityDto & {
   name: string;
   partnerName: string;
   language: ProfileLanguage;
+  theme: PeriodTheme;
 };
 
 type ProfileSettingsEntityAddDto = Omit<ProfileSettingsEntityDto, "id">;
@@ -140,6 +149,8 @@ const dailyLogsClient = new DailyLogsIndexedDbClient();
 const profileSettingsClient = new ProfileSettingsIndexedDbClient();
 
 let migrationPromise: Promise<void> | null = null;
+let offlineSchemaPromise: Promise<void> | null = null;
+let isOfflineSchemaReady = false;
 
 const flowSet = new Set<FlowLevel>(FLOW_LEVELS);
 const symptomKeySet = new Set<SymptomKey>(SYMPTOM_KEYS);
@@ -268,6 +279,9 @@ const normalizeString = (value: unknown): string =>
 const normalizeProfileLanguage = (value: unknown): ProfileLanguage =>
   String(value).toLowerCase().startsWith("en") ? "en" : "es";
 
+const normalizeProfileTheme = (value: unknown): PeriodTheme =>
+  value === "boy" ? "boy" : "girl";
+
 const toPeriodModel = (entity: PeriodEntityDto): Period => ({
   id: String(entity.id),
   startDate: entity.startDate,
@@ -296,6 +310,7 @@ const toProfileSettingsModel = (
   name: entity.name,
   partnerName: entity.partnerName,
   language: normalizeProfileLanguage(entity.language),
+  theme: normalizeProfileTheme(entity.theme),
   updatedAt: entity.updatedAt.toISOString(),
 });
 
@@ -306,6 +321,7 @@ const toProfileSettingsEntityDto = (
   name: profile.name,
   partnerName: profile.partnerName,
   language: normalizeProfileLanguage(profile.language),
+  theme: normalizeProfileTheme(profile.theme),
   createdAt: parseDateOrFallback(profile.updatedAt, new Date()),
   updatedAt: parseDateOrFallback(profile.updatedAt, new Date()),
   deletedAt: null,
@@ -339,6 +355,7 @@ const areProfileSettingsEqual = (
   left.name === right.name &&
   left.partnerName === right.partnerName &&
   left.language === right.language &&
+  left.theme === right.theme &&
   left.updatedAt === right.updatedAt;
 
 const toPeriodEntityAddDto = (payload: {
@@ -464,22 +481,30 @@ function saveDailyLogsToLocalStorage(dailyLogs: DailyLog[]): void {
 function getProfileSettingsFromLocalStorage(): ProfileSettings {
   if (!isBrowser()) return DEFAULT_PROFILE_SETTINGS;
 
+  const storedTheme = normalizeProfileTheme(
+    window.localStorage.getItem(STORAGE_KEYS.theme),
+  );
   const raw = window.localStorage.getItem(STORAGE_KEYS.profile);
-  if (!raw) return DEFAULT_PROFILE_SETTINGS;
+  if (!raw) return { ...DEFAULT_PROFILE_SETTINGS, theme: storedTheme };
 
   try {
+    const parsed = JSON.parse(raw) as Partial<ProfileSettings>;
+
     return {
       ...DEFAULT_PROFILE_SETTINGS,
-      ...(JSON.parse(raw) as Partial<ProfileSettings>),
+      ...parsed,
+      language: normalizeProfileLanguage(parsed.language),
+      theme: normalizeProfileTheme(parsed.theme ?? storedTheme),
     };
   } catch {
-    return DEFAULT_PROFILE_SETTINGS;
+    return { ...DEFAULT_PROFILE_SETTINGS, theme: storedTheme };
   }
 }
 
 function saveProfileSettingsToLocalStorage(profile: ProfileSettings): void {
   if (!isBrowser()) return;
   window.localStorage.setItem(STORAGE_KEYS.profile, JSON.stringify(profile));
+  window.localStorage.setItem(STORAGE_KEYS.theme, profile.theme);
 }
 
 function addPeriodInLocalStorage(dto: AddPeriodDto): Period {
@@ -692,6 +717,110 @@ const normalizeLegacyDailyLogRows = (rows: unknown[]): DailyLogEntityAddDto[] =>
   return normalized;
 };
 
+type OfflineSchemaSnapshot = {
+  version: number;
+  missingStores: OfflineStoreName[];
+};
+
+type ClosableIndexedDbClient = {
+  close?: () => void;
+};
+
+function closeOfflineClientConnection(client: ClosableIndexedDbClient): void {
+  if (typeof client.close !== "function") return;
+
+  try {
+    client.close();
+  } catch (error) {
+    console.error("Failed to close IndexedDB client connection", error);
+  }
+}
+
+function closeOfflineClientConnections(): void {
+  closeOfflineClientConnection(periodsClient as ClosableIndexedDbClient);
+  closeOfflineClientConnection(dailyLogsClient as ClosableIndexedDbClient);
+  closeOfflineClientConnection(profileSettingsClient as ClosableIndexedDbClient);
+}
+
+async function getOfflineSchemaSnapshot(): Promise<OfflineSchemaSnapshot> {
+  if (!isBrowser() || !isIndexedDbSupported()) {
+    return {
+      version: OFFLINE_DB_VERSION,
+      missingStores: [],
+    };
+  }
+
+  return new Promise((resolve, reject) => {
+    const request = window.indexedDB.open(OFFLINE_DB_NAME);
+
+    request.onerror = () => {
+      reject(request.error ?? new Error("Failed to open offline IndexedDB"));
+    };
+
+    request.onsuccess = () => {
+      const db = request.result;
+      const missingStores = OFFLINE_REQUIRED_STORES.filter(
+        (storeName) => !db.objectStoreNames.contains(storeName),
+      );
+
+      resolve({
+        version: db.version,
+        missingStores,
+      });
+
+      db.close();
+    };
+  });
+}
+
+async function createMissingOfflineStores(targetVersion: number): Promise<void> {
+  if (!isBrowser() || !isIndexedDbSupported()) return;
+
+  await new Promise<void>((resolve, reject) => {
+    const request = window.indexedDB.open(OFFLINE_DB_NAME, targetVersion);
+
+    request.onerror = () => {
+      reject(request.error ?? new Error("Failed to upgrade offline IndexedDB"));
+    };
+
+    request.onblocked = () => {
+      reject(new Error("Offline IndexedDB upgrade blocked by an open connection"));
+    };
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+
+      for (const storeName of OFFLINE_REQUIRED_STORES) {
+        if (!db.objectStoreNames.contains(storeName)) {
+          db.createObjectStore(storeName, {
+            keyPath: "id",
+            autoIncrement: true,
+          });
+        }
+      }
+    };
+
+    request.onsuccess = () => {
+      request.result.close();
+      resolve();
+    };
+  });
+}
+
+async function ensureOfflineObjectStores(): Promise<void> {
+  if (!isBrowser() || !isIndexedDbSupported()) return;
+
+  const schema = await getOfflineSchemaSnapshot();
+  if (schema.missingStores.length === 0) return;
+
+  closeOfflineClientConnections();
+
+  const targetVersion = Math.max(schema.version + 1, OFFLINE_DB_VERSION);
+  await createMissingOfflineStores(targetVersion);
+
+  window.localStorage.removeItem(STORAGE_KEYS.migrationV2);
+}
+
 async function runOfflineMigration(): Promise<void> {
   if (!isBrowser() || !isIndexedDbSupported()) return;
 
@@ -753,14 +882,35 @@ async function runOfflineMigration(): Promise<void> {
 async function ensureOfflineMigration(): Promise<void> {
   if (!isIndexedDbSupported() || !isBrowser()) return;
 
+  if (!isOfflineSchemaReady) {
+    if (!offlineSchemaPromise) {
+      offlineSchemaPromise = ensureOfflineObjectStores()
+        .then(() => {
+          isOfflineSchemaReady = true;
+        })
+        .catch((error) => {
+          console.error("Failed to ensure offline IndexedDB schema", error);
+        })
+        .finally(() => {
+          offlineSchemaPromise = null;
+        });
+    }
+
+    await offlineSchemaPromise;
+  }
+
   if (window.localStorage.getItem(STORAGE_KEYS.migrationV2) === MIGRATION_DONE_VALUE) {
     return;
   }
 
   if (!migrationPromise) {
-    migrationPromise = runOfflineMigration().catch((error) => {
-      console.error("Offline migration failed, falling back to localStorage", error);
-    });
+    migrationPromise = runOfflineMigration()
+      .catch((error) => {
+        console.error("Offline migration failed, falling back to localStorage", error);
+      })
+      .finally(() => {
+        migrationPromise = null;
+      });
   }
 
   await migrationPromise;
@@ -859,6 +1009,7 @@ async function clearOfflineMirrorForDifferentUser(): Promise<void> {
   window.localStorage.removeItem(STORAGE_KEYS.dailyLogs);
   window.localStorage.removeItem(STORAGE_KEYS.profile);
   window.localStorage.removeItem(STORAGE_KEYS.settings);
+  window.localStorage.removeItem(STORAGE_KEYS.theme);
 
   if (!isIndexedDbSupported()) return;
 
@@ -1440,6 +1591,7 @@ type ProfileSettingsSupabaseRow = {
   name: string | null;
   partner_name: string | null;
   language: string | null;
+  theme: string | null;
   updated_at: string | null;
 };
 
@@ -1452,6 +1604,7 @@ const mapProfileSettingsSupabaseRow = (
     name: row.name ?? "",
     partnerName: row.partner_name ?? "",
     language: normalizeProfileLanguage(row.language),
+    theme: normalizeProfileTheme(row.theme),
     updatedAt: row.updated_at ?? "",
   };
 };
@@ -1465,7 +1618,7 @@ async function getProfileSettingsFromSupabase(
 
   const { data, error } = await supabase
     .from("profile_settings")
-    .select("name, partner_name, language, updated_at")
+    .select("name, partner_name, language, theme, updated_at")
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -1491,13 +1644,14 @@ async function saveProfileSettingsToSupabase(
     name: profile.name,
     partner_name: profile.partnerName,
     language: profile.language,
+    theme: profile.theme,
     updated_at: profile.updatedAt,
   };
 
   const { data, error } = await supabase
     .from("profile_settings")
     .upsert(payload, { onConflict: "user_id" })
-    .select("name, partner_name, language, updated_at")
+    .select("name, partner_name, language, theme, updated_at")
     .single();
 
   if (error) {
