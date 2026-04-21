@@ -159,6 +159,20 @@ const authStorageKeys = {
 
 - Instantiate only in browser (for example inside `useEffect` or after checking `typeof window !== "undefined"`).
 
+### 2.11.1 `IndexedDBClient`: `NotFoundError` / missing object store when sharing a `dbName`
+
+**Cause**
+
+- In older versions, opening a second client against an existing database could overwrite or skip stores registered by other clients.
+
+**Fix**
+
+- Keep `dbName` identical across every client that belongs to the same logical database and let each client construct normally. The internal store registry + open-lock now:
+  - Track every registered `table` per `dbName`.
+  - Serialize concurrent `open()` calls per `dbName`.
+  - Bump the schema version and (re)create all registered stores in one `onupgradeneeded` pass when a store is missing.
+- Do not manually call `indexedDB.open(...)` from consumer code; rely on the client so the registry stays consistent.
+
 ### 2.12 App crashes in SSR/server-render pipelines
 
 **Cause**

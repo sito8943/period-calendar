@@ -64,7 +64,7 @@ No requiere backend para funcionar.
 Opcionalmente puede usar Supabase cuando existe sesion autenticada y variables de entorno configuradas.
 Setup completo (tablas + RLS, con script SQL listo para pegar en el SQL Editor): `SUPABASE_SETUP.md`.
 
-Con sesion autenticada, el perfil tambien sincroniza en `public.profile_settings`.
+Con sesion autenticada, el perfil (nombre, pareja, idioma y tema chica/chico) tambien sincroniza en `public.profile_settings`.
 
 Datos funcionales (IndexedDB):
 

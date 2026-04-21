@@ -994,6 +994,53 @@ export const productsClient = navigator.onLine
   : new ProductsIndexedDBClient();
 ```
 
+### 14.1 Sharing a `dbName` across multiple `IndexedDBClient` instances
+
+When several entity clients belong to the same logical database, construct them with the same `dbName`. The client's internal registry tracks every `table`, and opens are serialized per `dbName` so concurrent CRUD is safe and no previously registered store is dropped by later opens.
+
+```ts
+class UsersIndexedDBClient extends IndexedDBClient<
+  "users",
+  UserDto,
+  UserCommonDto,
+  UserCreateDto,
+  UserUpdateDto,
+  UserFilterDto,
+  UserImportPreviewDto
+> {
+  constructor() {
+    super("users", "my-app-db");
+  }
+}
+
+class AccountsIndexedDBClient extends IndexedDBClient<
+  "accounts",
+  AccountDto,
+  AccountCommonDto,
+  AccountCreateDto,
+  AccountUpdateDto,
+  AccountFilterDto,
+  AccountImportPreviewDto
+> {
+  constructor() {
+    super("accounts", "my-app-db");
+  }
+}
+
+const users = new UsersIndexedDBClient();
+const accounts = new AccountsIndexedDBClient();
+
+await Promise.all([
+  users.insert({ name: "Alice", email: "alice@test.com" }),
+  accounts.insert({ userId: 1, balance: 100 }),
+]);
+```
+
+Notes:
+
+- The effective open version is `max(registered versions, current db version)`; if a registered store is missing at open time, the version is bumped once and all registered stores are created in a single `onupgradeneeded` pass.
+- Registering a new store after the database already exists is supported — the next `open()` detects the missing store and upgrades transparently.
+
 ## 15. Ready-to-use export action with `useExportActionMutate`
 
 ```tsx

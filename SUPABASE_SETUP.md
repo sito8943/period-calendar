@@ -57,8 +57,19 @@ create table if not exists public.profile_settings (
   name text not null default '',
   partner_name text not null default '',
   language text not null default 'es' check (language in ('es', 'en')),
+  theme text not null default 'girl' check (theme in ('girl', 'boy')),
   updated_at timestamptz not null default timezone('utc', now())
 );
+
+alter table public.profile_settings
+  add column if not exists theme text not null default 'girl';
+
+alter table public.profile_settings
+  drop constraint if exists profile_settings_theme_check;
+
+alter table public.profile_settings
+  add constraint profile_settings_theme_check
+  check (theme in ('girl', 'boy'));
 
 -- Evita duplicar diario activo por día/usuario (la app también lo valida)
 create unique index if not exists daily_logs_user_date_active_uniq
