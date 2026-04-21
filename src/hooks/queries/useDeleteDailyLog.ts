@@ -5,16 +5,18 @@ import { periodCalendarManager } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
+import { usePeriodQueryScope } from "./usePeriodQueryScope";
 
 export function useDeleteDailyLog() {
   const queryClient = useQueryClient();
+  const queryScope = usePeriodQueryScope();
 
   return useMutation({
     mutationFn: async (id: string) => {
       await periodCalendarManager.DailyLogs.softDelete(id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());
+      queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs(queryScope));
     },
   });
 }

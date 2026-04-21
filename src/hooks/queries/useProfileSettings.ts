@@ -6,9 +6,11 @@ import { periodCalendarManager, type ProfileSettings } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
+import { usePeriodQueryScope } from "./usePeriodQueryScope";
 
 export function useProfileSettings() {
   const queryClient = useQueryClient();
+  const queryScope = usePeriodQueryScope();
 
   useEffect(() => {
     let isActive = true;
@@ -18,7 +20,7 @@ export function useProfileSettings() {
       if (!isActive) return;
 
       queryClient.setQueryData<ProfileSettings | undefined>(
-        PeriodQueryKeys.profile().queryKey,
+        PeriodQueryKeys.profile(queryScope).queryKey,
         (currentProfile) => currentProfile ?? cachedProfile,
       );
     };
@@ -28,10 +30,10 @@ export function useProfileSettings() {
     return () => {
       isActive = false;
     };
-  }, [queryClient]);
+  }, [queryClient, queryScope]);
 
   return useQuery({
-    ...PeriodQueryKeys.profile(),
+    ...PeriodQueryKeys.profile(queryScope),
     queryFn: async () => periodCalendarManager.Profiles.get(),
     refetchOnMount: "always",
   });

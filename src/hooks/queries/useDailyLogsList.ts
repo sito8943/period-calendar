@@ -6,9 +6,11 @@ import { periodCalendarManager, type DailyLog } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
+import { usePeriodQueryScope } from "./usePeriodQueryScope";
 
 export function useDailyLogsList() {
   const queryClient = useQueryClient();
+  const queryScope = usePeriodQueryScope();
 
   useEffect(() => {
     let isActive = true;
@@ -18,7 +20,7 @@ export function useDailyLogsList() {
       if (!isActive || cachedDailyLogs.length === 0) return;
 
       queryClient.setQueryData<DailyLog[] | undefined>(
-        PeriodQueryKeys.dailyLogsList().queryKey,
+        PeriodQueryKeys.dailyLogsList(queryScope).queryKey,
         (currentDailyLogs) => {
           if (Array.isArray(currentDailyLogs) && currentDailyLogs.length > 0) {
             return currentDailyLogs;
@@ -33,10 +35,10 @@ export function useDailyLogsList() {
     return () => {
       isActive = false;
     };
-  }, [queryClient]);
+  }, [queryClient, queryScope]);
 
   return useQuery({
-    ...PeriodQueryKeys.dailyLogsList(),
+    ...PeriodQueryKeys.dailyLogsList(queryScope),
     queryFn: async () => periodCalendarManager.DailyLogs.get(),
   });
 }

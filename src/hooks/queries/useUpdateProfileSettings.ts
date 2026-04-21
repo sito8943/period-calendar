@@ -8,9 +8,11 @@ import {
 
 // constants
 import { PeriodQueryKeys } from "./constants";
+import { usePeriodQueryScope } from "./usePeriodQueryScope";
 
 export function useUpdateProfileSettings() {
   const queryClient = useQueryClient();
+  const queryScope = usePeriodQueryScope();
 
   return useMutation({
     mutationFn: async (profile: Omit<ProfileSettings, "updatedAt">) => {
@@ -21,7 +23,7 @@ export function useUpdateProfileSettings() {
       return periodCalendarManager.Profiles.save(nextProfile);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(PeriodQueryKeys.profile());
+      queryClient.invalidateQueries(PeriodQueryKeys.profile(queryScope));
     },
   });
 }

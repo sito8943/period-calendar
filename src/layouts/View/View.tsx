@@ -18,18 +18,25 @@ import {
   toLocal,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
-import type { BaseLinkPropsType } from "@sito/dashboard-app";
-import type { BottomNavigationItemType } from "@sito/dashboard-app";
-import type { OnboardingStepType } from "@sito/dashboard-app";
+import type {
+  OnboardingStepType,
+  BottomNavigationItemType,
+  BaseLinkPropsType,
+} from "@sito/dashboard-app";
 
+// hooks
 import { PeriodQueryKeys, useProfileSettings } from "hooks";
+import { resolvePeriodQueryScopeFromAccount } from "../../hooks/queries";
 
 // components
 import Header from "./Header";
 import Footer from "./Footer";
 import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
 
+// config
 import { config } from "../../config";
+
+// lib
 import {
   AppRoute,
   getStoredPeriodTheme,
@@ -37,7 +44,11 @@ import {
   setPeriodTheme,
   toBaseAppLanguage,
 } from "lib";
+
+// menu
 import { getFeatureFilteredBottomMap } from "../../views/bottomMap";
+
+// providers
 import { useFeatureFlags } from "providers";
 
 export function View() {
@@ -46,8 +57,10 @@ export function View() {
   const location = useLocation();
   const queryClient = useQueryClient();
   const auth = useOptionalAuthContext();
-  const accountToken = auth?.account?.token ?? null;
-  const previousAccountTokenRef = useRef<string | null>(accountToken);
+  const accountQueryScope = resolvePeriodQueryScopeFromAccount(
+    auth?.account ?? null,
+  );
+  const previousQueryScopeRef = useRef(accountQueryScope);
   const { isFeatureEnabled } = useFeatureFlags();
   const { data: profileSettings } = useProfileSettings();
   const [showOnboarding, setShowOnboarding] = useState(
@@ -61,15 +74,29 @@ export function View() {
   }, [showOnboarding]);
 
   useEffect(() => {
-    const previousAccountToken = previousAccountTokenRef.current;
-    if (previousAccountToken === accountToken) return;
+    const previousQueryScope = previousQueryScopeRef.current;
+    if (previousQueryScope === accountQueryScope) return;
 
-    previousAccountTokenRef.current = accountToken;
+    previousQueryScopeRef.current = accountQueryScope;
 
-    void queryClient.invalidateQueries(PeriodQueryKeys.list());
-    void queryClient.invalidateQueries(PeriodQueryKeys.dailyLogsList());
-    void queryClient.invalidateQueries(PeriodQueryKeys.profile());
-  }, [accountToken, queryClient]);
+    void queryClient.invalidateQueries(
+      PeriodQueryKeys.list(previousQueryScope),
+    );
+    void queryClient.invalidateQueries(
+      PeriodQueryKeys.dailyLogsList(previousQueryScope),
+    );
+    void queryClient.invalidateQueries(
+      PeriodQueryKeys.profile(previousQueryScope),
+    );
+
+    void queryClient.invalidateQueries(PeriodQueryKeys.list(accountQueryScope));
+    void queryClient.invalidateQueries(
+      PeriodQueryKeys.dailyLogsList(accountQueryScope),
+    );
+    void queryClient.invalidateQueries(
+      PeriodQueryKeys.profile(accountQueryScope),
+    );
+  }, [accountQueryScope, queryClient]);
 
   useEffect(() => {
     if (!profileSettings) return;
@@ -94,12 +121,7 @@ export function View() {
     if (i18n.language !== themedLanguage) {
       void i18n.changeLanguage(themedLanguage);
     }
-  }, [
-    i18n,
-    i18n.language,
-    i18n.resolvedLanguage,
-    profileSettings,
-  ]);
+  }, [i18n, i18n.language, i18n.resolvedLanguage, profileSettings]);
 
   useEffect(() => {
     const theme = getStoredPeriodTheme();
@@ -113,12 +135,17 @@ export function View() {
     }
   }, [i18n, i18n.language, i18n.resolvedLanguage]);
 
-  const handleThemeSelect = useCallback((theme: "girl" | "boy") => {
-    setSelectedTheme(theme);
-    setPeriodTheme(theme);
-    const baseLanguage = toBaseAppLanguage(i18n.resolvedLanguage ?? i18n.language);
-    void i18n.changeLanguage(getThemedLanguage(baseLanguage, theme));
-  }, [i18n]);
+  const handleThemeSelect = useCallback(
+    (theme: "girl" | "boy") => {
+      setSelectedTheme(theme);
+      setPeriodTheme(theme);
+      const baseLanguage = toBaseAppLanguage(
+        i18n.resolvedLanguage ?? i18n.language,
+      );
+      void i18n.changeLanguage(getThemedLanguage(baseLanguage, theme));
+    },
+    [i18n],
+  );
 
   const closeOnboarding = useCallback(() => {
     setShowOnboarding(false);
@@ -136,7 +163,9 @@ export function View() {
               onClick={() => handleThemeSelect("girl")}
               className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "girl" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
             >
-              <strong>{t("_pages:onboarding.profile.options.girl.title")}</strong>
+              <strong>
+                {t("_pages:onboarding.profile.options.girl.title")}
+              </strong>
               <p className="text-sm opacity-90">
                 {t("_pages:onboarding.profile.options.girl.body")}
               </p>
@@ -146,7 +175,9 @@ export function View() {
               onClick={() => handleThemeSelect("boy")}
               className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "boy" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
             >
-              <strong>{t("_pages:onboarding.profile.options.boy.title")}</strong>
+              <strong>
+                {t("_pages:onboarding.profile.options.boy.title")}
+              </strong>
               <p className="text-sm opacity-90">
                 {t("_pages:onboarding.profile.options.boy.body")}
               </p>
@@ -195,7 +226,10 @@ export function View() {
   const isBottomNavItemActive = (
     pathname: string,
     item: BottomNavigationItemType,
-  ) => (item.to === AppRoute.Home ? pathname === AppRoute.Home : pathname.startsWith(item.to));
+  ) =>
+    item.to === AppRoute.Home
+      ? pathname === AppRoute.Home
+      : pathname.startsWith(item.to);
 
   const centerAction = useMemo(() => {
     if (!isFeatureEnabled("periodLogEnabled")) return undefined;
