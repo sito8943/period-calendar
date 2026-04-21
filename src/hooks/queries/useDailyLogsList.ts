@@ -2,11 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // lib
-import {
-  getDailyLogs,
-  getDailyLogsMirrorSnapshot,
-  type DailyLog,
-} from "lib";
+import { periodCalendarManager, type DailyLog } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
@@ -18,7 +14,7 @@ export function useDailyLogsList() {
     let isActive = true;
 
     const preloadDailyLogsFromMirror = async () => {
-      const cachedDailyLogs = await getDailyLogsMirrorSnapshot();
+      const cachedDailyLogs = await periodCalendarManager.DailyLogs.getMirrorSnapshot();
       if (!isActive || cachedDailyLogs.length === 0) return;
 
       queryClient.setQueryData<DailyLog[] | undefined>(
@@ -41,6 +37,6 @@ export function useDailyLogsList() {
 
   return useQuery({
     ...PeriodQueryKeys.dailyLogsList(),
-    queryFn: async () => getDailyLogs(),
+    queryFn: async () => periodCalendarManager.DailyLogs.get(),
   });
 }

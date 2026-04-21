@@ -423,8 +423,14 @@ function getPeriodsFromLocalStorage(): Period[] {
     if (typeof row.id !== "string" || !row.id.length) continue;
     if (!isIsoDate(row.startDate)) continue;
 
-    const createdAt = parseDateOrFallback(row.createdAt, new Date()).toISOString();
-    const updatedAt = parseDateOrFallback(row.updatedAt, new Date(createdAt)).toISOString();
+    const createdAt = parseDateOrFallback(
+      row.createdAt,
+      new Date(),
+    ).toISOString();
+    const updatedAt = parseDateOrFallback(
+      row.updatedAt,
+      new Date(createdAt),
+    ).toISOString();
 
     periods.push({
       id: row.id,
@@ -447,8 +453,14 @@ function getDailyLogsFromLocalStorage(): DailyLog[] {
     if (typeof row.id !== "string" || !row.id.length) continue;
     if (!isIsoDate(row.date)) continue;
 
-    const createdAt = parseDateOrFallback(row.createdAt, new Date()).toISOString();
-    const updatedAt = parseDateOrFallback(row.updatedAt, new Date(createdAt)).toISOString();
+    const createdAt = parseDateOrFallback(
+      row.createdAt,
+      new Date(),
+    ).toISOString();
+    const updatedAt = parseDateOrFallback(
+      row.updatedAt,
+      new Date(createdAt),
+    ).toISOString();
 
     dailyLogs.push({
       id: row.id,
@@ -475,7 +487,10 @@ function savePeriodsToLocalStorage(periods: Period[]): void {
 
 function saveDailyLogsToLocalStorage(dailyLogs: DailyLog[]): void {
   if (!isBrowser()) return;
-  window.localStorage.setItem(STORAGE_KEYS.dailyLogs, JSON.stringify(dailyLogs));
+  window.localStorage.setItem(
+    STORAGE_KEYS.dailyLogs,
+    JSON.stringify(dailyLogs),
+  );
 }
 
 function getProfileSettingsFromLocalStorage(): ProfileSettings {
@@ -551,7 +566,8 @@ function deletePeriodInLocalStorage(id: string): void {
 function addDailyLogInLocalStorage(dto: AddDailyLogDto): DailyLog {
   const dailyLogs = getDailyLogsFromLocalStorage();
   const duplicateDate = dailyLogs.find((item) => item.date === dto.date);
-  if (duplicateDate) throw new Error("A daily log already exists for this date");
+  if (duplicateDate)
+    throw new Error("A daily log already exists for this date");
 
   const now = new Date().toISOString();
   const dailyLog: DailyLog = {
@@ -575,7 +591,8 @@ function updateDailyLogInLocalStorage(dto: UpdateDailyLogDto): DailyLog {
   const duplicateDate = dailyLogs.find(
     (item) => item.date === dto.date && item.id !== dto.id,
   );
-  if (duplicateDate) throw new Error("A daily log already exists for this date");
+  if (duplicateDate)
+    throw new Error("A daily log already exists for this date");
 
   const updated: DailyLog = {
     ...dailyLogs[index],
@@ -590,7 +607,9 @@ function updateDailyLogInLocalStorage(dto: UpdateDailyLogDto): DailyLog {
 }
 
 function deleteDailyLogInLocalStorage(id: string): void {
-  const dailyLogs = getDailyLogsFromLocalStorage().filter((item) => item.id !== id);
+  const dailyLogs = getDailyLogsFromLocalStorage().filter(
+    (item) => item.id !== id,
+  );
   saveDailyLogsToLocalStorage(dailyLogs);
 }
 
@@ -652,7 +671,9 @@ const dedupePeriods = (rows: PeriodEntityAddDto[]): PeriodEntityAddDto[] => {
   return [...map.values()];
 };
 
-const dedupeDailyLogs = (rows: DailyLogEntityAddDto[]): DailyLogEntityAddDto[] => {
+const dedupeDailyLogs = (
+  rows: DailyLogEntityAddDto[],
+): DailyLogEntityAddDto[] => {
   const map = new Map<string, DailyLogEntityAddDto>();
 
   for (const row of rows) {
@@ -688,7 +709,9 @@ const normalizeLegacyPeriodRows = (rows: unknown[]): PeriodEntityAddDto[] => {
   return normalized;
 };
 
-const normalizeLegacyDailyLogRows = (rows: unknown[]): DailyLogEntityAddDto[] => {
+const normalizeLegacyDailyLogRows = (
+  rows: unknown[],
+): DailyLogEntityAddDto[] => {
   const normalized: DailyLogEntityAddDto[] = [];
 
   for (const row of rows) {
@@ -739,7 +762,9 @@ function closeOfflineClientConnection(client: ClosableIndexedDbClient): void {
 function closeOfflineClientConnections(): void {
   closeOfflineClientConnection(periodsClient as ClosableIndexedDbClient);
   closeOfflineClientConnection(dailyLogsClient as ClosableIndexedDbClient);
-  closeOfflineClientConnection(profileSettingsClient as ClosableIndexedDbClient);
+  closeOfflineClientConnection(
+    profileSettingsClient as ClosableIndexedDbClient,
+  );
 }
 
 async function getOfflineSchemaSnapshot(): Promise<OfflineSchemaSnapshot> {
@@ -773,7 +798,9 @@ async function getOfflineSchemaSnapshot(): Promise<OfflineSchemaSnapshot> {
   });
 }
 
-async function createMissingOfflineStores(targetVersion: number): Promise<void> {
+async function createMissingOfflineStores(
+  targetVersion: number,
+): Promise<void> {
   if (!isBrowser() || !isIndexedDbSupported()) return;
 
   await new Promise<void>((resolve, reject) => {
@@ -784,7 +811,9 @@ async function createMissingOfflineStores(targetVersion: number): Promise<void> 
     };
 
     request.onblocked = () => {
-      reject(new Error("Offline IndexedDB upgrade blocked by an open connection"));
+      reject(
+        new Error("Offline IndexedDB upgrade blocked by an open connection"),
+      );
     };
 
     request.onupgradeneeded = () => {
@@ -824,7 +853,10 @@ async function ensureOfflineObjectStores(): Promise<void> {
 async function runOfflineMigration(): Promise<void> {
   if (!isBrowser() || !isIndexedDbSupported()) return;
 
-  if (window.localStorage.getItem(STORAGE_KEYS.migrationV2) === MIGRATION_DONE_VALUE) {
+  if (
+    window.localStorage.getItem(STORAGE_KEYS.migrationV2) ===
+    MIGRATION_DONE_VALUE
+  ) {
     return;
   }
 
@@ -855,7 +887,10 @@ async function runOfflineMigration(): Promise<void> {
 
   if (shouldMigratePeriods) {
     const periodsToMigrate = dedupePeriods(
-      normalizeLegacyPeriodRows([...localPeriodsRows, ...legacyIndexedDbPeriodsRows]),
+      normalizeLegacyPeriodRows([
+        ...localPeriodsRows,
+        ...legacyIndexedDbPeriodsRows,
+      ]),
     );
 
     for (const period of periodsToMigrate) {
@@ -899,14 +934,20 @@ async function ensureOfflineMigration(): Promise<void> {
     await offlineSchemaPromise;
   }
 
-  if (window.localStorage.getItem(STORAGE_KEYS.migrationV2) === MIGRATION_DONE_VALUE) {
+  if (
+    window.localStorage.getItem(STORAGE_KEYS.migrationV2) ===
+    MIGRATION_DONE_VALUE
+  ) {
     return;
   }
 
   if (!migrationPromise) {
     migrationPromise = runOfflineMigration()
       .catch((error) => {
-        console.error("Offline migration failed, falling back to localStorage", error);
+        console.error(
+          "Offline migration failed, falling back to localStorage",
+          error,
+        );
       })
       .finally(() => {
         migrationPromise = null;
@@ -964,7 +1005,9 @@ const upsertDailyLogInLocalStorage = (dailyLog: DailyLog): void => {
 };
 
 const removeDailyLogFromLocalStorage = (id: string): void => {
-  const dailyLogs = getDailyLogsFromLocalStorage().filter((item) => item.id !== id);
+  const dailyLogs = getDailyLogsFromLocalStorage().filter(
+    (item) => item.id !== id,
+  );
   saveDailyLogsToLocalStorage(dailyLogs);
 };
 
@@ -1028,7 +1071,8 @@ async function clearOfflineMirrorForDifferentUser(): Promise<void> {
 
     if (periodIds.length > 0) await periodsClient.softDelete(periodIds);
     if (dailyLogIds.length > 0) await dailyLogsClient.softDelete(dailyLogIds);
-    if (profileIds.length > 0) await profileSettingsClient.softDelete(profileIds);
+    if (profileIds.length > 0)
+      await profileSettingsClient.softDelete(profileIds);
   } catch (error) {
     console.error("Failed to clear mirror data for different user", error);
   }
@@ -1056,7 +1100,9 @@ async function getPeriodsFromOfflineStore(): Promise<Period[]> {
   await ensureOfflineMigration();
 
   try {
-    const result = await periodsClient.get(undefined, { softDeleteScope: "ACTIVE" });
+    const result = await periodsClient.get(undefined, {
+      softDeleteScope: "ACTIVE",
+    });
     return result.items.map(toPeriodModel).sort(byPeriodStartDateDesc);
   } catch (error) {
     console.error("Failed to read periods from IndexedDBClient", error);
@@ -1087,8 +1133,12 @@ async function removePeriodFromOfflineMirror(id: string): Promise<void> {
   await periodsClient.softDelete([numericId]);
 }
 
-async function syncPeriodsMirrorWithRemote(remotePeriods: Period[]): Promise<void> {
-  const normalizedRemotePeriods = [...remotePeriods].sort(byPeriodStartDateDesc);
+async function syncPeriodsMirrorWithRemote(
+  remotePeriods: Period[],
+): Promise<void> {
+  const normalizedRemotePeriods = [...remotePeriods].sort(
+    byPeriodStartDateDesc,
+  );
   const cachedPeriods = await getPeriodsFromOfflineStore();
 
   if (arePeriodsEqual(cachedPeriods, normalizedRemotePeriods)) return;
@@ -1127,7 +1177,9 @@ async function addPeriodToOfflineStore(dto: AddPeriodDto): Promise<Period> {
   return toPeriodModel(created);
 }
 
-async function updatePeriodInOfflineStore(dto: UpdatePeriodDto): Promise<Period> {
+async function updatePeriodInOfflineStore(
+  dto: UpdatePeriodDto,
+): Promise<Period> {
   if (!isIndexedDbSupported()) return updatePeriodInLocalStorage(dto);
 
   await ensureOfflineMigration();
@@ -1163,7 +1215,9 @@ async function getDailyLogsFromOfflineStore(): Promise<DailyLog[]> {
   await ensureOfflineMigration();
 
   try {
-    const result = await dailyLogsClient.get(undefined, { softDeleteScope: "ACTIVE" });
+    const result = await dailyLogsClient.get(undefined, {
+      softDeleteScope: "ACTIVE",
+    });
     return result.items.map(toDailyLogModel).sort(byDailyLogDateDesc);
   } catch (error) {
     console.error("Failed to read daily logs from IndexedDBClient", error);
@@ -1171,7 +1225,9 @@ async function getDailyLogsFromOfflineStore(): Promise<DailyLog[]> {
   }
 }
 
-async function upsertDailyLogInOfflineMirror(dailyLog: DailyLog): Promise<void> {
+async function upsertDailyLogInOfflineMirror(
+  dailyLog: DailyLog,
+): Promise<void> {
   upsertDailyLogInLocalStorage(dailyLog);
 
   if (!isIndexedDbSupported()) return;
@@ -1194,8 +1250,12 @@ async function removeDailyLogFromOfflineMirror(id: string): Promise<void> {
   await dailyLogsClient.softDelete([numericId]);
 }
 
-async function syncDailyLogsMirrorWithRemote(remoteDailyLogs: DailyLog[]): Promise<void> {
-  const normalizedRemoteDailyLogs = [...remoteDailyLogs].sort(byDailyLogDateDesc);
+async function syncDailyLogsMirrorWithRemote(
+  remoteDailyLogs: DailyLog[],
+): Promise<void> {
+  const normalizedRemoteDailyLogs = [...remoteDailyLogs].sort(
+    byDailyLogDateDesc,
+  );
   const cachedDailyLogs = await getDailyLogsFromOfflineStore();
 
   if (areDailyLogsEqual(cachedDailyLogs, normalizedRemoteDailyLogs)) return;
@@ -1235,7 +1295,10 @@ async function getProfileSettingsFromOfflineStore(): Promise<ProfileSettings> {
 
     return toProfileSettingsModel(latestProfile);
   } catch (error) {
-    console.error("Failed to read profile settings from IndexedDBClient", error);
+    console.error(
+      "Failed to read profile settings from IndexedDBClient",
+      error,
+    );
     return localProfileSettings;
   }
 }
@@ -1263,13 +1326,17 @@ async function syncProfileSettingsMirrorWithRemote(
   await saveProfileSettingsToOfflineStore(profile);
 }
 
-async function addDailyLogToOfflineStore(dto: AddDailyLogDto): Promise<DailyLog> {
+async function addDailyLogToOfflineStore(
+  dto: AddDailyLogDto,
+): Promise<DailyLog> {
   if (!isIndexedDbSupported()) return addDailyLogInLocalStorage(dto);
 
   await ensureOfflineMigration();
 
   const existingDailyLogs = await getDailyLogsFromOfflineStore();
-  const duplicateDate = existingDailyLogs.find((item) => item.date === dto.date);
+  const duplicateDate = existingDailyLogs.find(
+    (item) => item.date === dto.date,
+  );
   if (duplicateDate) {
     throw new Error("A daily log already exists for this date");
   }
@@ -1461,9 +1528,7 @@ async function addPeriodToSupabase(
   return toPeriodModel(created);
 }
 
-async function updatePeriodInSupabase(
-  dto: UpdatePeriodDto,
-): Promise<Period> {
+async function updatePeriodInSupabase(dto: UpdatePeriodDto): Promise<Period> {
   const periodsSupabaseClient = getPeriodsSupabaseClient();
   if (!periodsSupabaseClient) {
     throw new Error("Supabase periods client is not available");
@@ -1555,7 +1620,9 @@ async function updateDailyLogInSupabase(
     softDeleteScope: "ACTIVE",
   });
 
-  const hasDuplicate = duplicateByDate.some((item) => String(item.id) !== dto.id);
+  const hasDuplicate = duplicateByDate.some(
+    (item) => String(item.id) !== dto.id,
+  );
   if (hasDuplicate) {
     throw new Error("A daily log already exists for this date");
   }
@@ -1715,7 +1782,10 @@ export async function updatePeriod(dto: UpdatePeriodDto): Promise<Period> {
       await upsertPeriodInOfflineMirror(updated);
       return updated;
     } catch (error) {
-      console.error("Supabase update period failed, using offline store", error);
+      console.error(
+        "Supabase update period failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1734,7 +1804,10 @@ export async function deletePeriod(id: string): Promise<void> {
       await removePeriodFromOfflineMirror(id);
       return;
     } catch (error) {
-      console.error("Supabase delete period failed, using offline store", error);
+      console.error(
+        "Supabase delete period failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1753,7 +1826,10 @@ export async function getDailyLogs(): Promise<DailyLog[]> {
       await syncDailyLogsMirrorWithRemote(dailyLogs);
       return dailyLogs;
     } catch (error) {
-      console.error("Supabase daily logs read failed, using offline store", error);
+      console.error(
+        "Supabase daily logs read failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1772,14 +1848,19 @@ export async function addDailyLog(dto: AddDailyLogDto): Promise<DailyLog> {
       await upsertDailyLogInOfflineMirror(created);
       return created;
     } catch (error) {
-      console.error("Supabase add daily log failed, using offline store", error);
+      console.error(
+        "Supabase add daily log failed, using offline store",
+        error,
+      );
     }
   }
 
   return addDailyLogToOfflineStore(dto);
 }
 
-export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> {
+export async function updateDailyLog(
+  dto: UpdateDailyLogDto,
+): Promise<DailyLog> {
   const userId = await getCurrentSupabaseUserId();
 
   if (userId) {
@@ -1791,7 +1872,10 @@ export async function updateDailyLog(dto: UpdateDailyLogDto): Promise<DailyLog> 
       await upsertDailyLogInOfflineMirror(updated);
       return updated;
     } catch (error) {
-      console.error("Supabase update daily log failed, using offline store", error);
+      console.error(
+        "Supabase update daily log failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1810,7 +1894,10 @@ export async function deleteDailyLog(id: string): Promise<void> {
       await removeDailyLogFromOfflineMirror(id);
       return;
     } catch (error) {
-      console.error("Supabase delete daily log failed, using offline store", error);
+      console.error(
+        "Supabase delete daily log failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1861,13 +1948,17 @@ export async function getProfileSettings(): Promise<ProfileSettings> {
     await ensureMirrorUserScope(userId);
 
     try {
-      const remoteProfileSettings = await getProfileSettingsFromSupabase(userId);
+      const remoteProfileSettings =
+        await getProfileSettingsFromSupabase(userId);
       if (remoteProfileSettings) {
         await syncProfileSettingsMirrorWithRemote(remoteProfileSettings);
         return remoteProfileSettings;
       }
     } catch (error) {
-      console.error("Supabase profile settings read failed, using offline store", error);
+      console.error(
+        "Supabase profile settings read failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1893,7 +1984,10 @@ export async function saveProfileSettings(
       await syncProfileSettingsMirrorWithRemote(savedProfileSettings);
       return savedProfileSettings;
     } catch (error) {
-      console.error("Supabase profile settings save failed, using offline store", error);
+      console.error(
+        "Supabase profile settings save failed, using offline store",
+        error,
+      );
     }
   }
 
@@ -1908,3 +2002,38 @@ export async function getProfileSettingsMirrorSnapshot(): Promise<ProfileSetting
 
   return getProfileSettingsFromOfflineStore();
 }
+
+export const storageCore = {
+  getCurrentSupabaseUserId,
+  ensureMirrorUserScope,
+  ensureSupabaseSeedFromOffline,
+  getPeriodsFromSupabase,
+  addPeriodToSupabase,
+  updatePeriodInSupabase,
+  deletePeriodFromSupabase,
+  getDailyLogsFromSupabase,
+  addDailyLogToSupabase,
+  updateDailyLogInSupabase,
+  deleteDailyLogFromSupabase,
+  getProfileSettingsFromSupabase,
+  saveProfileSettingsToSupabase,
+  getPeriodsFromOfflineStore,
+  addPeriodToOfflineStore,
+  updatePeriodInOfflineStore,
+  deletePeriodFromOfflineStore,
+  getDailyLogsFromOfflineStore,
+  addDailyLogToOfflineStore,
+  updateDailyLogInOfflineStore,
+  deleteDailyLogFromOfflineStore,
+  getProfileSettingsFromOfflineStore,
+  saveProfileSettingsToOfflineStore,
+  syncPeriodsMirrorWithRemote,
+  syncDailyLogsMirrorWithRemote,
+  syncProfileSettingsMirrorWithRemote,
+  upsertPeriodInOfflineMirror,
+  removePeriodFromOfflineMirror,
+  upsertDailyLogInOfflineMirror,
+  removeDailyLogFromOfflineMirror,
+  getSettings,
+  saveSettings,
+} as const;

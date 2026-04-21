@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // lib
-import { deleteDailyLog as deleteDailyLogFromStorage } from "lib";
+import { periodCalendarManager } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
@@ -11,7 +11,7 @@ export function useDeleteDailyLog() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      await deleteDailyLogFromStorage(id);
+      await periodCalendarManager.DailyLogs.softDelete(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.dailyLogs());

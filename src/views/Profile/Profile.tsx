@@ -40,11 +40,7 @@ import {
 } from "./utils";
 
 // lib
-import {
-  getStoredPeriodTheme,
-  getThemedLanguage,
-  setPeriodTheme,
-} from "lib";
+import { getStoredPeriodTheme, getThemedLanguage, setPeriodTheme } from "lib";
 
 export function Profile() {
   const { t, i18n } = useTranslation();
@@ -89,6 +85,7 @@ export function Profile() {
       language: profileLanguage,
       theme: profileTheme,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [i18n.language, i18n.resolvedLanguage, profileQuery.data, reset]);
 
   const languageOptions = useMemo(() => getLanguageOptions(t), [t]);

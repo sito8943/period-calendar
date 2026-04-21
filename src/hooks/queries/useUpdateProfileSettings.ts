@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // lib
 import {
-  saveProfileSettings,
+  periodCalendarManager,
   type ProfileSettings,
 } from "lib";
 
@@ -18,7 +18,7 @@ export function useUpdateProfileSettings() {
         ...profile,
         updatedAt: new Date().toISOString(),
       };
-      return saveProfileSettings(nextProfile);
+      return periodCalendarManager.Profiles.save(nextProfile);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.profile());

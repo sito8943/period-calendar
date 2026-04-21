@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // lib
-import { getPeriods, getPeriodsMirrorSnapshot, type Period } from "lib";
+import { periodCalendarManager, type Period } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";
@@ -14,7 +14,7 @@ export function usePeriodsList() {
     let isActive = true;
 
     const preloadPeriodsFromMirror = async () => {
-      const cachedPeriods = await getPeriodsMirrorSnapshot();
+      const cachedPeriods = await periodCalendarManager.Periods.getMirrorSnapshot();
       if (!isActive || cachedPeriods.length === 0) return;
 
       queryClient.setQueryData<Period[] | undefined>(
@@ -37,6 +37,6 @@ export function usePeriodsList() {
 
   return useQuery({
     ...PeriodQueryKeys.list(),
-    queryFn: async () => getPeriods(),
+    queryFn: async () => periodCalendarManager.Periods.get(),
   });
 }
