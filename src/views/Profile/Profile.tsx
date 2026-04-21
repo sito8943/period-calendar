@@ -40,7 +40,12 @@ import {
 } from "./utils";
 
 // lib
-import { getStoredPeriodTheme, getThemedLanguage, setPeriodTheme } from "lib";
+import {
+  getAppliedPeriodTheme,
+  getStoredPeriodTheme,
+  getThemedLanguage,
+  setPeriodTheme,
+} from "lib";
 
 export function Profile() {
   const { t, i18n } = useTranslation();
@@ -74,7 +79,9 @@ export function Profile() {
     const profileTheme = profileQuery.data.theme ?? getStoredPeriodTheme();
     const themedLanguage = getThemedLanguage(profileLanguage, profileTheme);
 
-    setPeriodTheme(profileTheme);
+    if (getAppliedPeriodTheme() !== profileTheme) {
+      setPeriodTheme(profileTheme);
+    }
     if (i18n.language !== themedLanguage) {
       void i18n.changeLanguage(themedLanguage);
     }

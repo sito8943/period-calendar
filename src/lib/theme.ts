@@ -23,6 +23,14 @@ export const getStoredPeriodTheme = (): PeriodTheme => {
   return isPeriodTheme(value) ? value : DEFAULT_THEME;
 };
 
+export const getAppliedPeriodTheme = (): PeriodTheme => {
+  if (typeof document === "undefined") return DEFAULT_THEME;
+  const value = document.documentElement.getAttribute(
+    PERIOD_THEME_DATA_ATTRIBUTE,
+  );
+  return isPeriodTheme(value) ? value : DEFAULT_THEME;
+};
+
 export const applyPeriodTheme = (theme: PeriodTheme): void => {
   if (typeof document === "undefined") return;
   document.documentElement.setAttribute(PERIOD_THEME_DATA_ATTRIBUTE, theme);

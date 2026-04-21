@@ -39,6 +39,7 @@ import { config } from "../../config";
 // lib
 import {
   AppRoute,
+  getAppliedPeriodTheme,
   getStoredPeriodTheme,
   getThemedLanguage,
   setPeriodTheme,
@@ -113,7 +114,7 @@ export function View() {
     setSelectedTheme((currentTheme) =>
       currentTheme === profileTheme ? currentTheme : profileTheme,
     );
-    if (getStoredPeriodTheme() !== profileTheme) {
+    if (getAppliedPeriodTheme() !== profileTheme) {
       setPeriodTheme(profileTheme);
     }
 
