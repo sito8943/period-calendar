@@ -16,7 +16,8 @@ export function useProfileSettings() {
     let isActive = true;
 
     const preloadProfileFromMirror = async () => {
-      const cachedProfile = await periodCalendarManager.Profiles.getMirrorSnapshot();
+      const cachedProfile =
+        await periodCalendarManager.Profiles.getMirrorSnapshot();
       if (!isActive) return;
 
       queryClient.setQueryData<ProfileSettings | undefined>(

@@ -48,11 +48,11 @@ export class ProfileClient {
 
     if (userId) {
       try {
-        const savedProfileSettings = await storageCore.saveProfileSettingsToSupabase(
-          userId,
-          profile,
+        const savedProfileSettings =
+          await storageCore.saveProfileSettingsToSupabase(userId, profile);
+        await storageCore.syncProfileSettingsMirrorWithRemote(
+          savedProfileSettings,
         );
-        await storageCore.syncProfileSettingsMirrorWithRemote(savedProfileSettings);
         return savedProfileSettings;
       } catch (error) {
         console.error(

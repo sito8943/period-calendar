@@ -113,7 +113,6 @@ export function View() {
     setSelectedTheme((currentTheme) =>
       currentTheme === profileTheme ? currentTheme : profileTheme,
     );
-
     if (getStoredPeriodTheme() !== profileTheme) {
       setPeriodTheme(profileTheme);
     }
