@@ -29,7 +29,7 @@ export function SignUpConfirmation() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <form className="auth-form blur-appear">
-        <h1 className="w-full text-2xl mb-1">
+        <h1 className="auth-title">
           {t("_pages:auth.signUpConfirmation.title")}
         </h1>
 
