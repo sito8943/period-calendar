@@ -262,6 +262,27 @@
         "question": "¿Recuerdas tu contrasena?",
         "link": "Volver a iniciar sesion"
       }
+    },
+    "updatePassword": {
+      "title": "Actualizar contrasena",
+      "submit": "Guardar nueva contrasena",
+      "sent": "Contrasena actualizada. Ya puedes iniciar sesion.",
+      "invalidToken": "El enlace de recuperacion es invalido o expiro.",
+      "toLogin": {
+        "question": "¿Ya tienes acceso?",
+        "link": "Iniciar sesion"
+      }
+    },
+    "confirmEmailSuccess": {
+      "title": "Correo confirmado",
+      "description": "Tu correo se confirmo correctamente. Ya puedes iniciar sesion.",
+      "toSignIn": "Iniciar sesion"
+    },
+    "confirmEmailError": {
+      "title": "No se pudo confirmar el correo",
+      "description": "El enlace es invalido o expiro. Solicita un nuevo correo de confirmacion.",
+      "resend": "Solicitar nuevo correo",
+      "toSignIn": "Ir a iniciar sesion"
     }
   },
   "onboarding": {

@@ -4,6 +4,9 @@ export const AppRoute = {
   SignUp: "/auth/sign-up",
   SignUpConfirmation: "/auth/sign-up-confirmation",
   ForgotPassword: "/auth/forgot-password",
+  UpdatePassword: "/auth/update-password",
+  ConfirmEmailSuccess: "/auth/confirm-email-success",
+  ConfirmEmailError: "/auth/confirm-email-error",
   SignOut: "/sign-out",
   Home: "/",
   PeriodLog: "/log",
@@ -22,6 +25,23 @@ export const AppRoute = {
 export const RouteQueryParam = {
   PeriodStartDate: "startDate",
   Email: "email",
+} as const;
+
+export const AuthRouteQueryParam = {
+  Error: "error",
+  ErrorDescription: "error_description",
+  AccessToken: "access_token",
+  AccessTokenLegacy: "accessToken",
+  RefreshToken: "refresh_token",
+  Token: "token",
+  TokenHash: "token_hash",
+  Type: "type",
+} as const;
+
+export const AuthRouteQueryParamType = {
+  Email: "email",
+  Recovery: "recovery",
+  SignUp: "signup",
 } as const;
 
 export function getPeriodLogDetailRoute(id: string): string {

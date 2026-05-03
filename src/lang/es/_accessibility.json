@@ -40,6 +40,12 @@
       "invalidEmail": "Correo electronico invalido",
       "supabaseNotConfigured": "Supabase no esta configurado en esta app",
       "generic": "No se pudo enviar el enlace de recuperacion"
+    },
+    "updatePassword": {
+      "invalidToken": "El enlace de recuperacion es invalido o expiro.",
+      "weakPassword": "La nueva contrasena no cumple los requisitos de seguridad.",
+      "supabaseNotConfigured": "Supabase no esta configurado en esta app",
+      "generic": "No se pudo actualizar la contrasena"
     }
   },
   "calendar": {

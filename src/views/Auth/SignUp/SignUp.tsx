@@ -23,6 +23,7 @@ import type { SignUpFormType } from "./types";
 
 // utils
 import { mapSignUpErrorKey } from "./utils";
+import { buildAuthRedirectUrl } from "../utils";
 
 // styles
 import "../styles.css";
@@ -68,10 +69,17 @@ export function SignUp() {
       return;
     }
 
+    const confirmEmailRedirectTo = buildAuthRedirectUrl(
+      AppRoute.ConfirmEmailSuccess,
+    );
+
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
       options: {
+        ...(confirmEmailRedirectTo
+          ? { emailRedirectTo: confirmEmailRedirectTo }
+          : {}),
         data: {
           name: values.name,
           username: values.name,

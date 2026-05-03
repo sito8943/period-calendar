@@ -21,6 +21,7 @@ import type { ForgotPasswordFormType } from "./types";
 
 // utils
 import { mapForgotPasswordErrorKey } from "./utils";
+import { buildAuthRedirectUrl } from "../utils";
 
 // styles
 import "../styles.css";
@@ -56,10 +57,7 @@ export function ForgotPassword() {
       return;
     }
 
-    const recoveryRedirectTo =
-      typeof window === "undefined"
-        ? undefined
-        : new URL(AppRoute.SignIn, window.location.origin).toString();
+    const recoveryRedirectTo = buildAuthRedirectUrl(AppRoute.UpdatePassword);
 
     const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
       ...(recoveryRedirectTo ? { redirectTo: recoveryRedirectTo } : {}),

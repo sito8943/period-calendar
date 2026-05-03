@@ -11,11 +11,14 @@ export {
 } from "./Info";
 export { NotFound } from "./NotFound";
 export {
+  ConfirmEmailError,
+  ConfirmEmailSuccess,
   ForgotPassword,
   SignIn,
   SignOut,
   SignUp,
   SignUpConfirmation,
+  UpdatePassword,
 } from "./Auth";
 export { FeatureUnavailable } from "./FeatureUnavailable";
 export * from "./sitemap";

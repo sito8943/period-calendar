@@ -40,6 +40,12 @@
       "invalidEmail": "Invalid email",
       "supabaseNotConfigured": "Supabase is not configured in this app",
       "generic": "Could not send recovery link"
+    },
+    "updatePassword": {
+      "invalidToken": "The recovery link is invalid or has expired.",
+      "weakPassword": "The new password does not meet security requirements.",
+      "supabaseNotConfigured": "Supabase is not configured in this app",
+      "generic": "Could not update password"
     }
   },
   "calendar": {

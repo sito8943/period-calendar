@@ -27,6 +27,21 @@ const SignUpConfirmation = loadable(() =>
     default: module.SignUpConfirmation,
   })),
 );
+const UpdatePassword = loadable(() =>
+  import("views").then((module) => ({
+    default: module.UpdatePassword,
+  })),
+);
+const ConfirmEmailSuccess = loadable(() =>
+  import("views").then((module) => ({
+    default: module.ConfirmEmailSuccess,
+  })),
+);
+const ConfirmEmailError = loadable(() =>
+  import("views").then((module) => ({
+    default: module.ConfirmEmailError,
+  })),
+);
 const ForgotPassword = loadable(() =>
   import("views").then((module) => ({
     default: module.ForgotPassword,
@@ -109,6 +124,18 @@ export const Routes = () => {
           <Route
             path={AppRoute.SignUpConfirmation}
             element={<SignUpConfirmation />}
+          />
+          <Route
+            path={AppRoute.UpdatePassword}
+            element={<UpdatePassword />}
+          />
+          <Route
+            path={AppRoute.ConfirmEmailSuccess}
+            element={<ConfirmEmailSuccess />}
+          />
+          <Route
+            path={AppRoute.ConfirmEmailError}
+            element={<ConfirmEmailError />}
           />
           <Route
             path={AppRoute.ForgotPassword}

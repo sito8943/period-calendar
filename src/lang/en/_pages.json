@@ -262,6 +262,27 @@
         "question": "Remembered your password?",
         "link": "Back to sign in"
       }
+    },
+    "updatePassword": {
+      "title": "Update password",
+      "submit": "Save new password",
+      "sent": "Password updated. You can sign in now.",
+      "invalidToken": "Recovery link is invalid or expired.",
+      "toLogin": {
+        "question": "Already have access?",
+        "link": "Sign in"
+      }
+    },
+    "confirmEmailSuccess": {
+      "title": "Email confirmed",
+      "description": "Your email was confirmed successfully. You can now sign in.",
+      "toSignIn": "Sign in"
+    },
+    "confirmEmailError": {
+      "title": "Could not confirm email",
+      "description": "The confirmation link is invalid or expired. Request a new confirmation email.",
+      "resend": "Request new email",
+      "toSignIn": "Go to sign in"
     }
   },
   "onboarding": {
