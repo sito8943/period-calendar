@@ -133,7 +133,7 @@ export function Home() {
           variant="primary"
           messageClassName={
             stats.daysUntilNext === null
-              ? "text-lg max-sm:text-base font-medium opacity-85"
+              ? "text-lg font-medium opacity-85"
               : undefined
           }
         />
