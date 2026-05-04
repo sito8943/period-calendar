@@ -133,7 +133,7 @@ export function Home() {
           variant="primary"
           messageClassName={
             stats.daysUntilNext === null
-              ? "text-lg font-medium opacity-85"
+              ? "font-medium opacity-85"
               : undefined
           }
         />
@@ -144,7 +144,7 @@ export function Home() {
             closeAriaLabel={closePredictionCardAriaLabel}
             dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.fertile}
             variant="fertile"
-            messageClassName="text-lg max-sm:text-base"
+            messageClassName=""
           />
         ) : null}
         {showMissingPeriodThisMonthAlert ? (
@@ -154,7 +154,7 @@ export function Home() {
             closeAriaLabel={closePredictionCardAriaLabel}
             dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.missingPeriod}
             variant="error"
-            messageClassName="text-lg max-sm:text-base"
+            messageClassName=""
           />
         ) : null}
       </div>

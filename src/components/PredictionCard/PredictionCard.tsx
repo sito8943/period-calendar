@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { IconButton } from "@sito/dashboard-app";
+import { useSwipe } from "hooks";
 import {
   PREDICTION_CARD_CLASSNAMES,
   PREDICTION_CARD_CLOSE_BUTTON_VARIANT_CLASSNAMES,
   PREDICTION_CARD_DISMISS_ANIMATION_DURATION_MS,
+  PREDICTION_CARD_SWIPE_DISMISS_THRESHOLD,
   PREDICTION_CARD_VARIANT_CLASSNAMES,
 } from "./constants";
 import type { PredictionCardProps } from "./types";
@@ -24,6 +26,7 @@ export function PredictionCard({
   className,
   messageClassName,
 }: PredictionCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const [isDismissed, setIsDismissed] = useState<boolean>(() =>
     isPredictionCardDismissed(dismissStorageKey),
   );
@@ -47,10 +50,18 @@ export function PredictionCard({
     onClose?.();
   }, [dismissStorageKey, isClosing, onClose]);
 
+  useSwipe({
+    ref: cardRef,
+    onSwipeLeft: handleClose,
+    onSwipeRight: handleClose,
+    threshold: PREDICTION_CARD_SWIPE_DISMISS_THRESHOLD,
+  });
+
   if (isDismissed) return null;
 
   return (
     <div
+      ref={cardRef}
       className={joinClasses(
         PREDICTION_CARD_CLASSNAMES.root,
         isClosing

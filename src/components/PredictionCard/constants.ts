@@ -5,7 +5,7 @@ export const PREDICTION_CARD_CLASSNAMES = {
   enterAnimation: "quick-blur-appear",
   exitAnimation: "quick-blur-disappear",
   title: "text-sm font-medium opacity-80",
-  message: "text-xl max-sm:text-lg font-bold mt-1",
+  message: "max-sm:text-sm font-bold mt-1",
   closeButton:
     "absolute top-2 right-2 size-7 !bg-transparent !text-inherit rounded-full flex items-center justify-center transition-colors transition-opacity opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
 } as const;
@@ -35,3 +35,4 @@ export const PREDICTION_CARD_DISMISS_STORAGE_PREFIX =
   "period-calendar:prediction-card:dismissed";
 export const PREDICTION_CARD_DISMISS_STORAGE_VALUE = "1";
 export const PREDICTION_CARD_DISMISS_ANIMATION_DURATION_MS = 300;
+export const PREDICTION_CARD_SWIPE_DISMISS_THRESHOLD = 40;
