@@ -13,11 +13,13 @@ import {
   useSettings,
   useCycleStats,
   useDailyLogsList,
+  useProfileSettings,
 } from "hooks";
 
 // lib
 import {
   AppRoute,
+  DEFAULT_PROFILE_SETTINGS,
   DEFAULT_SETTINGS,
   getDailyLogRoute,
   toISODateString,
@@ -37,6 +39,7 @@ export function Home() {
   const { data: periods = [] } = usePeriodsList();
   const { data: dailyLogs = [] } = useDailyLogsList();
   const { data: settings = DEFAULT_SETTINGS } = useSettings();
+  const { data: profile = DEFAULT_PROFILE_SETTINGS } = useProfileSettings();
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<
     string | null
   >(null);
@@ -61,6 +64,16 @@ export function Home() {
   }, [stats.daysUntilNext, t]);
   const showMissingPeriodThisMonthAlert =
     periods.length > 0 && !stats.hasReportedPeriodThisMonth;
+  const fertileMessage = useMemo(() => {
+    const normalizedPartnerName = profile.partnerName.trim();
+    if (profile.theme === "boy" && normalizedPartnerName.length > 0) {
+      return t("_pages:home.alerts.fertileMessageNamed", {
+        name: normalizedPartnerName,
+      });
+    }
+
+    return t("_pages:home.alerts.fertileMessage");
+  }, [profile.partnerName, profile.theme, t]);
   const cycleVariationMessage = useMemo(() => {
     const variation = stats.latestCycleVariation;
     if (!variation) return null;
@@ -140,7 +153,7 @@ export function Home() {
         {stats.isInFertileWindowToday ? (
           <PredictionCard
             title={t("_pages:home.alerts.fertileTitle")}
-            message={t("_pages:home.alerts.fertileMessage")}
+            message={fertileMessage}
             closeAriaLabel={closePredictionCardAriaLabel}
             dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.fertile}
             variant="fertile"

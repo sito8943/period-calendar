@@ -9,6 +9,7 @@
       "periodToday": "El periodo que sigues llega hoy",
       "fertileTitle": "Fertilidad (seguimiento)",
       "fertileMessage": "La persona que sigues esta en dias fertiles",
+      "fertileMessageNamed": "{{name}} esta en dias fertiles",
       "missingPeriodTitle": "Recordatorio",
       "missingPeriodMessage": "No has registrado el periodo a seguir este mes"
     }

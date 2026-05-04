@@ -9,6 +9,7 @@
       "periodToday": "The tracked period arrives today",
       "fertileTitle": "Fertility (tracking)",
       "fertileMessage": "The person you track is in fertile days",
+      "fertileMessageNamed": "{{name}} is in fertile days",
       "missingPeriodTitle": "Reminder",
       "missingPeriodMessage": "You have not logged the tracked period this month"
     }
