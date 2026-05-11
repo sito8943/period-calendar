@@ -285,6 +285,14 @@
       "toSignIn": "Ir a iniciar sesion"
     }
   },
+  "pwaUpdate": {
+    "title": "Nueva version disponible",
+    "description": "Se desplego una nueva version de la app. Actualiza para usar los cambios.",
+    "actions": {
+      "later": "Mas tarde",
+      "update": "Actualizar"
+    }
+  },
   "onboarding": {
     "profile": {
       "title": "Antes de empezar",

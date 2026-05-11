@@ -1,5 +1,3 @@
-import loadable from "@loadable/component";
-
 // layouts
 import { Auth, View } from "./layouts";
 import {
@@ -10,106 +8,31 @@ import {
 } from "react-router-dom";
 import { AppRoute } from "lib";
 import { useFeatureFlags } from "providers";
-
-// views
-const SignIn = loadable(() =>
-  import("views").then((module) => ({
-    default: module.SignIn,
-  })),
-);
-const SignUp = loadable(() =>
-  import("views").then((module) => ({
-    default: module.SignUp,
-  })),
-);
-const SignUpConfirmation = loadable(() =>
-  import("views").then((module) => ({
-    default: module.SignUpConfirmation,
-  })),
-);
-const UpdatePassword = loadable(() =>
-  import("views").then((module) => ({
-    default: module.UpdatePassword,
-  })),
-);
-const ConfirmEmailSuccess = loadable(() =>
-  import("views").then((module) => ({
-    default: module.ConfirmEmailSuccess,
-  })),
-);
-const ConfirmEmailError = loadable(() =>
-  import("views").then((module) => ({
-    default: module.ConfirmEmailError,
-  })),
-);
-const ForgotPassword = loadable(() =>
-  import("views").then((module) => ({
-    default: module.ForgotPassword,
-  })),
-);
-const SignOut = loadable(() =>
-  import("views").then((module) => ({
-    default: module.SignOut,
-  })),
-);
-const Home = loadable(() =>
-  import("views").then((module) => ({
-    default: module.Home,
-  })),
-);
-const PeriodLog = loadable(() =>
-  import("views").then((module) => ({
-    default: module.PeriodLog,
-  })),
-);
-const DailyLog = loadable(() =>
-  import("views").then((module) => ({
-    default: module.DailyLog,
-  })),
-);
-const History = loadable(() =>
-  import("views").then((module) => ({
-    default: module.History,
-  })),
-);
-const Profile = loadable(() =>
-  import("views").then((module) => ({
-    default: module.Profile,
-  })),
-);
-const About = loadable(() =>
-  import("views").then((module) => ({
-    default: module.About,
-  })),
-);
-const CookiesPolicy = loadable(() =>
-  import("views").then((module) => ({
-    default: module.CookiesPolicy,
-  })),
-);
-const TermsAndConditions = loadable(() =>
-  import("views").then((module) => ({
-    default: module.TermsAndConditions,
-  })),
-);
-const PrivacyPolicy = loadable(() =>
-  import("views").then((module) => ({
-    default: module.PrivacyPolicy,
-  })),
-);
-const FeatureUnavailable = loadable(() =>
-  import("views").then((module) => ({
-    default: module.FeatureUnavailable,
-  })),
-);
-const NotFound = loadable(() =>
-  import("views").then((module) => ({
-    default: module.NotFound,
-  })),
-);
+import { routeComponents } from "./views/routes";
 
 export const Routes = () => {
   const { isFeatureEnabled } = useFeatureFlags();
+  const {
+    SignIn,
+    SignUp,
+    SignUpConfirmation,
+    UpdatePassword,
+    ConfirmEmailSuccess,
+    ConfirmEmailError,
+    ForgotPassword,
+    SignOut,
+    Home,
+    PeriodLog,
+    DailyLog,
+    History,
+    Profile,
+    About,
+    CookiesPolicy,
+    TermsAndConditions,
+    PrivacyPolicy,
+    FeatureUnavailable,
+    NotFound,
+  } = routeComponents;
 
   return (
     <BrowserRouter>

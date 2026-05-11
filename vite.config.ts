@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       injectRegister: "auto",
       includeAssets: [
         "favicon.svg",
@@ -45,7 +45,7 @@ export default defineConfig({
         navigateFallback: "index.html",
         cleanupOutdatedCaches: true,
         clientsClaim: true,
-        skipWaiting: true,
+        skipWaiting: false,
         globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff2}"],
       },
     }),
