@@ -32,6 +32,7 @@ export const getAppliedPeriodTheme = (): PeriodTheme => {
 };
 
 export const applyPeriodTheme = (theme: PeriodTheme): void => {
+  console.log("Applying theme:", theme);
   if (typeof document === "undefined") return;
   document.documentElement.setAttribute(PERIOD_THEME_DATA_ATTRIBUTE, theme);
 };

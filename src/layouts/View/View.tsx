@@ -14,12 +14,10 @@ import {
   fromLocal,
   NavbarProvider,
   Notification,
-  Onboarding,
   toLocal,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
 import type {
-  OnboardingStepType,
   BottomNavigationItemType,
   BaseLinkPropsType,
 } from "@sito/dashboard-app";
@@ -31,14 +29,14 @@ import { resolvePeriodQueryScopeFromAccount } from "../../hooks/queries";
 // components
 import Header from "./Header";
 import Footer from "./Footer";
-import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
+import { PeriodOnboarding } from "components";
 
 // config
 import { config } from "../../config";
 
 // lib
 import {
-  AppRoute,
+  AppRoutes,
   getAppliedPeriodTheme,
   getStoredPeriodTheme,
   getThemedLanguage,
@@ -67,7 +65,6 @@ export function View() {
   const [showOnboarding, setShowOnboarding] = useState(
     () => !fromLocal(config.storage.onboarding),
   );
-  const [selectedTheme, setSelectedTheme] = useState(getStoredPeriodTheme);
 
   useEffect(() => {
     if (!showOnboarding) return;
@@ -105,15 +102,15 @@ export function View() {
     const fallbackLanguage = toBaseAppLanguage(
       i18n.resolvedLanguage ?? i18n.language,
     );
-    const profileLanguage = profileSettings.updatedAt
+    const hasPersistedProfileSettings = Boolean(profileSettings.updatedAt);
+    const profileLanguage = hasPersistedProfileSettings
       ? toBaseAppLanguage(profileSettings.language)
       : fallbackLanguage;
-    const profileTheme = profileSettings.theme ?? getStoredPeriodTheme();
+    const profileTheme = hasPersistedProfileSettings
+      ? profileSettings.theme
+      : getStoredPeriodTheme();
     const themedLanguage = getThemedLanguage(profileLanguage, profileTheme);
 
-    setSelectedTheme((currentTheme) =>
-      currentTheme === profileTheme ? currentTheme : profileTheme,
-    );
     if (getAppliedPeriodTheme() !== profileTheme) {
       setPeriodTheme(profileTheme);
     }
@@ -135,76 +132,9 @@ export function View() {
     }
   }, [i18n, i18n.language, i18n.resolvedLanguage]);
 
-  const handleThemeSelect = useCallback(
-    (theme: "girl" | "boy") => {
-      setSelectedTheme(theme);
-      setPeriodTheme(theme);
-      const baseLanguage = toBaseAppLanguage(
-        i18n.resolvedLanguage ?? i18n.language,
-      );
-      void i18n.changeLanguage(getThemedLanguage(baseLanguage, theme));
-    },
-    [i18n],
-  );
-
   const closeOnboarding = useCallback(() => {
     setShowOnboarding(false);
   }, []);
-
-  const onboardingSteps = useMemo<OnboardingStepType[]>(
-    () => [
-      {
-        title: t("_pages:onboarding.profile.title"),
-        body: t("_pages:onboarding.profile.body"),
-        content: (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full onboarding-theme-grid">
-            <button
-              type="button"
-              onClick={() => handleThemeSelect("girl")}
-              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "girl" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
-            >
-              <strong>
-                {t("_pages:onboarding.profile.options.girl.title")}
-              </strong>
-              <p className="text-sm opacity-90">
-                {t("_pages:onboarding.profile.options.girl.body")}
-              </p>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleThemeSelect("boy")}
-              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "boy" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
-            >
-              <strong>
-                {t("_pages:onboarding.profile.options.boy.title")}
-              </strong>
-              <p className="text-sm opacity-90">
-                {t("_pages:onboarding.profile.options.boy.body")}
-              </p>
-            </button>
-          </div>
-        ),
-      },
-      {
-        title: t("_pages:onboarding.calendar.title"),
-        body: t("_pages:onboarding.calendar.body"),
-        content: <OnboardingPeriodForm />,
-      },
-      {
-        title: t("_pages:onboarding.predictions.title"),
-        body: t("_pages:onboarding.predictions.body"),
-      },
-      {
-        title: t("_pages:onboarding.privacy.title"),
-        body: t("_pages:onboarding.privacy.body"),
-      },
-      {
-        title: t("_pages:onboarding.getStarted.title"),
-        body: t("_pages:onboarding.getStarted.body"),
-      },
-    ],
-    [handleThemeSelect, selectedTheme, t],
-  );
 
   const bottomNavigationItems = useMemo<BottomNavigationItemType[]>(
     () =>
@@ -227,15 +157,15 @@ export function View() {
     pathname: string,
     item: BottomNavigationItemType,
   ) =>
-    item.to === AppRoute.Home
-      ? pathname === AppRoute.Home
+    item.to === AppRoutes.Home
+      ? pathname === AppRoutes.Home
       : pathname.startsWith(item.to);
 
   const centerAction = useMemo(() => {
     if (!isFeatureEnabled("periodLogEnabled")) return undefined;
 
     return {
-      to: AppRoute.PeriodLog,
+      to: AppRoutes.PeriodLog,
       ariaLabel: t("_pages:home.logPeriod"),
     };
   }, [isFeatureEnabled, t]);
@@ -244,15 +174,14 @@ export function View() {
     <ConfigProvider
       navigate={(route) => navigate(route as To)}
       location={location}
-      linkComponent={Link as unknown as ComponentType<BaseLinkPropsType>}
+      linkComponent={Link as ComponentType<BaseLinkPropsType>}
     >
       <NavbarProvider>
         <BottomNavActionProvider>
           {showOnboarding && (
-            <Onboarding
-              steps={onboardingSteps}
+            <PeriodOnboarding
               onSkip={closeOnboarding}
-              onSignIn={() => navigate(AppRoute.SignIn)}
+              onSignIn={() => navigate(AppRoutes.SignIn)}
               onStartAsGuest={closeOnboarding}
             />
           )}

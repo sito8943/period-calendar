@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 
 import "../styles.css";
 
@@ -30,7 +30,7 @@ export function ConfirmEmailError() {
             color="primary"
             variant="submit"
             className="px-8!"
-            onClick={() => navigate(AppRoute.ForgotPassword, { replace: true })}
+            onClick={() => navigate(AppRoutes.ForgotPassword, { replace: true })}
             aria-label={t("_pages:auth.confirmEmailError.resend")}
           >
             {t("_pages:auth.confirmEmailError.resend")}
@@ -40,7 +40,7 @@ export function ConfirmEmailError() {
             type="button"
             variant="outlined"
             className="px-8!"
-            onClick={() => navigate(AppRoute.SignIn, { replace: true })}
+            onClick={() => navigate(AppRoutes.SignIn, { replace: true })}
             aria-label={t("_pages:auth.confirmEmailError.toSignIn")}
           >
             {t("_pages:auth.confirmEmailError.toSignIn")}

@@ -14,7 +14,7 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, AuthRouteQueryParam, supabase } from "lib";
+import { AppRoutes, AuthRouteQueryParam, supabase } from "lib";
 
 import type { UpdatePasswordFormType } from "./types";
 import {
@@ -151,7 +151,7 @@ export function UpdatePassword() {
       });
 
       setTimeout(() => {
-        navigate(AppRoute.SignIn, { replace: true });
+        navigate(AppRoutes.SignIn, { replace: true });
       }, 1200);
     },
   });
@@ -225,7 +225,7 @@ export function UpdatePassword() {
           <p className="ml-1">
             {t("_pages:auth.updatePassword.toLogin.question")}
             <Link
-              to={AppRoute.SignIn}
+              to={AppRoutes.SignIn}
               className="ml-1 primary text-sm underline text-left"
             >
               {t("_pages:auth.updatePassword.toLogin.link")}

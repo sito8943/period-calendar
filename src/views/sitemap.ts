@@ -1,12 +1,10 @@
 import { t } from "i18next";
-import { AppRoute, type FeatureFlagKey } from "lib";
 
-// types
-import type {
-  IsFeatureEnabled,
-  NamedViewPageType,
-  ViewPageType,
-} from "./types";
+// @sito/dashboard-app
+import type { FeatureEnabledFn, NamedViewPageType, ViewPageType } from "@sito/dashboard-app";
+
+// lib
+import { AppRoutes, type FeatureFlagKey } from "lib";
 
 export const PageId = {
   Home: "home",
@@ -22,42 +20,42 @@ export const PageId = {
 
 export type PageId = (typeof PageId)[keyof typeof PageId];
 
-export const sitemap: ViewPageType[] = [
+export const sitemap: ViewPageType<PageId>[] = [
   {
     key: PageId.Home,
-    path: AppRoute.Home,
+    path: AppRoutes.Home,
   },
   {
     key: PageId.PeriodLog,
-    path: AppRoute.PeriodLog,
+    path: AppRoutes.PeriodLog,
   },
   {
     key: PageId.History,
-    path: AppRoute.History,
+    path: AppRoutes.History,
   },
   {
     key: PageId.Profile,
-    path: AppRoute.Profile,
+    path: AppRoutes.Profile,
   },
   {
     key: PageId.About,
-    path: AppRoute.About,
+    path: AppRoutes.About,
   },
   {
     key: PageId.CookiesPolicy,
-    path: AppRoute.CookiesPolicy,
+    path: AppRoutes.CookiesPolicy,
   },
   {
     key: PageId.TermsAndConditions,
-    path: AppRoute.TermsAndConditions,
+    path: AppRoutes.TermsAndConditions,
   },
   {
     key: PageId.PrivacyPolicy,
-    path: AppRoute.PrivacyPolicy,
+    path: AppRoutes.PrivacyPolicy,
   },
   {
     key: PageId.NotFound,
-    path: `/${AppRoute.NotFound}`,
+    path: `/${AppRoutes.NotFound}`,
   },
 ];
 
@@ -72,8 +70,8 @@ const pageFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
 };
 
 const isPageFeatureEnabled = (
-  page: ViewPageType,
-  isFeatureEnabled: IsFeatureEnabled,
+  page: ViewPageType<PageId>,
+  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
 ): boolean => {
   const dependency = pageFeatureDependencies[page.key];
   if (!dependency) return true;
@@ -82,9 +80,9 @@ const isPageFeatureEnabled = (
 };
 
 const filterSitemapByFeatures = (
-  routes: ViewPageType[],
-  isFeatureEnabled: IsFeatureEnabled,
-): ViewPageType[] => {
+  routes: ViewPageType<PageId>[],
+  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
+): ViewPageType<PageId>[] => {
   return routes
     .filter((route) => isPageFeatureEnabled(route, isFeatureEnabled))
     .map((route) => ({
@@ -96,8 +94,8 @@ const filterSitemapByFeatures = (
 };
 
 export const getFeatureFilteredSitemap = (
-  isFeatureEnabled: IsFeatureEnabled,
-): ViewPageType[] => {
+  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
+): ViewPageType<PageId>[] => {
   return filterSitemapByFeatures(sitemap, isFeatureEnabled);
 };
 

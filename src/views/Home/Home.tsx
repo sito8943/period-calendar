@@ -18,7 +18,7 @@ import {
 
 // lib
 import {
-  AppRoute,
+  AppRoutes,
   DEFAULT_PROFILE_SETTINGS,
   DEFAULT_SETTINGS,
   getDailyLogRoute,
@@ -109,7 +109,7 @@ export function Home() {
     return t("_pages:home.variation.notEnoughData");
   }, [stats.latestCycleVariation, t]);
 
-  const goToLog = useCallback(() => navigate(AppRoute.PeriodLog), [navigate]);
+  const goToLog = useCallback(() => navigate(AppRoutes.PeriodLog), [navigate]);
   const closeCalendarDayActions = useCallback(() => {
     setSelectedCalendarDate(null);
     setSelectedDayData(null);

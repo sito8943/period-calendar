@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 
 export function NotFound() {
   const { t } = useTranslation();
@@ -12,7 +12,7 @@ export function NotFound() {
       </h1>
       <p className="text-text-muted mb-6">{t("_pages:notFound.body")}</p>
       <Link
-        to={AppRoute.Home}
+        to={AppRoutes.Home}
         className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-hover-primary transition-colors"
       >
         {t("_pages:pages.home")}

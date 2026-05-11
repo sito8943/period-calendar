@@ -16,7 +16,7 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, getSignUpConfirmationRoute, supabase } from "lib";
+import { AppRoutes, getSignUpConfirmationRoute, supabase } from "lib";
 
 // types
 import type { SignUpFormType } from "./types";
@@ -47,7 +47,7 @@ export function SignUp() {
 
   useEffect(() => {
     if (accountToken) {
-      navigate(AppRoute.Home, { replace: true });
+      navigate(AppRoutes.Home, { replace: true });
     }
   }, [accountToken, navigate]);
 
@@ -70,7 +70,7 @@ export function SignUp() {
     }
 
     const confirmEmailRedirectTo = buildAuthRedirectUrl(
-      AppRoute.ConfirmEmailSuccess,
+      AppRoutes.ConfirmEmailSuccess,
     );
 
     const { data, error } = await supabase.auth.signUp({
@@ -107,7 +107,7 @@ export function SignUp() {
     );
 
     auth.setGuestMode(false);
-    navigate(AppRoute.Home, { replace: true });
+    navigate(AppRoutes.Home, { replace: true });
   });
 
   return (
@@ -201,7 +201,7 @@ export function SignUp() {
           <p className="ml-1">
             {t("_pages:auth.signUp.toLogin.question")}
             <Link
-              to={AppRoute.SignIn}
+              to={AppRoutes.SignIn}
               className="ml-1 primary text-sm underline text-left"
             >
               {t("_pages:auth.signUp.toLogin.link")}
@@ -235,7 +235,7 @@ export function SignUp() {
             disabled={formState.isSubmitting}
             onClick={() => {
               auth?.setGuestMode(true);
-              navigate(AppRoute.Home, { replace: true });
+              navigate(AppRoutes.Home, { replace: true });
             }}
             aria-label={t("_accessibility:ariaLabels.startAsGuest")}
           >

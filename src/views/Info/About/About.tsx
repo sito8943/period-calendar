@@ -2,7 +2,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 // lib
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 
 export function About() {
   const { t } = useTranslation();
@@ -36,7 +36,7 @@ export function About() {
         <ul className="mt-4 list-disc list-inside space-y-1">
           <li>
             <Link
-              to={AppRoute.TermsAndConditions}
+              to={AppRoutes.TermsAndConditions}
               className="primary underline font-bold!"
             >
               {t("_pages:about.legal.links.terms")}
@@ -44,7 +44,7 @@ export function About() {
           </li>
           <li>
             <Link
-              to={AppRoute.PrivacyPolicy}
+              to={AppRoutes.PrivacyPolicy}
               className="primary underline font-bold!"
             >
               {t("_pages:about.legal.links.privacy")}
@@ -52,7 +52,7 @@ export function About() {
           </li>
           <li>
             <Link
-              to={AppRoute.CookiesPolicy}
+              to={AppRoutes.CookiesPolicy}
               className="primary underline font-bold!"
             >
               {t("_pages:about.legal.links.cookies")}

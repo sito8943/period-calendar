@@ -1,20 +1,26 @@
 import { faHome, faClockRotateLeft } from "@fortawesome/free-solid-svg-icons";
-import { AppRoute, type FeatureFlagKey } from "lib";
-import { PageId } from "./sitemap";
-import type { BottomNavItemType, IsFeatureEnabled } from "./types";
 
-export const bottomMap: BottomNavItemType[] = [
+// lib
+import { AppRoutes, type FeatureFlagKey } from "lib";
+
+// sitemap
+import { PageId } from "./sitemap";
+
+// @sito/dashboard-app
+import type { BottomNavItemType, FeatureEnabledFn } from "@sito/dashboard-app";
+
+export const bottomMap: BottomNavItemType<PageId>[] = [
   {
     id: "home",
     page: PageId.Home,
-    to: AppRoute.Home,
+    to: AppRoutes.Home,
     icon: faHome,
     position: "left",
   },
   {
     id: "history",
     page: PageId.History,
-    to: AppRoute.History,
+    to: AppRoutes.History,
     icon: faClockRotateLeft,
     position: "right",
   },
@@ -25,8 +31,8 @@ const bottomFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
 };
 
 export const getFeatureFilteredBottomMap = (
-  isFeatureEnabled: IsFeatureEnabled,
-): BottomNavItemType[] => {
+  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
+): BottomNavItemType<PageId>[] => {
   return bottomMap.filter((item) => {
     const dependency = bottomFeatureDependencies[item.page];
     if (!dependency) return true;

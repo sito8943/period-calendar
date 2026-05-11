@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWarning } from "@fortawesome/free-solid-svg-icons";
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 import { FEATURE_UNAVAILABLE_CLASSNAMES } from "./constants";
 import type { FeatureUnavailableProps } from "./types";
 import { getFeatureUnavailableModuleTranslationKey } from "./utils";
@@ -25,7 +25,7 @@ export function FeatureUnavailable(props: FeatureUnavailableProps) {
           module: t(getFeatureUnavailableModuleTranslationKey(module)),
         })}
       </p>
-      <Link to={AppRoute.Home} className={FEATURE_UNAVAILABLE_CLASSNAMES.cta}>
+      <Link to={AppRoutes.Home} className={FEATURE_UNAVAILABLE_CLASSNAMES.cta}>
         {t("_pages:featureFlags.route.cta")}
       </Link>
     </main>

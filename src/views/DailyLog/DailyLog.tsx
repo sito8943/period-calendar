@@ -31,7 +31,7 @@ import { PageHeader } from "components";
 
 // lib
 import {
-  AppRoute,
+  AppRoutes,
   FLOW_LEVELS,
   SEXUAL_PROTECTION_OPTIONS,
   SYMPTOM_KEYS,
@@ -242,7 +242,7 @@ export function DailyLog() {
       showSuccessNotification({
         message: t("_pages:dailyLog.messages.saved"),
       });
-      navigate(AppRoute.Home);
+      navigate(AppRoutes.Home);
     } catch (error) {
       showErrorNotification({
         message: resolveMutationError(
@@ -260,7 +260,7 @@ export function DailyLog() {
       showSuccessNotification({
         message: t("_pages:dailyLog.messages.deleted"),
       });
-      navigate(AppRoute.Home);
+      navigate(AppRoutes.Home);
     } catch (error) {
       showErrorNotification({
         message: resolveMutationError(
@@ -275,7 +275,7 @@ export function DailyLog() {
     if (isDirty && !window.confirm(t("_pages:dailyLog.discardDialog.title"))) {
       return;
     }
-    navigate(AppRoute.Home);
+    navigate(AppRoutes.Home);
   };
 
   const displayDate = useMemo(

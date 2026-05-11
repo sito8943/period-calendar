@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Loading } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, AuthRouteQueryParam, supabase } from "lib";
+import { AppRoutes, AuthRouteQueryParam, supabase } from "lib";
 
 import { normalizeConfirmEmailTokenType } from "./utils";
 import {
@@ -55,17 +55,17 @@ export function ConfirmEmailSuccess() {
   const verifyEmailMutation = useMutation({
     mutationFn: async () => {
       if (!supabase) {
-        navigate(AppRoute.ConfirmEmailError, { replace: true });
+        navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
       }
 
       if (hasAuthErrorParams) {
-        navigate(AppRoute.ConfirmEmailError, { replace: true });
+        navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
       }
 
       if (!tokenHash || !tokenType) {
-        navigate(AppRoute.ConfirmEmailError, { replace: true });
+        navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
       }
 
@@ -75,7 +75,7 @@ export function ConfirmEmailSuccess() {
       });
 
       if (error) {
-        navigate(AppRoute.ConfirmEmailError, { replace: true });
+        navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
       }
 
@@ -83,7 +83,7 @@ export function ConfirmEmailSuccess() {
 
       const shouldCleanUrl = location.search.length > 0 || location.hash.length > 0;
       if (shouldCleanUrl) {
-        navigate(AppRoute.ConfirmEmailSuccess, { replace: true });
+        navigate(AppRoutes.ConfirmEmailSuccess, { replace: true });
         return;
       }
     },
@@ -127,7 +127,7 @@ export function ConfirmEmailSuccess() {
               color="primary"
               variant="submit"
               className="px-8!"
-              onClick={() => navigate(AppRoute.SignIn, { replace: true })}
+              onClick={() => navigate(AppRoutes.SignIn, { replace: true })}
               aria-label={t("_pages:auth.confirmEmailSuccess.toSignIn")}
             >
               {t("_pages:auth.confirmEmailSuccess.toSignIn")}

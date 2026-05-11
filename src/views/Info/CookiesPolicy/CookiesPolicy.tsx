@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 
 // lib
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 
 // types
 import type { TermsSection } from "./types";
@@ -39,8 +39,8 @@ export function CookiesPolicy() {
               <Trans
                 i18nKey={`_pages:cookiesPolicy.sections.${index}.body`}
                 values={{
-                  privacyPolicyHref: AppRoute.PrivacyPolicy,
-                  cookiesPolicyHref: AppRoute.CookiesPolicy,
+                  privacyPolicyHref: AppRoutes.PrivacyPolicy,
+                  cookiesPolicyHref: AppRoutes.CookiesPolicy,
                 }}
                 components={{
                   p: <p />,

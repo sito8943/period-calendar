@@ -1,4 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
+// @sito/dashboard-app
+import {
+  filterMenuByFeatureFlags,
+  normalizeMenuDividers,
+  type MenuItemType,
+  type FeatureEnabledFn,
+} from "@sito/dashboard-app";
+
 // icons
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,11 +20,10 @@ import {
   faScroll,
   faShieldHalved,
 } from "@fortawesome/free-solid-svg-icons";
-import { AppRoute } from "lib";
-import type { FeatureFlagKey } from "lib";
 
-// types
-import type { IsFeatureEnabled, MenuItemType } from "./types";
+// lib
+import { AppRoutes } from "lib";
+import type { FeatureFlagKey } from "lib";
 
 export const MenuKeys = {
   Home: "home",
@@ -33,55 +40,55 @@ export const MenuKeys = {
 
 export type MenuKeys = (typeof MenuKeys)[keyof typeof MenuKeys];
 
-export const menuMap: MenuItemType<MenuKeys>[] = [
+const getMenuMap = (): MenuItemType<MenuKeys>[] => [
   {
     page: MenuKeys.Home,
-    path: AppRoute.Home,
+    path: AppRoutes.Home,
     icon: <FontAwesomeIcon icon={faHome} />,
   },
   {
     page: MenuKeys.History,
-    path: AppRoute.History,
+    path: AppRoutes.History,
     icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
   },
   { type: "divider" },
   {
     page: MenuKeys.About,
-    path: AppRoute.About,
+    path: AppRoutes.About,
     icon: <FontAwesomeIcon icon={faCircleInfo} />,
   },
   {
     page: MenuKeys.TermsAndConditions,
-    path: AppRoute.TermsAndConditions,
+    path: AppRoutes.TermsAndConditions,
     icon: <FontAwesomeIcon icon={faScroll} />,
   },
   {
     page: MenuKeys.CookiesPolicy,
-    path: AppRoute.CookiesPolicy,
+    path: AppRoutes.CookiesPolicy,
     icon: <FontAwesomeIcon icon={faCookieBite} />,
   },
   {
     page: MenuKeys.PrivacyPolicy,
-    path: AppRoute.PrivacyPolicy,
+    path: AppRoutes.PrivacyPolicy,
     icon: <FontAwesomeIcon icon={faShieldHalved} />,
   },
   { type: "divider" },
   {
     page: MenuKeys.Profile,
-    path: AppRoute.Profile,
+    path: AppRoutes.Profile,
     icon: <FontAwesomeIcon icon={faUser} />,
     auth: true,
   },
   { type: "divider" },
   {
     page: MenuKeys.SignOut,
-    path: AppRoute.SignOut,
+    path: AppRoutes.SignOut,
     icon: <FontAwesomeIcon icon={faRightFromBracket} />,
     auth: true,
   },
   {
     page: MenuKeys.SignIn,
-    path: AppRoute.SignIn,
+    path: AppRoutes.SignIn,
     icon: <FontAwesomeIcon icon={faRightToBracket} />,
     auth: false,
   },
@@ -98,25 +105,16 @@ const menuFeatureDependencies: Partial<Record<MenuKeys, FeatureFlagKey>> = {
 };
 
 export const getFeatureFilteredMenuMap = (
-  isFeatureEnabled: IsFeatureEnabled,
+  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
+  language?: string,
 ): MenuItemType<MenuKeys>[] => {
-  const filtered = menuMap.filter((item) => {
-    if (!item.page) return true;
+  void language;
 
-    const dependency = menuFeatureDependencies[item.page];
-    if (!dependency) return true;
+  const filtered = filterMenuByFeatureFlags(
+    getMenuMap(),
+    isFeatureEnabled,
+    menuFeatureDependencies,
+  );
 
-    return isFeatureEnabled(dependency);
-  });
-
-  return filtered.filter((item, index, items) => {
-    if (item.type !== "divider") return true;
-
-    const previous = items[index - 1];
-    const next = items[index + 1];
-
-    if (!previous || !next) return false;
-
-    return previous.type !== "divider" && next.type !== "divider";
-  });
+  return normalizeMenuDividers(filtered);
 };

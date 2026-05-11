@@ -70,13 +70,17 @@ export function Profile() {
 
   useEffect(() => {
     if (!profileQuery.data) return;
+    const hasPersistedProfileSettings = Boolean(profileQuery.data.updatedAt);
+
     const fallbackLanguage = normalizeProfileLanguage(
       i18n.resolvedLanguage ?? i18n.language,
     );
-    const profileLanguage = profileQuery.data.updatedAt
+    const profileLanguage = hasPersistedProfileSettings
       ? normalizeProfileLanguage(profileQuery.data.language)
       : fallbackLanguage;
-    const profileTheme = profileQuery.data.theme ?? getStoredPeriodTheme();
+    const profileTheme = hasPersistedProfileSettings
+      ? profileQuery.data.theme
+      : getStoredPeriodTheme();
     const themedLanguage = getThemedLanguage(profileLanguage, profileTheme);
 
     if (getAppliedPeriodTheme() !== profileTheme) {

@@ -1,4 +1,4 @@
-export const AppRoute = {
+export const AppRoutes = {
   AuthRoot: "/auth",
   SignIn: "/auth/sign-in",
   SignUp: "/auth/sign-up",
@@ -45,23 +45,23 @@ export const AuthRouteQueryParamType = {
 } as const;
 
 export function getPeriodLogDetailRoute(id: string): string {
-  return `${AppRoute.PeriodLog}/${id}`;
+  return `${AppRoutes.PeriodLog}/${id}`;
 }
 
 export function getDailyLogRoute(date: string): string {
-  return AppRoute.DailyLogByDate.replace(":date", date);
+  return AppRoutes.DailyLogByDate.replace(":date", date);
 }
 
 export function getPeriodLogRouteWithStartDate(startDate: string): string {
   const searchParams = new URLSearchParams({
     [RouteQueryParam.PeriodStartDate]: startDate,
   });
-  return `${AppRoute.PeriodLog}?${searchParams.toString()}`;
+  return `${AppRoutes.PeriodLog}?${searchParams.toString()}`;
 }
 
 export function getSignUpConfirmationRoute(email: string): string {
   const searchParams = new URLSearchParams({
     [RouteQueryParam.Email]: email,
   });
-  return `${AppRoute.SignUpConfirmation}?${searchParams.toString()}`;
+  return `${AppRoutes.SignUpConfirmation}?${searchParams.toString()}`;
 }

@@ -6,7 +6,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, useOptionalAuthContext } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, RouteQueryParam } from "lib";
+import { AppRoutes, RouteQueryParam } from "lib";
 
 // styles
 import "../styles.css";
@@ -22,7 +22,7 @@ export function SignUpConfirmation() {
 
   useEffect(() => {
     if (accountToken) {
-      navigate(AppRoute.Home, { replace: true });
+      navigate(AppRoutes.Home, { replace: true });
     }
   }, [accountToken, navigate]);
 
@@ -49,7 +49,7 @@ export function SignUpConfirmation() {
             color="primary"
             variant="submit"
             className="px-8!"
-            onClick={() => navigate(AppRoute.SignIn, { replace: true })}
+            onClick={() => navigate(AppRoutes.SignIn, { replace: true })}
             aria-label={t("_pages:auth.signUpConfirmation.cta")}
           >
             {t("_pages:auth.signUpConfirmation.cta")}

@@ -6,7 +6,7 @@ import {
   Route,
   Routes as ReactRoutes,
 } from "react-router-dom";
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 import { useFeatureFlags } from "providers";
 import { routeComponents } from "./views/routes";
 
@@ -37,40 +37,40 @@ export const Routes = () => {
   return (
     <BrowserRouter>
       <ReactRoutes>
-        <Route path={AppRoute.AuthRoot} element={<Auth />}>
+        <Route path={AppRoutes.AuthRoot} element={<Auth />}>
           <Route
             index
-            element={<Navigate to={AppRoute.SignIn} replace />}
+            element={<Navigate to={AppRoutes.SignIn} replace />}
           />
-          <Route path={AppRoute.SignIn} element={<SignIn />} />
-          <Route path={AppRoute.SignUp} element={<SignUp />} />
+          <Route path={AppRoutes.SignIn} element={<SignIn />} />
+          <Route path={AppRoutes.SignUp} element={<SignUp />} />
           <Route
-            path={AppRoute.SignUpConfirmation}
+            path={AppRoutes.SignUpConfirmation}
             element={<SignUpConfirmation />}
           />
           <Route
-            path={AppRoute.UpdatePassword}
+            path={AppRoutes.UpdatePassword}
             element={<UpdatePassword />}
           />
           <Route
-            path={AppRoute.ConfirmEmailSuccess}
+            path={AppRoutes.ConfirmEmailSuccess}
             element={<ConfirmEmailSuccess />}
           />
           <Route
-            path={AppRoute.ConfirmEmailError}
+            path={AppRoutes.ConfirmEmailError}
             element={<ConfirmEmailError />}
           />
           <Route
-            path={AppRoute.ForgotPassword}
+            path={AppRoutes.ForgotPassword}
             element={<ForgotPassword />}
           />
-          <Route path={AppRoute.AuthNotFound} element={<NotFound />} />
+          <Route path={AppRoutes.AuthNotFound} element={<NotFound />} />
         </Route>
-        <Route path={AppRoute.SignOut} element={<SignOut />} />
-        <Route path={AppRoute.Home} element={<View />}>
+        <Route path={AppRoutes.SignOut} element={<SignOut />} />
+        <Route path={AppRoutes.Home} element={<View />}>
           <Route index element={<Home />} />
           <Route
-            path={AppRoute.PeriodLog}
+            path={AppRoutes.PeriodLog}
             element={
               isFeatureEnabled("periodLogEnabled") ? (
                 <PeriodLog />
@@ -80,7 +80,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.PeriodLogById}
+            path={AppRoutes.PeriodLogById}
             element={
               isFeatureEnabled("periodLogEnabled") ? (
                 <PeriodLog />
@@ -90,7 +90,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.DailyLogByDate}
+            path={AppRoutes.DailyLogByDate}
             element={
               isFeatureEnabled("dailyLogEnabled") ? (
                 <DailyLog />
@@ -100,7 +100,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.History}
+            path={AppRoutes.History}
             element={
               isFeatureEnabled("historyEnabled") ? (
                 <History />
@@ -110,7 +110,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.Profile}
+            path={AppRoutes.Profile}
             element={
               isFeatureEnabled("profileEnabled") ? (
                 <Profile />
@@ -120,7 +120,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.About}
+            path={AppRoutes.About}
             element={
               isFeatureEnabled("aboutEnabled") ? (
                 <About />
@@ -130,7 +130,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.CookiesPolicy}
+            path={AppRoutes.CookiesPolicy}
             element={
               isFeatureEnabled("cookiesPolicyEnabled") ? (
                 <CookiesPolicy />
@@ -140,7 +140,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.TermsAndConditions}
+            path={AppRoutes.TermsAndConditions}
             element={
               isFeatureEnabled("termsAndConditionsEnabled") ? (
                 <TermsAndConditions />
@@ -150,7 +150,7 @@ export const Routes = () => {
             }
           />
           <Route
-            path={AppRoute.PrivacyPolicy}
+            path={AppRoutes.PrivacyPolicy}
             element={
               isFeatureEnabled("privacyPolicyEnabled") ? (
                 <PrivacyPolicy />
@@ -159,7 +159,7 @@ export const Routes = () => {
               )
             }
           />
-          <Route path={AppRoute.NotFound} element={<NotFound />} />
+          <Route path={AppRoutes.NotFound} element={<NotFound />} />
         </Route>
       </ReactRoutes>
     </BrowserRouter>

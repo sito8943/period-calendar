@@ -28,7 +28,7 @@ import { PageHeader } from "components";
 
 // lib
 import {
-  AppRoute,
+  AppRoutes,
   RouteQueryParam,
   toISODateString,
   ISO_DATE_PATTERN,
@@ -99,7 +99,7 @@ export function PeriodLog() {
             showSuccessNotification({
               message: t("_pages:periodLog.messages.saved"),
             });
-            navigate(AppRoute.Home);
+            navigate(AppRoutes.Home);
           },
         },
       );
@@ -109,7 +109,7 @@ export function PeriodLog() {
           showSuccessNotification({
             message: t("_pages:periodLog.messages.saved"),
           });
-          navigate(AppRoute.Home);
+          navigate(AppRoutes.Home);
         },
       });
     }
@@ -122,7 +122,7 @@ export function PeriodLog() {
         showSuccessNotification({
           message: t("_pages:periodLog.messages.deleted"),
         });
-        navigate(AppRoute.Home);
+        navigate(AppRoutes.Home);
       },
     });
   };

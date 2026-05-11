@@ -4,6 +4,10 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 
+const projectRoot = path.resolve(__dirname);
+const appReactRoot = path.resolve(projectRoot, "node_modules/react");
+const appReactDomRoot = path.resolve(projectRoot, "node_modules/react-dom");
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -84,15 +88,30 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: {
-      assets: path.resolve(__dirname, "./src/assets"),
-      components: path.resolve(__dirname, "./src/components"),
-      lib: path.resolve(__dirname, "./src/lib"),
-      hooks: path.resolve(__dirname, "./src/hooks"),
-      layouts: path.resolve(__dirname, "./src/layouts"),
-      views: path.resolve(__dirname, "./src/views"),
-      providers: path.resolve(__dirname, "./src/providers"),
-      lang: path.resolve(__dirname, "./src/lang"),
-    },
+    preserveSymlinks: true,
+    dedupe: ["react", "react-dom"],
+    alias: [
+      { find: /^react$/, replacement: appReactRoot },
+      { find: /^react\/(.*)$/, replacement: `${appReactRoot}/$1` },
+      { find: /^react-dom$/, replacement: appReactDomRoot },
+      { find: /^react-dom\/(.*)$/, replacement: `${appReactDomRoot}/$1` },
+      { find: "assets", replacement: path.resolve(__dirname, "./src/assets") },
+      {
+        find: "components",
+        replacement: path.resolve(__dirname, "./src/components"),
+      },
+      { find: "lib", replacement: path.resolve(__dirname, "./src/lib") },
+      { find: "hooks", replacement: path.resolve(__dirname, "./src/hooks") },
+      {
+        find: "layouts",
+        replacement: path.resolve(__dirname, "./src/layouts"),
+      },
+      { find: "views", replacement: path.resolve(__dirname, "./src/views") },
+      {
+        find: "providers",
+        replacement: path.resolve(__dirname, "./src/providers"),
+      },
+      { find: "lang", replacement: path.resolve(__dirname, "./src/lang") },
+    ],
   },
 });

@@ -17,7 +17,7 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, supabase } from "lib";
+import { AppRoutes, supabase } from "lib";
 
 // types
 import type { SignInFormType } from "./types";
@@ -47,7 +47,7 @@ export function SignIn() {
 
   useEffect(() => {
     if (accountToken) {
-      navigate(AppRoute.Home, { replace: true });
+      navigate(AppRoutes.Home, { replace: true });
     }
   }, [accountToken, navigate]);
 
@@ -85,7 +85,7 @@ export function SignIn() {
       rememberMeRef.current,
     );
     auth.setGuestMode(false);
-    navigate(AppRoute.Home, { replace: true });
+    navigate(AppRoutes.Home, { replace: true });
   });
 
   return (
@@ -161,7 +161,7 @@ export function SignIn() {
           <p className="ml-1">
             {t("_pages:auth.signIn.toRegister.question")}
             <Link
-              to={AppRoute.SignUp}
+              to={AppRoutes.SignUp}
               className="ml-1 primary text-sm underline text-left"
             >
               {t("_pages:auth.signIn.toRegister.link")}
@@ -173,7 +173,7 @@ export function SignIn() {
           <p className="ml-1">
             {t("_pages:auth.signIn.accountRecovery.question")}
             <Link
-              to={AppRoute.ForgotPassword}
+              to={AppRoutes.ForgotPassword}
               className="ml-1 primary text-sm underline text-left"
             >
               {t("_pages:auth.signIn.accountRecovery.link")}
@@ -207,7 +207,7 @@ export function SignIn() {
             disabled={formState.isSubmitting}
             onClick={() => {
               auth?.setGuestMode(true);
-              navigate(AppRoute.Home, { replace: true });
+              navigate(AppRoutes.Home, { replace: true });
             }}
             aria-label={t("_accessibility:ariaLabels.startAsGuest")}
           >

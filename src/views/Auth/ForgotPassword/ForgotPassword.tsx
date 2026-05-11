@@ -14,7 +14,7 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute, supabase } from "lib";
+import { AppRoutes, supabase } from "lib";
 
 // types
 import type { ForgotPasswordFormType } from "./types";
@@ -43,7 +43,7 @@ export function ForgotPassword() {
 
   useEffect(() => {
     if (accountToken) {
-      navigate(AppRoute.Home, { replace: true });
+      navigate(AppRoutes.Home, { replace: true });
     }
   }, [accountToken, navigate]);
 
@@ -57,7 +57,7 @@ export function ForgotPassword() {
       return;
     }
 
-    const recoveryRedirectTo = buildAuthRedirectUrl(AppRoute.UpdatePassword);
+    const recoveryRedirectTo = buildAuthRedirectUrl(AppRoutes.UpdatePassword);
 
     const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
       ...(recoveryRedirectTo ? { redirectTo: recoveryRedirectTo } : {}),
@@ -121,7 +121,7 @@ export function ForgotPassword() {
           <p className="ml-1">
             {t("_pages:auth.forgotPassword.toLogin.question")}
             <Link
-              to={AppRoute.SignIn}
+              to={AppRoutes.SignIn}
               className="ml-1 primary text-sm underline text-left"
             >
               {t("_pages:auth.forgotPassword.toLogin.link")}

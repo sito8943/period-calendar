@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { SplashScreen, useOptionalAuthContext } from "@sito/dashboard-app";
 
 // lib
-import { AppRoute } from "lib";
+import { AppRoutes } from "lib";
 
 export function SignOut() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ export function SignOut() {
     }
 
     window.setTimeout(() => {
-      navigate(AppRoute.SignIn, { replace: true });
+      navigate(AppRoutes.SignIn, { replace: true });
     }, 500);
   }, [auth, navigate]);
 
