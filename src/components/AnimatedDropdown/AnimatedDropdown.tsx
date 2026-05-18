@@ -25,12 +25,19 @@ export function AnimatedDropdown({
     useState<HTMLElement | null>(anchorEl ?? null);
 
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeAnimationFrameRef = useRef<number | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
   const clearCloseTimeout = useCallback(() => {
     if (closeTimeoutRef.current === null) return;
     clearTimeout(closeTimeoutRef.current);
     closeTimeoutRef.current = null;
+  }, []);
+
+  const clearCloseAnimationFrame = useCallback(() => {
+    if (closeAnimationFrameRef.current === null) return;
+    cancelAnimationFrame(closeAnimationFrameRef.current);
+    closeAnimationFrameRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -40,6 +47,7 @@ export function AnimatedDropdown({
 
   useEffect(() => {
     if (open) {
+      clearCloseAnimationFrame();
       clearCloseTimeout();
       setIsVisible(true);
       setIsClosing(false);
@@ -48,15 +56,33 @@ export function AnimatedDropdown({
 
     if (!isVisible) return;
 
-    setIsClosing(true);
-    closeTimeoutRef.current = setTimeout(() => {
+    const closeDelayMs = getAnimatedDropdownCloseDelayMs();
+
+    if (closeDelayMs === 0) {
       setIsVisible(false);
       setIsClosing(false);
-      closeTimeoutRef.current = null;
-    }, getAnimatedDropdownCloseDelayMs());
-  }, [clearCloseTimeout, isVisible, open]);
+      return;
+    }
 
-  useEffect(() => clearCloseTimeout, [clearCloseTimeout]);
+    clearCloseAnimationFrame();
+    closeAnimationFrameRef.current = requestAnimationFrame(() => {
+      setIsClosing(true);
+      closeTimeoutRef.current = setTimeout(() => {
+        setIsVisible(false);
+        setIsClosing(false);
+        closeTimeoutRef.current = null;
+      }, closeDelayMs);
+      closeAnimationFrameRef.current = null;
+    });
+  }, [clearCloseAnimationFrame, clearCloseTimeout, isVisible, open]);
+
+  useEffect(
+    () => () => {
+      clearCloseAnimationFrame();
+      clearCloseTimeout();
+    },
+    [clearCloseAnimationFrame, clearCloseTimeout],
+  );
 
   useEffect(() => {
     const container = contentRef.current?.parentElement;

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,6 +10,7 @@ import {
 // @sito/dashboard-app
 import type { BaseDto, ActionPropsType } from "@sito/dashboard-app";
 import { Actions } from "@sito/dashboard-app";
+import type { CalendarDayData } from "components";
 import { AnimatedDropdown } from "components";
 import {
   getDailyLogRoute,
@@ -32,47 +33,67 @@ export function CalendarDayActionsDropdown({
 }: CalendarDayActionsDropdownProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [persistedSelection, setPersistedSelection] = useState<{
+    selectedDate: string | null;
+    dayData: CalendarDayData | null;
+  }>({
+    selectedDate,
+    dayData,
+  });
+
+  useEffect(() => {
+    if (selectedDate === null) return;
+
+    setPersistedSelection({
+      selectedDate,
+      dayData,
+    });
+  }, [dayData, selectedDate]);
+
+  const resolvedSelectedDate = selectedDate ?? persistedSelection.selectedDate;
+  const resolvedDayData = dayData ?? persistedSelection.dayData;
 
   const handleLogPeriod = useCallback(() => {
-    if (!selectedDate) return;
-    if (dayData?.periodId) navigate(getPeriodLogDetailRoute(dayData?.periodId));
-    else navigate(getPeriodLogRouteWithStartDate(selectedDate));
+    if (!resolvedSelectedDate) return;
+    if (resolvedDayData?.periodId)
+      navigate(getPeriodLogDetailRoute(resolvedDayData.periodId));
+    else navigate(getPeriodLogRouteWithStartDate(resolvedSelectedDate));
     onClose();
-  }, [dayData?.periodId, navigate, onClose, selectedDate]);
+  }, [navigate, onClose, resolvedDayData?.periodId, resolvedSelectedDate]);
 
   const handleLogDailyLog = useCallback(() => {
-    if (!selectedDate) return;
-    navigate(getDailyLogRoute(selectedDate));
+    if (!resolvedSelectedDate) return;
+    navigate(getDailyLogRoute(resolvedSelectedDate));
     onClose();
-  }, [navigate, onClose, selectedDate]);
+  }, [navigate, onClose, resolvedSelectedDate]);
 
   const dayInfoItems = useMemo<DayInfoItem[]>(() => {
-    if (!dayData) return [];
+    if (!resolvedDayData) return [];
     const items: DayInfoItem[] = [];
 
-    if (dayData.isPeriodDay) {
+    if (resolvedDayData.isPeriodDay) {
       items.push({
         label: t("_pages:home.calendarDayInfo.periodDay"),
         dotClass: "day-info-dot--period",
       });
-    } else if (dayData.isOvulationDay) {
+    } else if (resolvedDayData.isOvulationDay) {
       items.push({
         label: t("_pages:home.calendarDayInfo.ovulationDay"),
         dotClass: "day-info-dot--ovulation",
       });
-    } else if (dayData.isFertileDay) {
+    } else if (resolvedDayData.isFertileDay) {
       items.push({
         label: t("_pages:home.calendarDayInfo.fertileDay"),
         dotClass: "day-info-dot--fertile",
       });
-    } else if (dayData.isPredictedDay) {
+    } else if (resolvedDayData.isPredictedDay) {
       items.push({
         label: t("_pages:home.calendarDayInfo.predictedDay"),
         dotClass: "day-info-dot--prediction",
       });
     }
 
-    if (dayData.hasDailyLog) {
+    if (resolvedDayData.hasDailyLog) {
       items.push({
         label: t("_pages:home.calendarDayInfo.dailyLogRecorded"),
         dotClass: "day-info-dot--daily-log",
@@ -80,7 +101,7 @@ export function CalendarDayActionsDropdown({
     }
 
     return items;
-  }, [dayData, t]);
+  }, [resolvedDayData, t]);
 
   const actions = useMemo<ActionPropsType<BaseDto>[]>(
     () => [
@@ -88,27 +109,27 @@ export function CalendarDayActionsDropdown({
         id: "log-period",
         icon: <FontAwesomeIcon icon={faCalendarPlus} />,
         tooltip: t(
-          `_pages:home.calendarDayActions.${dayData?.hasReportedPeriodInMonth ? "editPeriod" : "logPeriod"}`,
+          `_pages:home.calendarDayActions.${resolvedDayData?.hasReportedPeriodInMonth ? "editPeriod" : "logPeriod"}`,
         ),
         onClick: handleLogPeriod,
-        disabled: selectedDate === null,
+        disabled: resolvedSelectedDate === null,
       },
       {
         id: "log-daily-log",
         icon: <FontAwesomeIcon icon={faClipboardCheck} />,
         tooltip: t(
-          `_pages:home.calendarDayActions.${dayData?.hasDailyLog ? "editDailyLog" : "dailyLog"}`,
+          `_pages:home.calendarDayActions.${resolvedDayData?.hasDailyLog ? "editDailyLog" : "dailyLog"}`,
         ),
         onClick: handleLogDailyLog,
-        disabled: selectedDate === null,
+        disabled: resolvedSelectedDate === null,
       },
     ],
     [
-      dayData?.hasDailyLog,
-      dayData?.hasReportedPeriodInMonth,
       handleLogDailyLog,
       handleLogPeriod,
-      selectedDate,
+      resolvedDayData?.hasDailyLog,
+      resolvedDayData?.hasReportedPeriodInMonth,
+      resolvedSelectedDate,
       t,
     ],
   );
