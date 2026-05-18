@@ -1,14 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-// @sito/dashboard-app
-import { Onboarding, type OnboardingStepType } from "@sito/dashboard-app";
-
 // components
 import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
+import { PeriodOnboardingFlow } from "./PeriodOnboardingFlow";
 
 // types
-import type { PeriodOnboardingProps } from "./types";
+import type { PeriodOnboardingProps, PeriodOnboardingStepType } from "./types";
 
 // lib
 import {
@@ -67,7 +65,7 @@ export const PeriodOnboarding = (props: PeriodOnboardingProps) => {
     [i18n, profileSettings, updateProfileSettings],
   );
 
-  const onboardingSteps = useMemo<OnboardingStepType[]>(
+  const onboardingSteps = useMemo<PeriodOnboardingStepType[]>(
     () => [
       {
         title: t("_pages:onboarding.profile.title"),
@@ -122,5 +120,5 @@ export const PeriodOnboarding = (props: PeriodOnboardingProps) => {
     [handleThemeSelect, selectedTheme, t],
   );
 
-  return <Onboarding {...props} steps={onboardingSteps} />;
+  return <PeriodOnboardingFlow {...props} steps={onboardingSteps} />;
 };
