@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -56,8 +56,6 @@ export function Calendar({
   const [monthTransitionDirection, setMonthTransitionDirection] = useState<
     "next" | "prev"
   >("next");
-
-  const calendarRef = useRef<HTMLDivElement>(null);
 
   const weekdays = getWeekdays(i18n.language);
   const monthPrediction = useMemo(
@@ -127,8 +125,7 @@ export function Calendar({
     }
   };
 
-  useSwipe({
-    ref: calendarRef,
+  const bindMonthSwipe = useSwipe({
     onSwipeLeft: goToNextMonth,
     onSwipeRight: goToPreviousMonth,
   });
@@ -227,7 +224,6 @@ export function Calendar({
 
   return (
     <div
-      ref={calendarRef}
       className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell"
     >
       {/* Header */}
@@ -258,6 +254,7 @@ export function Calendar({
 
       <div
         key={monthTransitionKey}
+        {...bindMonthSwipe()}
         className={`calendar-month-panel ${monthTransitionDirection === "next" ? "calendar-month-next" : "calendar-month-prev"}`}
       >
         {/* Weekday headers */}

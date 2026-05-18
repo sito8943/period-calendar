@@ -1,52 +1,46 @@
-import { useEffect, useRef } from "react";
+import { useDrag } from "@use-gesture/react";
 
-import { DEFAULT_SWIPE_THRESHOLD } from "./constants";
+import {
+  DEFAULT_SWIPE_AXIS_THRESHOLD,
+  DEFAULT_SWIPE_DURATION_MS,
+  DEFAULT_SWIPE_THRESHOLD,
+  DEFAULT_SWIPE_VELOCITY,
+} from "./constants";
 import type { UseSwipeOptions } from "./types";
 
 /**
- * Detects horizontal swipe gestures on a given element.
+ * Detects horizontal swipe gestures and returns bind props for the target element.
  */
 export function useSwipe({
-  ref,
   onSwipeLeft,
   onSwipeRight,
   threshold = DEFAULT_SWIPE_THRESHOLD,
+  axisThreshold = DEFAULT_SWIPE_AXIS_THRESHOLD,
+  disabled = false,
 }: UseSwipeOptions) {
-  const startX = useRef(0);
-  const startY = useRef(0);
+  return useDrag(
+    ({ last, movement: [movementX], swipe: [swipeX] }) => {
+      if (!last) return;
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const handleTouchStart = (e: TouchEvent) => {
-      startX.current = e.touches[0].clientX;
-      startY.current = e.touches[0].clientY;
-    };
-
-    const handleTouchEnd = (e: TouchEvent) => {
-      const endX = e.changedTouches[0].clientX;
-      const endY = e.changedTouches[0].clientY;
-      const diffX = endX - startX.current;
-      const diffY = endY - startY.current;
-
-      // Only trigger if horizontal movement is dominant
-      if (Math.abs(diffX) < threshold || Math.abs(diffX) < Math.abs(diffY))
-        return;
-
-      if (diffX < 0) {
+      if (swipeX === -1 || movementX <= -threshold) {
         onSwipeLeft?.();
-      } else {
+        return;
+      }
+
+      if (swipeX === 1 || movementX >= threshold) {
         onSwipeRight?.();
       }
-    };
-
-    el.addEventListener("touchstart", handleTouchStart, { passive: true });
-    el.addEventListener("touchend", handleTouchEnd, { passive: true });
-
-    return () => {
-      el.removeEventListener("touchstart", handleTouchStart);
-      el.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [ref, onSwipeLeft, onSwipeRight, threshold]);
+    },
+    {
+      enabled: !disabled,
+      axis: "x",
+      filterTaps: true,
+      threshold: axisThreshold,
+      swipe: {
+        distance: threshold,
+        velocity: DEFAULT_SWIPE_VELOCITY,
+        duration: DEFAULT_SWIPE_DURATION_MS,
+      },
+    },
+  );
 }

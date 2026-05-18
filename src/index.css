@@ -319,6 +319,7 @@ button {
 }
 
 .calendar-month-panel {
+  touch-action: pan-y;
   animation-duration: 260ms;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
