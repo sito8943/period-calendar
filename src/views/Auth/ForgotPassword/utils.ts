@@ -1,6 +1,10 @@
 export const mapForgotPasswordErrorKey = (message: string): string => {
   const normalized = message.toLowerCase();
 
+  if (normalized.includes("not configured")) {
+    return "_accessibility:errors.forgotPassword.supabaseNotConfigured";
+  }
+
   if (
     normalized.includes("invalid email") ||
     normalized.includes("validate email")

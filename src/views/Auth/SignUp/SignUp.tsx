@@ -10,20 +10,22 @@ import {
   PasswordInput,
   State,
   TextInput,
-  mapSupabaseSessionToSessionDto,
   useOptionalAuthContext,
   useNotification,
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoutes, getSignUpConfirmationRoute, supabase } from "lib";
+import { AppRoutes, getSignUpConfirmationRoute } from "lib";
+
+// providers
+import { useManager } from "providers";
 
 // types
 import type { SignUpFormType } from "./types";
 
 // utils
 import { mapSignUpErrorKey } from "./utils";
-import { buildAuthRedirectUrl } from "../utils";
+import { buildAuthRedirectUrl, getErrorMessage } from "../utils";
 
 // styles
 import "../styles.css";
@@ -34,6 +36,7 @@ export function SignUp() {
   const auth = useOptionalAuthContext();
   const accountToken = auth?.account?.token;
   const { showErrorNotification } = useNotification();
+  const manager = useManager();
 
   const { handleSubmit, control, formState, setError } =
     useForm<SignUpFormType>({
@@ -52,13 +55,6 @@ export function SignUp() {
   }, [accountToken, navigate]);
 
   const onSubmit = handleSubmit(async (values) => {
-    if (!supabase || !auth) {
-      showErrorNotification({
-        message: t("_accessibility:errors.signUp.supabaseNotConfigured"),
-      });
-      return;
-    }
-
     if (values.password !== values.confirmPassword) {
       const errorMessage = t("_accessibility:errors.differentPasswords");
       setError("confirmPassword", {
@@ -73,41 +69,33 @@ export function SignUp() {
       AppRoutes.ConfirmEmailSuccess,
     );
 
-    const { data, error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        ...(confirmEmailRedirectTo
-          ? { emailRedirectTo: confirmEmailRedirectTo }
-          : {}),
-        data: {
-          name: values.name,
-          username: values.name,
-        },
-      },
-    });
+    try {
+      const result = await manager.Auth.signUp({
+        name: values.name,
+        username: values.name,
+        email: values.email,
+        password: values.password,
+        rPassword: values.confirmPassword,
+        redirectTo: confirmEmailRedirectTo,
+      });
 
-    if (error) {
-      const messageKey = mapSignUpErrorKey(error.message);
+      if (result.status === "confirmation_required") {
+        navigate(getSignUpConfirmationRoute(result.email), { replace: true });
+        return;
+      }
+
+      if (!auth) {
+        navigate(AppRoutes.Home, { replace: true });
+        return;
+      }
+
+      auth.logUser(result.session, true);
+      auth.setGuestMode(false);
+      navigate(AppRoutes.Home, { replace: true });
+    } catch (error) {
+      const messageKey = mapSignUpErrorKey(getErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
-      return;
     }
-
-    if (!data.session) {
-      navigate(getSignUpConfirmationRoute(values.email), { replace: true });
-      return;
-    }
-
-    auth.logUser(
-      mapSupabaseSessionToSessionDto(data.session, {
-        defaultUsername: values.name,
-        defaultEmail: values.email,
-      }),
-      true,
-    );
-
-    auth.setGuestMode(false);
-    navigate(AppRoutes.Home, { replace: true });
   });
 
   return (

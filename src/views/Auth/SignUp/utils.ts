@@ -1,6 +1,10 @@
 export const mapSignUpErrorKey = (message: string): string => {
   const normalized = message.toLowerCase();
 
+  if (normalized.includes("not configured")) {
+    return "_accessibility:errors.signUp.supabaseNotConfigured";
+  }
+
   if (
     normalized.includes("already registered") ||
     normalized.includes("already exists")

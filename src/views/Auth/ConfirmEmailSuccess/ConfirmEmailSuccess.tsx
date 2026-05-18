@@ -7,7 +7,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button, Loading } from "@sito/dashboard-app";
 
 // lib
-import { AppRoutes, AuthRouteQueryParam, supabase } from "lib";
+import { AppRoutes, AuthRouteQueryParam } from "lib";
+
+// providers
+import { useManager } from "providers";
 
 import { normalizeConfirmEmailTokenType } from "./utils";
 import {
@@ -21,6 +24,7 @@ export function ConfirmEmailSuccess() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const manager = useManager();
 
   const hasAuthErrorParams = useMemo(
     () => hasAuthErrorParamsInLocation(location.hash, location.search),
@@ -54,11 +58,6 @@ export function ConfirmEmailSuccess() {
 
   const verifyEmailMutation = useMutation({
     mutationFn: async () => {
-      if (!supabase) {
-        navigate(AppRoutes.ConfirmEmailError, { replace: true });
-        return;
-      }
-
       if (hasAuthErrorParams) {
         navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
@@ -69,17 +68,15 @@ export function ConfirmEmailSuccess() {
         return;
       }
 
-      const { error } = await supabase.auth.verifyOtp({
-        token_hash: tokenHash,
-        type: tokenType,
-      });
-
-      if (error) {
+      try {
+        await manager.AuthApi.confirmEmail({
+          tokenHash,
+          type: tokenType,
+        });
+      } catch {
         navigate(AppRoutes.ConfirmEmailError, { replace: true });
         return;
       }
-
-      await supabase.auth.signOut();
 
       const shouldCleanUrl = location.search.length > 0 || location.hash.length > 0;
       if (shouldCleanUrl) {

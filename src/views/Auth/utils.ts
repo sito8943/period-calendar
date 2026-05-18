@@ -81,3 +81,12 @@ export const hasAuthErrorParamsInLocation = (
     hashParams.has(AuthRouteQueryParam.ErrorDescription)
   );
 };
+
+export const getErrorMessage = (error: unknown): string => {
+  if (typeof error === "object" && error !== null && "message" in error) {
+    const { message } = error;
+    if (typeof message === "string") return message;
+  }
+
+  return "";
+};

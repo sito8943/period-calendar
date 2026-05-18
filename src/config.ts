@@ -51,6 +51,13 @@ const featureFlagsDefaults: AppFeatures = {
 export const config = {
   appName: "Period Calendar",
   defaultLanguage: "es",
+  auth: {
+    guestMode: "guest_mode",
+    user: "user",
+    remember: "remember",
+    refreshTokenKey: "refreshToken",
+    accessTokenExpiresAtKey: "accessTokenExpiresAt",
+  },
   storage: {
     periods: "period-calendar:periods",
     settings: "period-calendar:settings",

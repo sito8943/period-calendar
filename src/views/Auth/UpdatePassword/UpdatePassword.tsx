@@ -14,7 +14,10 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoutes, AuthRouteQueryParam, supabase } from "lib";
+import { AppRoutes, AuthRouteQueryParam } from "lib";
+
+// providers
+import { useManager } from "providers";
 
 import type { UpdatePasswordFormType } from "./types";
 import {
@@ -24,6 +27,7 @@ import {
 import {
   extractAuthQueryParamFromLocation,
   extractAuthSessionTokensFromLocation,
+  getErrorMessage,
   hasAuthErrorParamsInLocation,
 } from "../utils";
 
@@ -34,6 +38,7 @@ export function UpdatePassword() {
   const location = useLocation();
   const navigate = useNavigate();
   const { showErrorNotification, showSuccessNotification } = useNotification();
+  const manager = useManager();
 
   const { handleSubmit, control, setError } = useForm<UpdatePasswordFormType>({
     defaultValues: {
@@ -52,16 +57,6 @@ export function UpdatePassword() {
     [location.hash, location.search],
   );
 
-  const tokenHash = useMemo(
-    () =>
-      extractAuthQueryParamFromLocation(
-        location.hash,
-        location.search,
-        AuthRouteQueryParam.TokenHash,
-      ),
-    [location.hash, location.search],
-  );
-
   const recoveryTokenType = useMemo(
     () =>
       normalizeRecoveryTokenType(
@@ -76,13 +71,6 @@ export function UpdatePassword() {
 
   const updatePasswordMutation = useMutation({
     mutationFn: async (values: UpdatePasswordFormType) => {
-      if (!supabase) {
-        showErrorNotification({
-          message: t("_accessibility:errors.updatePassword.supabaseNotConfigured"),
-        });
-        return;
-      }
-
       if (hasAuthErrorParams) {
         showErrorNotification({
           message: t("_pages:auth.updatePassword.invalidToken"),
@@ -90,61 +78,44 @@ export function UpdatePassword() {
         return;
       }
 
-      if (tokenHash) {
-        if (!recoveryTokenType) {
+      const tokenHash = extractAuthQueryParamFromLocation(
+        location.hash,
+        location.search,
+        AuthRouteQueryParam.TokenHash,
+      );
+
+      try {
+        if (tokenHash) {
+          if (!recoveryTokenType) {
+            showErrorNotification({
+              message: t("_pages:auth.updatePassword.invalidToken"),
+            });
+            return;
+          }
+
+          await manager.AuthApi.resetPassword({
+            tokenHash,
+            type: recoveryTokenType,
+            newPassword: values.password,
+          });
+        } else if (sessionTokens) {
+          await manager.AuthApi.resetPassword({
+            accessToken: sessionTokens.accessToken,
+            refreshToken: sessionTokens.refreshToken,
+            newPassword: values.password,
+          });
+        } else {
           showErrorNotification({
             message: t("_pages:auth.updatePassword.invalidToken"),
           });
           return;
         }
-
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-          token_hash: tokenHash,
-          type: recoveryTokenType,
-        });
-
-        if (verifyError) {
-          showErrorNotification({
-            message: t(mapUpdatePasswordErrorKey(verifyError.message)),
-          });
-          return;
-        }
-      } else if (sessionTokens) {
-        const { error: setSessionError } = await supabase.auth.setSession({
-          access_token: sessionTokens.accessToken,
-          refresh_token: sessionTokens.refreshToken,
-        });
-
-        if (setSessionError) {
-          showErrorNotification({
-            message: t(mapUpdatePasswordErrorKey(setSessionError.message)),
-          });
-          return;
-        }
-      }
-
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getSession();
-
-      if (sessionError || !sessionData.session) {
+      } catch (error) {
         showErrorNotification({
-          message: t("_pages:auth.updatePassword.invalidToken"),
+          message: t(mapUpdatePasswordErrorKey(getErrorMessage(error))),
         });
         return;
       }
-
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: values.password,
-      });
-
-      if (updateError) {
-        showErrorNotification({
-          message: t(mapUpdatePasswordErrorKey(updateError.message)),
-        });
-        return;
-      }
-
-      await supabase.auth.signOut();
 
       showSuccessNotification({
         message: t("_pages:auth.updatePassword.sent"),

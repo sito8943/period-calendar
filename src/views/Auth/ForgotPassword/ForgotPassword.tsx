@@ -14,14 +14,17 @@ import {
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoutes, supabase } from "lib";
+import { AppRoutes } from "lib";
+
+// providers
+import { useManager } from "providers";
 
 // types
 import type { ForgotPasswordFormType } from "./types";
 
 // utils
 import { mapForgotPasswordErrorKey } from "./utils";
-import { buildAuthRedirectUrl } from "../utils";
+import { buildAuthRedirectUrl, getErrorMessage } from "../utils";
 
 // styles
 import "../styles.css";
@@ -32,6 +35,7 @@ export function ForgotPassword() {
   const auth = useOptionalAuthContext();
   const accountToken = auth?.account?.token;
   const { showErrorNotification, showSuccessNotification } = useNotification();
+  const manager = useManager();
   const [submittedEmail, setSubmittedEmail] = useState("");
 
   const { handleSubmit, control, formState, setError } =
@@ -48,23 +52,13 @@ export function ForgotPassword() {
   }, [accountToken, navigate]);
 
   const onSubmit = handleSubmit(async (values) => {
-    if (!supabase) {
-      showErrorNotification({
-        message: t(
-          "_accessibility:errors.forgotPassword.supabaseNotConfigured",
-        ),
+    try {
+      await manager.AuthApi.forgotPassword({
+        email: values.email,
+        redirectTo: buildAuthRedirectUrl(AppRoutes.UpdatePassword),
       });
-      return;
-    }
-
-    const recoveryRedirectTo = buildAuthRedirectUrl(AppRoutes.UpdatePassword);
-
-    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-      ...(recoveryRedirectTo ? { redirectTo: recoveryRedirectTo } : {}),
-    });
-
-    if (error) {
-      const messageKey = mapForgotPasswordErrorKey(error.message);
+    } catch (error) {
+      const messageKey = mapForgotPasswordErrorKey(getErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
       setError("email", {
         type: "manual",

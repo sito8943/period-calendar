@@ -11,18 +11,21 @@ import {
   PasswordInput,
   State,
   TextInput,
-  mapSupabaseSessionToSessionDto,
   useOptionalAuthContext,
   useNotification,
 } from "@sito/dashboard-app";
 
 // lib
-import { AppRoutes, supabase } from "lib";
+import { AppRoutes } from "lib";
+
+// providers
+import { useManager } from "providers";
 
 // types
 import type { SignInFormType } from "./types";
 
 // utils
+import { getErrorMessage } from "../utils";
 import { mapSignInErrorKey } from "./utils";
 
 // styles
@@ -34,6 +37,7 @@ export function SignIn() {
   const auth = useOptionalAuthContext();
   const accountToken = auth?.account?.token;
   const { showErrorNotification } = useNotification();
+  const manager = useManager();
   const rememberMeRef = useRef(false);
 
   const { handleSubmit, control, formState, setError } =
@@ -52,40 +56,27 @@ export function SignIn() {
   }, [accountToken, navigate]);
 
   const onSubmit = handleSubmit(async (values) => {
-    if (!supabase || !auth) {
-      showErrorNotification({
-        message: t("_accessibility:errors.signIn.supabaseNotConfigured"),
-      });
-      return;
-    }
-
     rememberMeRef.current = values.rememberMe;
+    try {
+      const session = await manager.Auth.login(values);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
+      if (!auth) {
+        navigate(AppRoutes.Home, { replace: true });
+        return;
+      }
 
-    if (error || !data.session) {
-      const messageKey = mapSignInErrorKey(error?.message ?? "");
+      auth.logUser(session, rememberMeRef.current);
+      auth.setGuestMode(false);
+      navigate(AppRoutes.Home, { replace: true });
+    } catch (error) {
+      const messageKey = mapSignInErrorKey(getErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
 
       setError("password", {
         type: "manual",
         message: t(messageKey),
       });
-      return;
     }
-
-    auth.logUser(
-      mapSupabaseSessionToSessionDto(data.session, {
-        defaultUsername: values.email,
-        defaultEmail: values.email,
-      }),
-      rememberMeRef.current,
-    );
-    auth.setGuestMode(false);
-    navigate(AppRoutes.Home, { replace: true });
   });
 
   return (
