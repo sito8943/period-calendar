@@ -4,7 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { AppRoutes } from "lib";
 
 // types
-import type { TermsSection } from "./types";
+import type { TermsSection } from "../types";
 
 export function TermsAndConditions() {
   const { t } = useTranslation();

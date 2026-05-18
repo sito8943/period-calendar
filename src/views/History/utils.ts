@@ -1,4 +1,4 @@
-import type { HistoryPeriod } from "./types";
+import type { Period } from "lib";
 
-export const isHistoryEmpty = (periods: HistoryPeriod[]): boolean =>
+export const isHistoryEmpty = (periods: Period[]): boolean =>
   periods.length === 0;

@@ -8,7 +8,7 @@ import { Onboarding, type OnboardingStepType } from "@sito/dashboard-app";
 import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
 
 // types
-import type { PeriodOnboardingPropsType } from "./types";
+import type { PeriodOnboardingProps } from "./types";
 
 // lib
 import {
@@ -22,7 +22,7 @@ import {
 // hooks
 import { useProfileSettings, useUpdateProfileSettings } from "hooks";
 
-export const PeriodOnboarding = (props: PeriodOnboardingPropsType) => {
+export const PeriodOnboarding = (props: PeriodOnboardingProps) => {
   const { t, i18n } = useTranslation();
 
   const [selectedTheme, setSelectedTheme] = useState(getStoredPeriodTheme);

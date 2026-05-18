@@ -34,8 +34,12 @@ import {
   supabase,
 } from "./supabase";
 import type {
+  DailyLogEntityAddDto,
+  DailyLogEntityDto,
   DailyLogSupabaseAddDto,
   DailyLogSupabaseUpdateDto,
+  PeriodEntityAddDto,
+  PeriodEntityDto,
   PeriodSupabaseAddDto,
   PeriodSupabaseUpdateDto,
 } from "./supabase";
@@ -70,26 +74,7 @@ const SUPABASE_MIGRATION_VERSION = "v1";
 type OfflineFilterDto = BaseFilterDto;
 type OfflineStoreName = (typeof OFFLINE_REQUIRED_STORES)[number];
 
-type PeriodEntityDto = BaseEntityDto & {
-  startDate: string;
-  endDate: string | null;
-};
-
-type PeriodEntityAddDto = Omit<PeriodEntityDto, "id">;
 type PeriodImportPreviewDto = { existing?: boolean };
-
-type DailyLogEntityDto = BaseEntityDto & {
-  date: string;
-  flow: FlowLevel | null;
-  symptoms: SymptomKey[];
-  sexualActivity: SexualActivity | null;
-  mood: MoodLevel | null;
-  sleepHours: number | null;
-  sleepQuality: SleepQuality | null;
-  notes: string;
-};
-
-type DailyLogEntityAddDto = Omit<DailyLogEntityDto, "id">;
 type DailyLogImportPreviewDto = { existing?: boolean };
 
 type ProfileSettingsEntityDto = BaseEntityDto & {

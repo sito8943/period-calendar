@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 
 // types
-import type { TermsSection } from "./types";
+import type { TermsSection } from "../types";
 
 export function PrivacyPolicy() {
   const { t } = useTranslation();
