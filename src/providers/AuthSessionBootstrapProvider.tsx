@@ -1,9 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import {
-  mapSupabaseSessionToSessionDto,
-  useAuth,
-} from "@sito/dashboard-app";
+import { mapSupabaseSessionToSessionDto, useAuth } from "@sito/dashboard-app";
 
 import type { BasicProviderPropTypes } from "./types";
 import { config } from "../config";
@@ -21,6 +18,7 @@ export const AuthSessionBootstrapProvider = ({
     let mounted = true;
 
     const syncSession = async () => {
+      if (!supabase) return;
       const { data, error } = await supabase.auth.getSession();
       if (!mounted) return;
 

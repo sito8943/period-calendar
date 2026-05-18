@@ -60,7 +60,8 @@ export class PeriodCalendarAuthClient extends BaseAuthClient {
     data: PeriodCalendarRegisterDto,
   ): Promise<PeriodCalendarSignUpResult> {
     const auth = ensureSupabase();
-    const name = data.name?.trim() || data.username?.trim() || data.email.trim();
+    const name =
+      data.name?.trim() || data.username?.trim() || data.email.trim();
     const redirectTo = data.redirectTo?.trim();
 
     const { data: authData, error } = await auth.auth.signUp({
@@ -104,6 +105,7 @@ export class PeriodCalendarAuthClient extends BaseAuthClient {
   }
 
   async logout(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _options?: Parameters<BaseAuthClient["logout"]>[0],
   ): Promise<void> {
     const auth = ensureSupabase();
