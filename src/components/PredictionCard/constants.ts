@@ -1,7 +1,7 @@
 import type { PredictionCardVariant } from "./types";
 
 export const PREDICTION_CARD_CLASSNAMES = {
-  root: "relative rounded-xl p-4 pr-10 shadow-md",
+  root: "relative rounded-xl p-4 pr-10 shadow-md touch-pan-y select-none will-change-transform",
   enterAnimation: "quick-blur-appear",
   exitAnimation: "quick-blur-disappear",
   title: "text-sm font-medium opacity-80",
@@ -36,4 +36,3 @@ export const PREDICTION_CARD_DISMISS_STORAGE_PREFIX =
 export const PREDICTION_CARD_DISMISS_STORAGE_VALUE = "1";
 export const PREDICTION_CARD_DISMISS_ANIMATION_DURATION_MS = 300;
 export const PREDICTION_CARD_SWIPE_DISMISS_THRESHOLD = 40;
-export const PREDICTION_CARD_SWIPE_LOCK_AXIS_THRESHOLD = 8;

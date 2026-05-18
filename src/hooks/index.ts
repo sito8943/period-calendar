@@ -16,3 +16,4 @@ export {
 } from "./queries";
 export { useCanGoBack } from "./useCanGoBack";
 export { useSwipe } from "./useSwipe";
+export { useSwipeDismiss } from "./useSwipeDismiss";
