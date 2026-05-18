@@ -3,17 +3,15 @@ import { QueryClient } from "@tanstack/react-query";
 
 // @sito/dashboard-app
 import {
-  AuthProvider,
   ManagerProvider,
   NotificationProvider,
   TranslationProvider,
 } from "@sito/dashboard-app";
 
 import type { BasicProviderPropTypes } from "./types";
-import { config } from "../config";
 import { periodCalendarManager } from "../lib/api";
-import { AuthSessionBootstrapProvider } from "./AuthSessionBootstrapProvider";
 import { FeatureFlagsProvider } from "./FeatureFlags";
+import { PeriodCalendarAuthProvider } from "./PeriodCalendarAuthProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,21 +29,13 @@ export const PeriodCalendarProvider = ({
 
   return (
     <ManagerProvider manager={periodCalendarManager} queryClient={queryClient}>
-      <AuthProvider
-        guestMode={config.auth.guestMode}
-        user={config.auth.user}
-        remember={config.auth.remember}
-        refreshTokenKey={config.auth.refreshTokenKey}
-        accessTokenExpiresAtKey={config.auth.accessTokenExpiresAtKey}
-      >
-        <AuthSessionBootstrapProvider>
-          <TranslationProvider t={t} language={i18n.language}>
-            <FeatureFlagsProvider>
-              <NotificationProvider>{children}</NotificationProvider>
-            </FeatureFlagsProvider>
-          </TranslationProvider>
-        </AuthSessionBootstrapProvider>
-      </AuthProvider>
+      <PeriodCalendarAuthProvider>
+        <TranslationProvider t={t} language={i18n.language}>
+          <FeatureFlagsProvider>
+            <NotificationProvider>{children}</NotificationProvider>
+          </FeatureFlagsProvider>
+        </TranslationProvider>
+      </PeriodCalendarAuthProvider>
     </ManagerProvider>
   );
 };
