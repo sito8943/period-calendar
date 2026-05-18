@@ -22,6 +22,7 @@ Quick diagnosis guide for common issues in consumer projects.
 
 - Mount `ConfigProvider` in the root and pass `location`, `navigate`, `linkComponent`.
 - In React Router, `navigate` must handle `string | number`.
+- If you need explicit animation behavior, set `motion="auto" | "none" | "always"`.
 
 ```tsx
 <ConfigProvider
@@ -31,6 +32,7 @@ Quick diagnosis guide for common issues in consumer projects.
     else navigate(route);
   }}
   linkComponent={Link}
+  motion="auto"
 >
   {children}
 </ConfigProvider>
@@ -108,7 +110,20 @@ export default {
 
 - In `@sito/dashboard-app`, `IconButton` expects `icon: IconDefinition` (FontAwesome), not `ReactNode`.
 
-### 2.8 Login works, but refresh/logout fails or session is cleared unexpectedly
+### 2.8 Animations/transitions are disabled unexpectedly
+
+**Cause**
+
+- `ConfigProvider` is using `motion="none"`.
+- The browser/OS has `prefers-reduced-motion` enabled and `motion` is left on the default `"auto"`.
+
+**Fix**
+
+- Use `motion="auto"` to respect accessibility settings.
+- Use `motion="always"` only when you intentionally want to keep library animations enabled.
+- Use `motion="none"` when your app must disable library transitions entirely.
+
+### 2.9 Login works, but refresh/logout fails or session is cleared unexpectedly
 
 **Cause**
 
@@ -127,7 +142,7 @@ const authStorageKeys = {
 };
 ```
 
-### 2.9 `Drawer` active item is wrong or navigation is inconsistent
+### 2.10 `Drawer` active item is wrong or navigation is inconsistent
 
 **Cause**
 
@@ -138,7 +153,7 @@ const authStorageKeys = {
 - Pass real `useLocation()` into `ConfigProvider`.
 - Use your router's actual `Link` as `linkComponent`.
 
-### 2.10 `Onboarding` / `Error` behave unexpectedly
+### 2.11 `Onboarding` / `Error` behave unexpectedly
 
 **Cause**
 
@@ -149,7 +164,7 @@ const authStorageKeys = {
 - `Error`: use default mode (`error/message/onRetry`) **or** custom mode (`children`), never both.
 - `Onboarding`: pass content via `steps`; do not rely on internal `_pages:onboarding.*` keys.
 
-### 2.11 `IndexedDBClient`: `indexedDB is not defined`
+### 2.12 `IndexedDBClient`: `indexedDB is not defined`
 
 **Cause**
 
@@ -159,7 +174,7 @@ const authStorageKeys = {
 
 - Instantiate only in browser (for example inside `useEffect` or after checking `typeof window !== "undefined"`).
 
-### 2.11.1 `IndexedDBClient`: `NotFoundError` / missing object store when sharing a `dbName`
+### 2.12.1 `IndexedDBClient`: `NotFoundError` / missing object store when sharing a `dbName`
 
 **Cause**
 
@@ -240,5 +255,5 @@ rg "@sito/dashboard-app/src/" src
 
 1. Build a centralized `AppProviders` component.
 2. Keep shared `authStorageKeys` in one module.
-3. Reuse official hooks (`useDeleteDialog`, `usePostForm`, `useImportDialog`).
+3. Reuse official hooks (`useDeleteDialog`, `useMutationForm`, `useImportDialog`).
 4. Customize visuals via theme variables and `className` extension points.

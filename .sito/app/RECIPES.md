@@ -49,6 +49,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
         else navigate(route);
       }}
       linkComponent={Link}
+      motion="auto"
     >
       {/* ManagerProvider already mounts QueryClientProvider internally */}
       <ManagerProvider manager={manager}>
@@ -73,6 +74,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
   );
 }
 ```
+
+`ConfigProvider.motion` controls library transitions globally:
+
+- `"auto"` respects `prefers-reduced-motion`.
+- `"none"` disables library transitions and animations.
+- `"always"` keeps library transitions enabled even when the OS/browser requests reduced motion.
 
 ## 2. Base app shell (Navbar + Drawer + Notification + ToTop)
 
@@ -382,7 +389,7 @@ export function ProductActionsBar({ record }: { record: BaseEntityDto }) {
 }
 ```
 
-## 5. Form primitives (`usePostForm` + `FormContainer` + input components)
+## 5. Form primitives (`useMutationForm` + `FormContainer` + input components)
 
 ```tsx
 import { Controller } from "react-hook-form";
@@ -392,7 +399,7 @@ import {
   PasswordInput,
   State,
   TextInput,
-  usePostForm,
+  useMutationForm,
   type BaseEntityDto,
 } from "@sito/dashboard-app";
 
@@ -414,7 +421,7 @@ type CreateProductDto = {
 };
 
 export function CreateProductForm() {
-  const form = usePostForm<
+  const form = useMutationForm<
     ProductDto,
     CreateProductDto,
     ProductDto,
@@ -652,6 +659,20 @@ export function RawDialogExample() {
 
 ## 8. Import flows with `ImportDialog` / `useImportDialog`
 
+`ImportDialog` accepts `extraFields` to inject custom inputs (checkboxes,
+selects, etc.) between the preview and the footer actions.
+
+`useImportDialog` adds an optional third generic `TExtra` plus two new props:
+
+- `defaultExtra?: TExtra` — initial value for the extra fields.
+- `renderExtraFields?: ({ values, setValue, setValues }) => ReactNode` — render
+  prop owned by the hook; the returned node is wired into `ImportDialog` through
+  the `extraFields` slot.
+
+The hook merges the extra values into the mutation payload as
+`{ items, override, ...extra }`. `mutationFn` is typed as
+`ImportDto<TPreview> & TExtra`.
+
 ```tsx
 import {
   ImportDialog,
@@ -709,6 +730,94 @@ export function ProductsImport() {
   );
 }
 ```
+
+### 8.1 Extra fields wired by the hook
+
+```tsx
+import {
+  ImportDialog,
+  useImportDialog,
+  type BaseEntityDto,
+  type ImportPreviewDto,
+} from "@sito/dashboard-app";
+
+interface TransactionDto extends BaseEntityDto {
+  amount: number;
+  description: string;
+}
+
+interface TransactionImportPreviewDto extends ImportPreviewDto {
+  amount: number;
+  description: string;
+}
+
+type ExtraImport = {
+  useCurrentAccount: boolean;
+  note: string;
+};
+
+export function TransactionsImport({
+  currentAccountId,
+}: {
+  currentAccountId: number;
+}) {
+  const importDialog = useImportDialog<
+    TransactionDto,
+    TransactionImportPreviewDto,
+    ExtraImport
+  >({
+    queryKey: ["transactions"],
+    entity: "transactions",
+    fileProcessor: parseTransactionsFile,
+    defaultExtra: { useCurrentAccount: true, note: "" },
+    mutationFn: ({ items, override, useCurrentAccount, note }) =>
+      api.transactions.import({
+        items,
+        override,
+        accountId: useCurrentAccount ? currentAccountId : null,
+        note,
+      }),
+    renderExtraFields: ({ values, setValue }) => (
+      <div className="grid gap-2">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={values.useCurrentAccount}
+            onChange={(e) => setValue("useCurrentAccount", e.target.checked)}
+          />
+          <span>Use current account</span>
+        </label>
+        <label className="grid gap-1">
+          <span>Note</span>
+          <input
+            type="text"
+            value={values.note}
+            onChange={(e) => setValue("note", e.target.value)}
+          />
+        </label>
+      </div>
+    ),
+  });
+
+  return (
+    <>
+      <button type="button" onClick={() => importDialog.action().onClick?.()}>
+        Import transactions
+      </button>
+      <ImportDialog<TransactionImportPreviewDto> {...importDialog} />
+    </>
+  );
+}
+```
+
+Notes:
+
+- The hook returns `extraFields` in its result and spreads into
+  `ImportDialog` automatically via `{...importDialog}`. Do not duplicate
+  `extraFields` manually.
+- `defaultExtra` is also used to reset the form on dialog close/submit.
+- For static custom inputs whose state lives in the parent component, use the
+  component-level `extraFields` prop directly (see `CONSUMER_GUIDE.md` §5.4.1).
 
 ## 9. Tabs and onboarding flows (`TabsLayout` + `Onboarding`)
 
@@ -1071,6 +1180,99 @@ export function ProductsHeaderActions() {
   );
 }
 ```
+
+## 15.1 Export with configuration dialog using `useExportDialog`
+
+Use `useExportDialog` when the export needs extra configuration (date range,
+format, columns, etc.) before hitting the backend. The hook owns the dialog
+state, the extra form, and the mutation; the returned `action()` shape matches
+`useExportAction`, so `Page`/`Actions`/`PrettyGrid` consume it without changes.
+
+```tsx
+import {
+  ExportDialog,
+  Page,
+  useExportDialog,
+  type BaseEntityDto,
+} from "@sito/dashboard-app";
+
+interface TransactionDto extends BaseEntityDto {
+  amount: number;
+  description: string;
+}
+
+type ExportExtra = {
+  from: string;
+  to: string;
+  format: "csv" | "xlsx";
+};
+
+export function TransactionsHeaderActions() {
+  const exportDialog = useExportDialog<TransactionDto, ExportExtra, Blob>({
+    entity: "transactions",
+    defaultExtra: { from: "", to: "", format: "csv" },
+    mutationFn: ({ from, to, format }) =>
+      api.transactions.exportRange({ from, to, format }),
+    renderExtraFields: ({ values, setValue }) => (
+      <div className="grid gap-2">
+        <label className="grid gap-1">
+          <span>From</span>
+          <input
+            type="date"
+            value={values.from}
+            onChange={(e) => setValue("from", e.target.value)}
+          />
+        </label>
+        <label className="grid gap-1">
+          <span>To</span>
+          <input
+            type="date"
+            value={values.to}
+            onChange={(e) => setValue("to", e.target.value)}
+          />
+        </label>
+        <label className="grid gap-1">
+          <span>Format</span>
+          <select
+            value={values.format}
+            onChange={(e) =>
+              setValue("format", e.target.value as ExportExtra["format"])
+            }
+          >
+            <option value="csv">CSV</option>
+            <option value="xlsx">XLSX</option>
+          </select>
+        </label>
+      </div>
+    ),
+  });
+
+  return (
+    <>
+      <Page<TransactionDto>
+        title="Transactions"
+        actions={[exportDialog.action()]}
+      >
+        {/* ... */}
+      </Page>
+      <ExportDialog {...exportDialog} title="Export transactions" />
+    </>
+  );
+}
+```
+
+Notes:
+
+- The hook does **not** invalidate any query — export does not mutate server
+  state. If your backend changes server state on export (rare), pass an
+  `onSuccess` callback and trigger invalidation there.
+- `defaultExtra` is used to reset the form on close/submit.
+- Opt out anytime: switch back to `useExportAction` + `useExportActionMutate`
+  for entities that don't need a dialog. The `action()` descriptor is
+  interchangeable.
+- The hook does **not** auto-trigger file download. `mutationFn` should return
+  whatever your backend produces (Blob/url/void); handle the download in the
+  consumer (e.g. trigger an anchor with the Blob in `onSuccess`).
 
 ## 16. Error handling guards (`isValidationError`, `isHttpError`)
 

@@ -50,6 +50,8 @@ Recommended order:
 By default, each `ManagerProvider` instance creates its own isolated `QueryClient`.
 If you need custom React Query defaults, or you intentionally want multiple trees to share cache state, pass your own client with `queryClient={queryClient}`.
 
+If you prefer a pre-wired composer, use `AppProviders` or `createAppProviders` and keep the same base order.
+
 ```tsx
 import type { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -93,6 +95,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
         else navigate(route);
       }}
       linkComponent={Link}
+      motion="auto"
     >
       <ManagerProvider manager={manager}>
         <AuthProvider
@@ -115,6 +118,64 @@ export function AppProviders({ children }: { children: ReactNode }) {
   );
 }
 ```
+
+### 2.0.1 Provider composer
+
+`AppProviders` composes this base tree:
+`ConfigProvider -> ManagerProvider -> AuthProvider -> NotificationProvider -> DrawerMenuProvider`
+
+Optional capabilities:
+
+1. Disable auth: `auth={false}`
+2. Enable optional UI providers: `withNavbarProvider`, `withBottomNavActionProvider`
+3. Inject app-specific wrappers: `featureFlagsProvider`, `offlineSyncProvider`, `appWrapperProvider`
+4. Control library transitions globally with `config.motion`: `"auto"` (default), `"none"`, or `"always"`
+
+```tsx
+import type { ReactNode } from "react";
+import {
+  AppProviders,
+  IManager,
+  type BasicProviderPropTypes,
+} from "@sito/dashboard-app";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+
+const manager = new IManager(import.meta.env.VITE_API_URL, "user");
+
+const FeatureFlagsProvider = ({ children }: BasicProviderPropTypes) => (
+  <>{children}</>
+);
+
+function AppShell({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  return (
+    <AppProviders
+      config={{
+        location,
+        navigate: (route) => {
+          if (typeof route === "number") navigate(route);
+          else navigate(route);
+        },
+        linkComponent: Link,
+        motion: "auto",
+      }}
+      manager={{ manager }}
+      withNavbarProvider
+      featureFlagsProvider={{ provider: FeatureFlagsProvider }}
+    >
+      {children}
+    </AppProviders>
+  );
+}
+```
+
+`motion` semantics:
+
+- `"auto"` respects `prefers-reduced-motion`.
+- `"none"` disables library transitions and animations.
+- `"always"` keeps library transitions enabled even when the OS/browser requests reduced motion.
 
 ### 2.1 Supabase providers (optional backend)
 
@@ -153,26 +214,27 @@ const supabase = createClient(
 
 ## 4. Key Components and Props
 
-| Component                | Key props                                                                                     | Recommended usage                                  |
-| ------------------------ | --------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `Page<T>`                | `title`, `actions`, `addOptions`, `filterOptions`, `queryKey`, `isLoading`                    | CRUD layout with standard header/actions           |
-| `PageHeader<T>`          | `title`, `actions`, `showBackButton`                                                          | Reusable page header with desktop/mobile actions   |
-| `FormContainer<TForm>`   | `handleSubmit`, `onSubmit`, `reset`, `isLoading`, `buttonEnd`                                 | Form wrapper with built-in submit/cancel           |
-| `ParagraphInput`         | `label`, `state`, `containerClassName`, `inputClassName`, `helperText`                        | Textarea with state-aware styling                  |
-| `PasswordInput`          | `TextInputPropsType`                                                                          | Password input with show/hide toggle               |
-| `TabsLayout`             | `tabs`, `defaultTab`, `currentTab`, `onTabChange`, `useLinks`, `tabButtonProps`               | Route tabs or local state tabs                     |
-| `Onboarding`             | `steps`                                                                                       | Multi-step flow using controlled `TabsLayout`      |
-| `PrettyGrid<T>`          | `data`, `renderComponent`, `hasMore`, `onLoadMore`, `className`, `itemClassName`              | Grid with empty state and optional infinite scroll |
-| `Error`                  | Default mode (`error`, `message`, `onRetry`) or custom mode (`children`)                      | Reusable error fallback                            |
-| `Dialog`                 | `open`, `title`, `handleClose`, `containerClassName`, `className`                             | Base modal                                         |
-| `FormDialog<TForm>`      | `Dialog` props + `FormContainer` props + `extraActions`                                       | Form modal with optional secondary footer actions  |
-| `ConfirmationDialog`     | `open`, `title`, `handleSubmit`, `handleClose`, `isLoading`, `extraActions`                   | Basic confirmation flows                           |
-| `ImportDialog<TPreview>` | `fileProcessor`, `onFileProcessed`, `renderCustomPreview`, `onOverrideChange`, `extraActions` | Import with preview + override                     |
-| `Drawer<MenuKeys>`       | `open`, `onClose`, `menuMap`, `logo`                                                          | Side navigation                                    |
-| `Navbar`                 | `openDrawer`, `menuButtonProps`, `showSearch`                                                 | Top bar with dynamic title/actions                 |
-| `BottomNavigation<TId>`  | `items`, `centerAction`, `isItemActive`, `className`                                          | Mobile fixed navigation with optional center CTA   |
-| `ToTop`                  | `threshold`, `tooltip`, `scrollOnClick`, `className`                                          | Floating scroll-to-top button                      |
-| `IconButton`             | `icon: IconDefinition` + visual props                                                         | FontAwesome-only icon contract                     |
+| Component                | Key props                                                                                                                                                                        | Recommended usage                                  |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `Page<T>`                | `title`, `actions`, `addOptions`, `filterOptions`, `queryKey`, `isLoading`                                                                                                       | CRUD layout with standard header/actions           |
+| `PageHeader<T>`          | `title`, `actions`, `showBackButton`                                                                                                                                             | Reusable page header with desktop/mobile actions   |
+| `FormContainer<TForm>`   | `handleSubmit`, `onSubmit`, `reset`, `isLoading`, `buttonEnd`, `onCancel`, `submitLabel`, `cancelLabel`, `submitDisabled`, `cancelDisabled`, `actionsClassName`, `renderActions` | Form wrapper with built-in or custom submit/cancel |
+| `ParagraphInput`         | `label`, `state`, `containerClassName`, `inputClassName`, `helperText`                                                                                                           | Textarea with state-aware styling                  |
+| `PasswordInput`          | `TextInputPropsType`                                                                                                                                                             | Password input with show/hide toggle               |
+| `TabsLayout`             | `tabs`, `defaultTab`, `currentTab`, `onTabChange`, `useLinks`, `tabButtonProps`                                                                                                  | Route tabs or local state tabs                     |
+| `Onboarding`             | `steps`                                                                                                                                                                          | Multi-step flow using controlled `TabsLayout`      |
+| `PrettyGrid<T>`          | `data`, `renderComponent`, `hasMore`, `onLoadMore`, `className`, `itemClassName`                                                                                                 | Grid with empty state and optional infinite scroll |
+| `Error`                  | Default mode (`error`, `message`, `onRetry`) or custom mode (`children`)                                                                                                         | Reusable error fallback                            |
+| `Dialog`                 | `open`, `title`, `handleClose`, `containerClassName`, `className`                                                                                                                | Base modal                                         |
+| `FormDialog<TForm>`      | `Dialog` props + `FormContainer` props + `extraActions`                                                                                                                          | Form modal with optional secondary footer actions  |
+| `ConfirmationDialog`     | `open`, `title`, `handleSubmit`, `handleClose`, `isLoading`, `extraActions`                                                                                                      | Basic confirmation flows                           |
+| `ImportDialog<TPreview>` | `fileProcessor`, `onFileProcessed`, `renderCustomPreview`, `onOverrideChange`, `extraActions`, `extraFields`                                                                     | Import with preview + override + custom inputs     |
+| `ExportDialog`           | `handleSubmit`, `isLoading`, `extraFields`, `extraActions`                                                                                                                       | Optional export config modal (date range, format)  |
+| `Drawer<MenuKeys>`       | `open`, `onClose`, `menuMap`, `logo`                                                                                                                                             | Side navigation                                    |
+| `Navbar`                 | `openDrawer`, `menuButtonProps`, `showSearch`                                                                                                                                    | Top bar with dynamic title/actions                 |
+| `BottomNavigation<TId>`  | `items`, `centerAction`, `isItemActive`, `className`                                                                                                                             | Mobile fixed navigation with optional center CTA   |
+| `ToTop`                  | `threshold`, `tooltip`, `scrollOnClick`, `className`                                                                                                                             | Floating scroll-to-top button                      |
+| `IconButton`             | `icon: IconDefinition` + visual props                                                                                                                                            | FontAwesome-only icon contract                     |
 
 ## 5. Frequent Usage Examples
 
@@ -244,6 +306,89 @@ import { ImportDialog } from "@sito/dashboard-app";
   renderCustomPreview={(items) => <ProductsPreviewTable items={items ?? []} />}
 />;
 ```
+
+### 5.4.1 `ImportDialog`: extra fields (custom inputs)
+
+Use `extraFields` to render custom inputs (checkboxes, selects, text) between the
+preview and the footer actions. When the consumer owns the state, pass the node
+directly:
+
+```tsx
+import { useState } from "react";
+import { ImportDialog } from "@sito/dashboard-app";
+
+const [useCurrentAccount, setUseCurrentAccount] = useState(true);
+
+<ImportDialog<TransactionImportPreviewDto>
+  open={open}
+  title="Import transactions"
+  handleClose={close}
+  handleSubmit={() => submitImport({ useCurrentAccount, items: previewItems })}
+  fileProcessor={parseFile}
+  extraFields={
+    <label className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        checked={useCurrentAccount}
+        onChange={(e) => setUseCurrentAccount(e.target.checked)}
+      />
+      <span>Use current account</span>
+    </label>
+  }
+/>;
+```
+
+When pairing with `useImportDialog`, prefer the hook-managed flow via
+`defaultExtra` + `renderExtraFields` (see `RECIPES.md` §8). The hook merges the
+extra values into the `mutationFn` payload as
+`{ items, override, ...extra }`.
+
+### 5.4.2 `ExportDialog` / `useExportDialog`: optional export config
+
+Export flows are direct by default (`useExportAction` + `useExportActionMutate`).
+When an entity needs extra configuration before the request (date range, format,
+columns), swap to `useExportDialog` — same `action()` shape, so `Page`/`Actions`
+consume either without changes.
+
+```tsx
+import { ExportDialog, useExportDialog } from "@sito/dashboard-app";
+
+type ExportExtra = { from: string; to: string; format: "csv" | "xlsx" };
+
+const exportDialog = useExportDialog<TransactionDto, ExportExtra, Blob>({
+  entity: "transactions",
+  defaultExtra: { from: "", to: "", format: "csv" },
+  mutationFn: ({ from, to, format }) =>
+    api.transactions.exportRange({ from, to, format }),
+  renderExtraFields: ({ values, setValue }) => (
+    <div className="grid gap-2">
+      <input
+        type="date"
+        value={values.from}
+        onChange={(e) => setValue("from", e.target.value)}
+      />
+      <input
+        type="date"
+        value={values.to}
+        onChange={(e) => setValue("to", e.target.value)}
+      />
+      <select
+        value={values.format}
+        onChange={(e) => setValue("format", e.target.value as ExportExtra["format"])}
+      >
+        <option value="csv">CSV</option>
+        <option value="xlsx">XLSX</option>
+      </select>
+    </div>
+  ),
+});
+
+<Page exportAction={exportDialog.action} ... />
+<ExportDialog {...exportDialog} title="Export transactions" />
+```
+
+Opt out of the dialog by using `useExportAction` + `useExportActionMutate`
+directly — the action triggers the mutation without any modal.
 
 ### 5.5 `useNavbar`: dynamic title and right slot
 
@@ -597,9 +742,9 @@ Storybook reference: check `Hooks/Dialogs/FormDialogs` stories `StateModeSetValu
 ### 6.3 Form hooks
 
 ```tsx
-import { FormContainer, usePostForm } from "@sito/dashboard-app";
+import { FormContainer, useMutationForm } from "@sito/dashboard-app";
 
-const formProps = usePostForm<
+const formProps = useMutationForm<
   ProductDto,
   CreateProductDto,
   ProductDto,
