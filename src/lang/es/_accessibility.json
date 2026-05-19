@@ -58,5 +58,8 @@
     "home": "Ir a inicio",
     "history": "Ver historial",
     "logPeriod": "Registrar periodo"
+  },
+  "offline": {
+    "banner": "Estas sin conexion. Los cambios se sincronizaran cuando vuelva la conexion."
   }
 }

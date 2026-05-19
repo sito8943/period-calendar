@@ -58,5 +58,8 @@
     "home": "Go to home",
     "history": "View history",
     "logPeriod": "Log period"
+  },
+  "offline": {
+    "banner": "You are offline. Changes will sync when the connection is restored."
   }
 }

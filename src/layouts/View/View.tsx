@@ -29,7 +29,7 @@ import { resolvePeriodQueryScopeFromAccount } from "../../hooks/queries";
 // components
 import Header from "./Header";
 import Footer from "./Footer";
-import { PeriodOnboarding } from "components";
+import { OfflineBanner, PeriodOnboarding } from "components";
 
 // config
 import { config } from "../../config";
@@ -186,6 +186,7 @@ export function View() {
             />
           )}
           <Header />
+          <OfflineBanner />
           <Outlet />
           <Footer />
           <BottomNavigation
