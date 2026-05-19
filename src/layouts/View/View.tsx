@@ -4,16 +4,20 @@ import { Tooltip } from "react-tooltip";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { ComponentType } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useQueryClient } from "@tanstack/react-query";
 
 // @sito/dashboard-app
 import {
+  AppShell,
   BottomNavActionProvider,
   BottomNavigation,
   ConfigProvider,
+  DashboardFooter,
+  DashboardHeader,
+  Error,
   fromLocal,
   NavbarProvider,
-  Notification,
   toLocal,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
@@ -27,8 +31,6 @@ import { PeriodQueryKeys, useProfileSettings } from "hooks";
 import { resolvePeriodQueryScopeFromAccount } from "../../hooks/queries";
 
 // components
-import Header from "./Header";
-import Footer from "./Footer";
 import { OfflineBanner, PeriodOnboarding } from "components";
 
 // config
@@ -46,6 +48,7 @@ import {
 
 // menu
 import { getFeatureFilteredBottomMap } from "../../views/bottomMap";
+import { getFeatureFilteredMenuMap } from "../../views/menuMap";
 
 // providers
 import { useFeatureFlags } from "providers";
@@ -136,6 +139,11 @@ export function View() {
     setShowOnboarding(false);
   }, []);
 
+  const featureFilteredMenuMap = useMemo(
+    () => getFeatureFilteredMenuMap(isFeatureEnabled, i18n.resolvedLanguage),
+    [i18n.resolvedLanguage, isFeatureEnabled],
+  );
+
   const bottomNavigationItems = useMemo<BottomNavigationItemType[]>(
     () =>
       getFeatureFilteredBottomMap(isFeatureEnabled).map((item) => {
@@ -185,17 +193,32 @@ export function View() {
               onStartAsGuest={closeOnboarding}
             />
           )}
-          <Header />
-          <OfflineBanner />
-          <Outlet />
-          <Footer />
-          <BottomNavigation
-            items={bottomNavigationItems}
-            centerAction={centerAction}
-            isItemActive={isBottomNavItemActive}
-          />
-          <Tooltip id="tooltip" />
-          <Notification />
+          <AppShell
+            header={
+              <>
+                <OfflineBanner />
+                <DashboardHeader menuMap={featureFilteredMenuMap} />
+              </>
+            }
+            footer={
+              <DashboardFooter
+                copyrightText={t("_pages:footer.copyright")}
+                bottomNavSpacing
+              />
+            }
+            bottomNavigation={
+              <BottomNavigation
+                items={bottomNavigationItems}
+                centerAction={centerAction}
+                isItemActive={isBottomNavItemActive}
+              />
+            }
+            extras={<Tooltip id="tooltip" />}
+          >
+            <ErrorBoundary FallbackComponent={Error}>
+              <Outlet />
+            </ErrorBoundary>
+          </AppShell>
         </BottomNavActionProvider>
       </NavbarProvider>
     </ConfigProvider>

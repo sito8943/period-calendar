@@ -345,34 +345,6 @@ button {
   transform: none;
 }
 
-.onboarding-main .step-title {
-  opacity: 0;
-  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 30ms forwards;
-}
-
-.onboarding-main .step-body {
-  opacity: 0;
-  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 90ms forwards;
-}
-
-.onboarding-main .step-content {
-  opacity: 0;
-  animation: motion-rise-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms forwards;
-}
-
-.onboarding-main .step-actions > * {
-  opacity: 0;
-  animation: motion-pop-in 360ms ease-out forwards;
-}
-
-.onboarding-main .step-actions > *:nth-child(1) {
-  animation-delay: 180ms;
-}
-
-.onboarding-main .step-actions > *:nth-child(2) {
-  animation-delay: 230ms;
-}
-
 .onboarding-theme-grid > * {
   opacity: 0;
   animation: motion-pop-in 460ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -445,10 +417,6 @@ button {
   .calendar-shell,
   .calendar-month-label,
   .calendar-month-panel,
-  .onboarding-main .step-title,
-  .onboarding-main .step-body,
-  .onboarding-main .step-content,
-  .onboarding-main .step-actions > *,
   .onboarding-theme-grid > * {
     animation: none !important;
     opacity: 1 !important;
