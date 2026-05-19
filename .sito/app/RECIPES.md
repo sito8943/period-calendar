@@ -81,25 +81,26 @@ export function AppProviders({ children }: { children: ReactNode }) {
 - `"none"` disables library transitions and animations.
 - `"always"` keeps library transitions enabled even when the OS/browser requests reduced motion.
 
-## 2. Base app shell (Navbar + Drawer + Notification + ToTop)
+## 2. Base app shell with layout helpers (`AppShell` + `DashboardHeader` + `DashboardFooter`)
+
+Prefer the bundled shells over hand-rolling Navbar/Drawer/Footer wiring. `AppShell` mounts the layout slots in fixed order (`header → children → footer → bottomNavigation → extras → Notification`) and `DashboardHeader` owns the drawer open/close state internally.
 
 ```tsx
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
+import { Outlet } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 import { faBox, faHouse } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Drawer,
+  AppShell,
+  DashboardFooter,
+  DashboardHeader,
   MenuItemType,
-  Navbar,
-  Notification,
-  ToTop,
 } from "@sito/dashboard-app";
 
 type AppPages = "home" | "products";
 
-export function AppShell({ children }: { children: React.ReactNode }) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
+export function AppLayout() {
   const menuMap = useMemo<MenuItemType<AppPages>[]>(
     () => [
       {
@@ -119,23 +120,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <>
-      <Navbar openDrawer={() => setDrawerOpen(true)} showSearch />
-      <Drawer<AppPages>
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        menuMap={menuMap}
-      />
-
-      {/* Mount once at app shell level */}
-      <Notification />
-
-      <main>{children}</main>
-      <ToTop threshold={160} tooltip="Back to top" />
-    </>
+    <AppShell
+      header={
+        <DashboardHeader<AppPages>
+          menuMap={menuMap}
+          showOfflineBanner
+          navbarProps={{ showSearch: true }}
+        />
+      }
+      footer={
+        <DashboardFooter
+          copyrightText="© Acme Corp"
+          toTopProps={{ threshold: 160, tooltip: "Back to top" }}
+        />
+      }
+      extras={<Tooltip id="tooltip" />}
+    >
+      <Outlet />
+    </AppShell>
   );
 }
 ```
+
+Notes:
+
+- `AppShell` already mounts `<Notification />` at the end of its slot order. Pass `withNotification={false}` only when you mount your own portal.
+- `DashboardHeader` is generic over `MenuKeys`. The drawer state lives inside the component; consumers only supply `menuMap` and optional `logo` / `showOfflineBanner` / `navbarProps`.
+- `DashboardFooter` renders `ToTop` by default. Toggle with `showToTop={false}` or pass `toTopProps` to customize. Set `bottomNavSpacing` when the app also mounts `BottomNavigation` so the footer stays clear of the fixed bottom bar on mobile.
+
+If you need a hand-rolled shell (custom slot order, special wrappers), the lower-level `Navbar`/`Drawer`/`Notification`/`ToTop` primitives remain available and continue to work the same way.
 
 ### 2.1 Mobile bottom nav with `BottomNavigation`
 
@@ -213,6 +226,177 @@ function CategoriesCenterAction() {
 ```
 
 `BottomNavigation` uses `ConfigProvider` routing primitives under the hood and renders only on mobile by default (`sm:hidden`).
+
+### 2.2 Auth route shell with `AuthShell`
+
+Wrap your auth route group with `AuthShell` so the global `Notification` portal stays mounted even before the user signs in. The shell does not include redirect or error-boundary logic — those decisions stay in the consumer where route constants live.
+
+```tsx
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { AuthShell, useAuth } from "@sito/dashboard-app";
+
+import { AppRoutes, publicAuthRoutes } from "../lib/routes";
+
+export function AuthLayout() {
+  const { account } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!account.email) return;
+    if (publicAuthRoutes.has(location.pathname)) return;
+    navigate(AppRoutes.Home);
+  }, [account.email, location.pathname, navigate]);
+
+  return (
+    <AuthShell>
+      <Outlet />
+    </AuthShell>
+  );
+}
+```
+
+If you mount your own toast portal, opt out of the built-in one with `withNotification={false}`.
+
+### 2.3 Reusable fallback views (`NotFoundView`, `FeatureUnavailableView`)
+
+Both views consume `linkComponent` from `ConfigProvider`, so navigation stays router-agnostic. Pass `ctaTo` from your own `routes.ts` constants — never hardcode.
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { FeatureUnavailableView, NotFoundView } from "@sito/dashboard-app";
+
+import { AppRoutes } from "../lib/routes";
+
+export function NotFoundPage() {
+  const { t } = useTranslation();
+
+  return (
+    <NotFoundView
+      title={t("_pages:notFound.title")}
+      body={t("_pages:notFound.body")}
+      ctaLabel={t("_pages:home.title")}
+      ctaTo={AppRoutes.Home}
+    />
+  );
+}
+
+export function FeatureDisabledPage({ module }: { module: string }) {
+  const { t } = useTranslation();
+
+  return (
+    <FeatureUnavailableView
+      icon={faLock}
+      title={t("_pages:featureFlags.route.title")}
+      body={t("_pages:featureFlags.route.body", {
+        module: t(`_pages:featureFlags.modules.${module}`),
+      })}
+      ctaLabel={t("_pages:featureFlags.route.cta")}
+      ctaTo={AppRoutes.Home}
+    />
+  );
+}
+```
+
+`FeatureUnavailableView.icon` defaults to `faWarning`. Both accept className overrides (`className`, `titleClassName`, `bodyClassName`, `ctaClassName`, plus `iconClassName` on `FeatureUnavailableView`). All className overrides merge after the library's base classes, so consumer CSS keeps targeting `.not-found-view-*` / `.feature-unavailable-view-*` while extending visual customization.
+
+### 2.4 PWA update prompt with `PwaUpdateDialog`
+
+`PwaUpdateDialog` is presentational only: the consumer owns the service-worker source (custom hook, `vite-plugin-pwa`'s `useRegisterSW`, etc.). Mount it inside `AppShell.extras` so it sits above the route content.
+
+Using `vite-plugin-pwa`:
+
+```tsx
+import { useTranslation } from "react-i18next";
+import { useRegisterSW } from "virtual:pwa-register/react";
+import { PwaUpdateDialog } from "@sito/dashboard-app";
+
+export function PwaUpdate() {
+  const { t } = useTranslation();
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
+
+  return (
+    <PwaUpdateDialog
+      open={needRefresh}
+      onDismiss={() => setNeedRefresh(false)}
+      onUpdate={() => updateServiceWorker(true)}
+      title={t("_pages:pwaUpdate.title")}
+      description={t("_pages:pwaUpdate.description")}
+      dismissLabel={t("_pages:pwaUpdate.actions.later")}
+      updateLabel={t("_pages:pwaUpdate.actions.update")}
+    />
+  );
+}
+```
+
+Using a vanilla `navigator.serviceWorker` setup:
+
+```tsx
+import { useEffect, useRef, useState } from "react";
+import { PwaUpdateDialog } from "@sito/dashboard-app";
+
+function useServiceWorkerUpdate() {
+  const [needRefresh, setNeedRefresh] = useState(false);
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
+
+  useEffect(() => {
+    if (!import.meta.env.PROD || !("serviceWorker" in navigator)) return;
+
+    void navigator.serviceWorker
+      .register("/sw.js", { scope: "/" })
+      .then((registration) => {
+        registrationRef.current = registration;
+        if (registration.waiting) setNeedRefresh(true);
+
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener("statechange", () => {
+            if (
+              worker.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
+              setNeedRefresh(true);
+            }
+          });
+        });
+      });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      window.location.reload();
+    });
+  }, []);
+
+  return {
+    needRefresh,
+    dismissUpdate: () => setNeedRefresh(false),
+    applyUpdate: () =>
+      registrationRef.current?.waiting?.postMessage({ type: "SKIP_WAITING" }),
+  };
+}
+
+export function PwaUpdate() {
+  const { needRefresh, dismissUpdate, applyUpdate } = useServiceWorkerUpdate();
+  return (
+    <PwaUpdateDialog
+      open={needRefresh}
+      onDismiss={dismissUpdate}
+      onUpdate={applyUpdate}
+      title="Update available"
+      description="A new version is ready. Reload to apply."
+      dismissLabel="Later"
+      updateLabel="Update"
+    />
+  );
+}
+```
+
+The library never imports `navigator.serviceWorker` or `virtual:pwa-register/react` — only the consumer does.
 
 ## 3. Dynamic drawer children with `useDrawerMenu`
 
@@ -847,6 +1031,7 @@ export function SettingsTabs() {
 export function WelcomeOnboarding() {
   return (
     <Onboarding
+      remountStepOnChange
       steps={[
         {
           title: "Welcome",
@@ -866,6 +1051,8 @@ export function WelcomeOnboarding() {
   );
 }
 ```
+
+`remountStepOnChange` is opt-in (default `false`). Set it to `true` for wizard-style flows where every step should replay its entry animation (`onboarding-step-rise-in` for title/body/content with stagger 30ms/90ms/140ms, `onboarding-step-pop-in` for actions with stagger 180ms/230ms). The animations are gated by `ConfigProvider.motion` (`auto`/`none`/`always`) and respect `prefers-reduced-motion`.
 
 ## 10. Dynamic navbar title/slot with `useNavbar`
 

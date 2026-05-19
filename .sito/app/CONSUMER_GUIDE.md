@@ -214,27 +214,36 @@ const supabase = createClient(
 
 ## 4. Key Components and Props
 
-| Component                | Key props                                                                                                                                                                        | Recommended usage                                  |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `Page<T>`                | `title`, `actions`, `addOptions`, `filterOptions`, `queryKey`, `isLoading`                                                                                                       | CRUD layout with standard header/actions           |
-| `PageHeader<T>`          | `title`, `actions`, `showBackButton`                                                                                                                                             | Reusable page header with desktop/mobile actions   |
-| `FormContainer<TForm>`   | `handleSubmit`, `onSubmit`, `reset`, `isLoading`, `buttonEnd`, `onCancel`, `submitLabel`, `cancelLabel`, `submitDisabled`, `cancelDisabled`, `actionsClassName`, `renderActions` | Form wrapper with built-in or custom submit/cancel |
-| `ParagraphInput`         | `label`, `state`, `containerClassName`, `inputClassName`, `helperText`                                                                                                           | Textarea with state-aware styling                  |
-| `PasswordInput`          | `TextInputPropsType`                                                                                                                                                             | Password input with show/hide toggle               |
-| `TabsLayout`             | `tabs`, `defaultTab`, `currentTab`, `onTabChange`, `useLinks`, `tabButtonProps`                                                                                                  | Route tabs or local state tabs                     |
-| `Onboarding`             | `steps`                                                                                                                                                                          | Multi-step flow using controlled `TabsLayout`      |
-| `PrettyGrid<T>`          | `data`, `renderComponent`, `hasMore`, `onLoadMore`, `className`, `itemClassName`                                                                                                 | Grid with empty state and optional infinite scroll |
-| `Error`                  | Default mode (`error`, `message`, `onRetry`) or custom mode (`children`)                                                                                                         | Reusable error fallback                            |
-| `Dialog`                 | `open`, `title`, `handleClose`, `containerClassName`, `className`                                                                                                                | Base modal                                         |
-| `FormDialog<TForm>`      | `Dialog` props + `FormContainer` props + `extraActions`                                                                                                                          | Form modal with optional secondary footer actions  |
-| `ConfirmationDialog`     | `open`, `title`, `handleSubmit`, `handleClose`, `isLoading`, `extraActions`                                                                                                      | Basic confirmation flows                           |
-| `ImportDialog<TPreview>` | `fileProcessor`, `onFileProcessed`, `renderCustomPreview`, `onOverrideChange`, `extraActions`, `extraFields`                                                                     | Import with preview + override + custom inputs     |
-| `ExportDialog`           | `handleSubmit`, `isLoading`, `extraFields`, `extraActions`                                                                                                                       | Optional export config modal (date range, format)  |
-| `Drawer<MenuKeys>`       | `open`, `onClose`, `menuMap`, `logo`                                                                                                                                             | Side navigation                                    |
-| `Navbar`                 | `openDrawer`, `menuButtonProps`, `showSearch`                                                                                                                                    | Top bar with dynamic title/actions                 |
-| `BottomNavigation<TId>`  | `items`, `centerAction`, `isItemActive`, `className`                                                                                                                             | Mobile fixed navigation with optional center CTA   |
-| `ToTop`                  | `threshold`, `tooltip`, `scrollOnClick`, `className`                                                                                                                             | Floating scroll-to-top button                      |
-| `IconButton`             | `icon: IconDefinition` + visual props                                                                                                                                            | FontAwesome-only icon contract                     |
+| Component                   | Key props                                                                                                                                                                        | Recommended usage                                                                 |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `Page<T>`                   | `title`, `actions`, `addOptions`, `filterOptions`, `queryKey`, `isLoading`                                                                                                       | CRUD layout with standard header/actions                                          |
+| `PageHeader<T>`             | `title`, `actions`, `showBackButton`                                                                                                                                             | Reusable page header with desktop/mobile actions                                  |
+| `FormContainer<TForm>`      | `handleSubmit`, `onSubmit`, `reset`, `isLoading`, `buttonEnd`, `onCancel`, `submitLabel`, `cancelLabel`, `submitDisabled`, `cancelDisabled`, `actionsClassName`, `renderActions` | Form wrapper with built-in or custom submit/cancel                                |
+| `ParagraphInput`            | `label`, `state`, `containerClassName`, `inputClassName`, `helperText`                                                                                                           | Textarea with state-aware styling                                                 |
+| `PasswordInput`             | `TextInputPropsType`                                                                                                                                                             | Password input with show/hide toggle                                              |
+| `TabsLayout`                | `tabs`, `defaultTab`, `currentTab`, `onTabChange`, `useLinks`, `tabButtonProps`                                                                                                  | Route tabs or local state tabs                                                    |
+| `Onboarding`                | `steps`                                                                                                                                                                          | Multi-step flow using controlled `TabsLayout`                                     |
+| `PrettyGrid<T>`             | `data`, `renderComponent`, `hasMore`, `onLoadMore`, `className`, `itemClassName`                                                                                                 | Grid with empty state and optional infinite scroll                                |
+| `Error`                     | Default mode (`error`, `message`, `onRetry`) or custom mode (`children`)                                                                                                         | Reusable error fallback                                                           |
+| `Dialog`                    | `open`, `title`, `handleClose`, `containerClassName`, `className`                                                                                                                | Base modal                                                                        |
+| `FormDialog<TForm>`         | `Dialog` props + `FormContainer` props + `extraActions`                                                                                                                          | Form modal with optional secondary footer actions                                 |
+| `ConfirmationDialog`        | `open`, `title`, `handleSubmit`, `handleClose`, `isLoading`, `extraActions`                                                                                                      | Basic confirmation flows                                                          |
+| `ImportDialog<TPreview>`    | `fileProcessor`, `onFileProcessed`, `renderCustomPreview`, `onOverrideChange`, `extraActions`, `extraFields`                                                                     | Import with preview + override + custom inputs                                    |
+| `ExportDialog`              | `handleSubmit`, `isLoading`, `extraFields`, `extraActions`                                                                                                                       | Optional export config modal (date range, format)                                 |
+| `Drawer<MenuKeys>`          | `open`, `onClose`, `menuMap`, `logo`                                                                                                                                             | Side navigation                                                                   |
+| `Navbar`                    | `openDrawer`, `menuButtonProps`, `showSearch`                                                                                                                                    | Top bar with dynamic title/actions                                                |
+| `BottomNavigation<TId>`     | `items`, `centerAction`, `isItemActive`, `className`                                                                                                                             | Mobile fixed navigation with optional center CTA                                  |
+| `ToTop`                     | `threshold`, `tooltip`, `scrollOnClick`, `className`                                                                                                                             | Floating scroll-to-top button                                                     |
+| `IconButton`                | `icon: IconDefinition` + visual props                                                                                                                                            | FontAwesome-only icon contract                                                    |
+| `TopBanner`                 | `visible`, `children`, `color` (`default`/`primary`/`secondary`/`tertiary`/`quaternary`/`info`/`success`/`warning`/`error`), `role`, `ariaLive`, `className`                     | Generic full-width banner (base for `OfflineBanner`)                              |
+| `OfflineBanner`             | `isOnline`, `message`, `className`                                                                                                                                               | Connectivity preset of `TopBanner` (warning, fixed)                               |
+| `PwaUpdateDialog`           | `open`, `onDismiss`, `onUpdate`, `title`, `description`, `dismissLabel`, `updateLabel`, `mobileFullScreen`, `containerClassName`                                                 | Presentational PWA update prompt (consumer owns SW hook)                          |
+| `AppShell`                  | `header`, `footer`, `bottomNavigation`, `extras`, `withNotification`, `className`                                                                                                | Authenticated route shell (header/content/footer/bottomNav/extras + Notification) |
+| `AuthShell`                 | `children`, `withNotification`, `className`                                                                                                                                      | Auth route wrapper (children + optional Notification)                             |
+| `DashboardHeader<MenuKeys>` | `menuMap`, `logo`, `showOfflineBanner`, `navbarProps`                                                                                                                            | Drawer + Navbar combo with internal drawer state                                  |
+| `DashboardFooter`           | `copyrightText`, `year`, `showToTop`, `toTopProps`, `bottomNavSpacing`, `children`, `className`, `textClassName`                                                                 | Copyright line + optional `ToTop`                                                 |
+| `NotFoundView`              | `title`, `body`, `ctaLabel`, `ctaTo`, `className`, `titleClassName`, `bodyClassName`, `ctaClassName`                                                                             | Generic 404 fallback (router-agnostic CTA)                                        |
+| `FeatureUnavailableView`    | `title`, `body`, `ctaLabel`, `ctaTo`, `icon`, `className`, `iconClassName`, `titleClassName`, `bodyClassName`, `ctaClassName`                                                    | Feature-disabled fallback (icon defaults to `faWarning`)                          |
 
 ## 5. Frequent Usage Examples
 
@@ -288,7 +297,7 @@ import { PrettyGrid, Loading } from "@sito/dashboard-app";
   hasMore={hasMore}
   loadingMore={isFetchingNextPage}
   onLoadMore={fetchNextPage}
-  loadMoreComponent={<Loading className="!w-auto" loaderClass="w-5 h-5" />}
+  loadMoreComponent={<Loading className="w-auto!" loaderClass="w-5 h-5" />}
 />;
 ```
 
@@ -526,6 +535,147 @@ Notes:
 - `hidden`/`disabled` in each item control visibility and interaction.
 - `centerAction.onClick` runs before optional `to` navigation; call `event.preventDefault()` to cancel navigation.
 - `BottomNavActionProvider` is optional. If mounted, `useRegisterBottomNavAction` lets active pages override center-action fields at runtime.
+
+### 5.8 `AppShell` / `DashboardHeader` / `DashboardFooter`: app layout shell
+
+Compose route content with the layout shells instead of hand-rolling header/footer wiring in every consumer. The standard providers (`ConfigProvider` etc.) must already be mounted (see §2).
+
+```tsx
+import {
+  AppShell,
+  AuthShell,
+  DashboardHeader,
+  DashboardFooter,
+  BottomNavigation,
+  PwaUpdateDialog,
+} from "@sito/dashboard-app";
+import { Tooltip } from "react-tooltip";
+
+function AppLayout() {
+  return (
+    <AppShell
+      header={<DashboardHeader menuMap={menuMap} showOfflineBanner />}
+      footer={<DashboardFooter copyrightText="© Acme Corp" bottomNavSpacing />}
+      bottomNavigation={
+        <BottomNavigation items={bottomItems} centerAction={centerAction} />
+      }
+      extras={
+        <>
+          <Tooltip id="tooltip" />
+          <PwaUpdateDialog
+            open={needRefresh}
+            onDismiss={dismissUpdate}
+            onUpdate={applyUpdate}
+            title="Update available"
+            description="A new version is ready."
+            dismissLabel="Later"
+            updateLabel="Update"
+          />
+        </>
+      }
+    >
+      <Outlet />
+    </AppShell>
+  );
+}
+
+function AuthLayout() {
+  return (
+    <AuthShell>
+      <Outlet />
+    </AuthShell>
+  );
+}
+```
+
+Slot order in `AppShell`: `header → children → footer → bottomNavigation → extras → Notification`. The built-in `Notification` portal renders last; opt out with `withNotification={false}` if you mount your own.
+
+`DashboardHeader` owns the drawer open/close state internally — pass only `menuMap`, optional `logo`, optional `showOfflineBanner`, and `navbarProps` (everything except `openDrawer`).
+
+`DashboardFooter` defaults `year` to the current year and renders `ToTop`. Toggle with `showToTop={false}` or pass `toTopProps` to customize. Set `bottomNavSpacing` when the app also mounts `BottomNavigation` so the footer keeps clear of the fixed bottom bar on mobile (`mb-16 sm:mb-0`).
+
+### 5.9 `NotFoundView` / `FeatureUnavailableView`: reusable fallback screens
+
+Both views consume `linkComponent` from `ConfigProvider` for the CTA, so navigation stays router-agnostic. Consumer provides text and the target route from its own `routes.ts` constants.
+
+```tsx
+import { NotFoundView, FeatureUnavailableView } from "@sito/dashboard-app";
+import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
+
+function NotFound() {
+  const { t } = useTranslation();
+  return (
+    <NotFoundView
+      title={t("_pages:notFound.title")}
+      body={t("_pages:notFound.body")}
+      ctaLabel={t("_pages:home.title")}
+      ctaTo={AppRoutes.Home}
+    />
+  );
+}
+
+function FeatureDisabled({ module }: { module: string }) {
+  const { t } = useTranslation();
+  return (
+    <FeatureUnavailableView
+      title={t("_pages:featureFlags.route.title")}
+      body={t("_pages:featureFlags.route.body", {
+        module: t(`_pages:featureFlags.modules.${module}`),
+      })}
+      ctaLabel={t("_pages:featureFlags.route.cta")}
+      ctaTo={AppRoutes.Home}
+      icon={faLock}
+    />
+  );
+}
+```
+
+`FeatureUnavailableView.icon` defaults to `faWarning`. All className overrides (`className`, `titleClassName`, `bodyClassName`, `ctaClassName`, plus `iconClassName` on `FeatureUnavailableView`) are merged onto the rendered nodes.
+
+### 5.10 `PwaUpdateDialog`: presentational PWA update prompt
+
+The dialog is fully decoupled from any service-worker source. The library does not import `navigator.serviceWorker` or `virtual:pwa-register/react` — consumers wire their own update hook (custom SW registration, `vite-plugin-pwa` via `useRegisterSW`, etc.) and pass the resulting state in:
+
+```tsx
+import { PwaUpdateDialog } from "@sito/dashboard-app";
+import { useRegisterSW } from "virtual:pwa-register/react"; // or your own SW hook
+
+function AppPwaUpdateDialog() {
+  const { t } = useTranslation();
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
+
+  return (
+    <PwaUpdateDialog
+      open={needRefresh}
+      onDismiss={() => setNeedRefresh(false)}
+      onUpdate={() => updateServiceWorker(true)}
+      title={t("_pages:pwaUpdate.title")}
+      description={t("_pages:pwaUpdate.description")}
+      dismissLabel={t("_pages:pwaUpdate.actions.later")}
+      updateLabel={t("_pages:pwaUpdate.actions.update")}
+    />
+  );
+}
+```
+
+Mount it inside `AppShell.extras` (or anywhere above the route content). For a vanilla `navigator.serviceWorker` setup, swap `useRegisterSW` for a local hook exposing the same `needRefresh` / `apply` shape.
+
+### 5.11 `Onboarding`: opt-in step animations (`remountStepOnChange`)
+
+`Onboarding` ships with built-in entry animations (`onboarding-step-rise-in` + `onboarding-step-pop-in` with stagger on title/body/content/actions). By default the same `<Step>` tree is reconciled across steps, so the animation only plays on first mount. Set `remountStepOnChange={true}` to force a remount of the active step on every transition:
+
+```tsx
+<Onboarding remountStepOnChange steps={onboardingSteps} />
+```
+
+Animation gating follows `ConfigProvider.motion`:
+
+- `motion="none"` (or `:root[data-sito-motion="none"]`) disables the step animations.
+- `prefers-reduced-motion: reduce` disables them unless `motion="always"`.
 
 ## 6. High-Level Hooks
 
