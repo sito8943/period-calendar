@@ -11,6 +11,7 @@ import {
   PasswordInput,
   State,
   TextInput,
+  getAuthErrorMessage,
   useOptionalAuthContext,
   useNotification,
 } from "@sito/dashboard-app";
@@ -25,7 +26,6 @@ import { useManager } from "providers";
 import type { SignInFormType } from "./types";
 
 // utils
-import { getErrorMessage } from "../utils";
 import { mapSignInErrorKey } from "./utils";
 
 // styles
@@ -69,7 +69,7 @@ export function SignIn() {
       auth.setGuestMode(false);
       navigate(AppRoutes.Home, { replace: true });
     } catch (error) {
-      const messageKey = mapSignInErrorKey(getErrorMessage(error));
+      const messageKey = mapSignInErrorKey(getAuthErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
 
       setError("password", {

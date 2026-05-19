@@ -1,15 +1,34 @@
-import { IManager } from "@sito/dashboard-app";
+import {
+  IManager,
+  SupabaseAuthApiClient,
+  type IAuthApiClient,
+} from "@sito/dashboard-app";
 
 import { config } from "../../config";
-import { PeriodCalendarAuthApiClient } from "./AuthApiClient";
+import { supabase } from "../supabase";
 import { PeriodCalendarAuthClient } from "./AuthClient";
+import { createAuthProviderNotConfiguredError } from "./authErrors";
 import { DailyLogClient } from "./DailyLogClient";
 import { PeriodClient } from "./PeriodClient";
 import { ProfileClient } from "./ProfileClient";
 import { SettingsClient } from "./SettingsClient";
 
+const throwNotConfigured = (): never => {
+  throw createAuthProviderNotConfiguredError();
+};
+
+const createAuthApi = (): IAuthApiClient =>
+  supabase
+    ? new SupabaseAuthApiClient(supabase)
+    : {
+        forgotPassword: async () => throwNotConfigured(),
+        resetPassword: async () => throwNotConfigured(),
+        resendConfirmEmail: async () => throwNotConfigured(),
+        confirmEmail: async () => throwNotConfigured(),
+      };
+
 export class PeriodCalendarManager extends IManager {
-  authApi: PeriodCalendarAuthApiClient = new PeriodCalendarAuthApiClient();
+  authApi: IAuthApiClient = createAuthApi();
   periods: PeriodClient = new PeriodClient();
   dailyLogs: DailyLogClient = new DailyLogClient();
   profiles: ProfileClient = new ProfileClient();
@@ -33,7 +52,7 @@ export class PeriodCalendarManager extends IManager {
     return this.auth as PeriodCalendarAuthClient;
   }
 
-  get AuthApi(): PeriodCalendarAuthApiClient {
+  get AuthApi(): IAuthApiClient {
     return this.authApi;
   }
 

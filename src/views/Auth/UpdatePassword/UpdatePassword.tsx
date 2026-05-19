@@ -10,6 +10,10 @@ import {
   Loading,
   PasswordInput,
   State,
+  extractAuthQueryParamFromLocation,
+  extractAuthSessionTokensFromLocation,
+  getAuthErrorMessage,
+  hasAuthErrorParamsInLocation,
   useNotification,
 } from "@sito/dashboard-app";
 
@@ -24,12 +28,6 @@ import {
   mapUpdatePasswordErrorKey,
   normalizeRecoveryTokenType,
 } from "./utils";
-import {
-  extractAuthQueryParamFromLocation,
-  extractAuthSessionTokensFromLocation,
-  getErrorMessage,
-  hasAuthErrorParamsInLocation,
-} from "../utils";
 
 import "../styles.css";
 
@@ -112,7 +110,7 @@ export function UpdatePassword() {
         }
       } catch (error) {
         showErrorNotification({
-          message: t(mapUpdatePasswordErrorKey(getErrorMessage(error))),
+          message: t(mapUpdatePasswordErrorKey(getAuthErrorMessage(error))),
         });
         return;
       }

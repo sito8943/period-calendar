@@ -9,6 +9,8 @@ import {
   Loading,
   State,
   TextInput,
+  buildAuthRedirectUrl,
+  getAuthErrorMessage,
   useNotification,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
@@ -24,7 +26,6 @@ import type { ForgotPasswordFormType } from "./types";
 
 // utils
 import { mapForgotPasswordErrorKey } from "./utils";
-import { buildAuthRedirectUrl, getErrorMessage } from "../utils";
 
 // styles
 import "../styles.css";
@@ -58,7 +59,7 @@ export function ForgotPassword() {
         redirectTo: buildAuthRedirectUrl(AppRoutes.UpdatePassword),
       });
     } catch (error) {
-      const messageKey = mapForgotPasswordErrorKey(getErrorMessage(error));
+      const messageKey = mapForgotPasswordErrorKey(getAuthErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
       setError("email", {
         type: "manual",

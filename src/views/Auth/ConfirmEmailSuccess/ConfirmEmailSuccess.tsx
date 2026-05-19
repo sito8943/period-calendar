@@ -4,7 +4,12 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 
 // @sito/dashboard-app
-import { Button, Loading } from "@sito/dashboard-app";
+import {
+  Button,
+  Loading,
+  extractAuthQueryParamFromLocation,
+  hasAuthErrorParamsInLocation,
+} from "@sito/dashboard-app";
 
 // lib
 import { AppRoutes, AuthRouteQueryParam } from "lib";
@@ -13,10 +18,6 @@ import { AppRoutes, AuthRouteQueryParam } from "lib";
 import { useManager } from "providers";
 
 import { normalizeConfirmEmailTokenType } from "./utils";
-import {
-  extractAuthQueryParamFromLocation,
-  hasAuthErrorParamsInLocation,
-} from "../utils";
 
 import "../styles.css";
 

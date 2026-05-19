@@ -10,6 +10,8 @@ import {
   PasswordInput,
   State,
   TextInput,
+  buildAuthRedirectUrl,
+  getAuthErrorMessage,
   useOptionalAuthContext,
   useNotification,
 } from "@sito/dashboard-app";
@@ -25,7 +27,6 @@ import type { SignUpFormType } from "./types";
 
 // utils
 import { mapSignUpErrorKey } from "./utils";
-import { buildAuthRedirectUrl, getErrorMessage } from "../utils";
 
 // styles
 import "../styles.css";
@@ -93,7 +94,7 @@ export function SignUp() {
       auth.setGuestMode(false);
       navigate(AppRoutes.Home, { replace: true });
     } catch (error) {
-      const messageKey = mapSignUpErrorKey(getErrorMessage(error));
+      const messageKey = mapSignUpErrorKey(getAuthErrorMessage(error));
       showErrorNotification({ message: t(messageKey) });
     }
   });
