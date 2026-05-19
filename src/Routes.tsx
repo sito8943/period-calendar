@@ -38,20 +38,14 @@ export const Routes = () => {
     <BrowserRouter>
       <ReactRoutes>
         <Route path={AppRoutes.AuthRoot} element={<Auth />}>
-          <Route
-            index
-            element={<Navigate to={AppRoutes.SignIn} replace />}
-          />
+          <Route index element={<Navigate to={AppRoutes.SignIn} replace />} />
           <Route path={AppRoutes.SignIn} element={<SignIn />} />
           <Route path={AppRoutes.SignUp} element={<SignUp />} />
           <Route
             path={AppRoutes.SignUpConfirmation}
             element={<SignUpConfirmation />}
           />
-          <Route
-            path={AppRoutes.UpdatePassword}
-            element={<UpdatePassword />}
-          />
+          <Route path={AppRoutes.UpdatePassword} element={<UpdatePassword />} />
           <Route
             path={AppRoutes.ConfirmEmailSuccess}
             element={<ConfirmEmailSuccess />}
@@ -60,10 +54,7 @@ export const Routes = () => {
             path={AppRoutes.ConfirmEmailError}
             element={<ConfirmEmailError />}
           />
-          <Route
-            path={AppRoutes.ForgotPassword}
-            element={<ForgotPassword />}
-          />
+          <Route path={AppRoutes.ForgotPassword} element={<ForgotPassword />} />
           <Route path={AppRoutes.AuthNotFound} element={<NotFound />} />
         </Route>
         <Route path={AppRoutes.SignOut} element={<SignOut />} />

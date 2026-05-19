@@ -82,9 +82,7 @@ export function SignIn() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <form onSubmit={onSubmit} className="auth-form blur-appear">
-        <h1 className="auth-title">
-          {t("_pages:auth.signIn.title")}
-        </h1>
+        <h1 className="auth-title">{t("_pages:auth.signIn.title")}</h1>
 
         <div className="form-container w-full">
           <Controller

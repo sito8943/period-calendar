@@ -47,9 +47,7 @@ export type UseOnlineStatusOptions = {
   timeoutMs?: number;
 };
 
-export function useOnlineStatus(
-  options?: UseOnlineStatusOptions,
-): OnlineStatus;
+export function useOnlineStatus(options?: UseOnlineStatusOptions): OnlineStatus;
 
 export type OfflineBannerProps = {
   isOnline?: boolean;

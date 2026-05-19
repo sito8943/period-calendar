@@ -79,7 +79,8 @@ export function ConfirmEmailSuccess() {
         return;
       }
 
-      const shouldCleanUrl = location.search.length > 0 || location.hash.length > 0;
+      const shouldCleanUrl =
+        location.search.length > 0 || location.hash.length > 0;
       if (shouldCleanUrl) {
         navigate(AppRoutes.ConfirmEmailSuccess, { replace: true });
         return;
@@ -97,8 +98,7 @@ export function ConfirmEmailSuccess() {
     verifyEmail();
   }, [requiresVerification, verifyEmail, verifyEmailStatus]);
 
-  const isVerifying =
-    requiresVerification && !isVerifyEmailSuccess;
+  const isVerifying = requiresVerification && !isVerifyEmailSuccess;
 
   return (
     <div className="w-full h-screen flex items-center justify-center">

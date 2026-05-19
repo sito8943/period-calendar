@@ -1,10 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // lib
-import {
-  periodCalendarManager,
-  type ProfileSettings,
-} from "lib";
+import { periodCalendarManager, type ProfileSettings } from "lib";
 
 // constants
 import { PeriodQueryKeys } from "./constants";

@@ -30,7 +30,9 @@ export function ConfirmEmailError() {
             color="primary"
             variant="submit"
             className="px-8!"
-            onClick={() => navigate(AppRoutes.ForgotPassword, { replace: true })}
+            onClick={() =>
+              navigate(AppRoutes.ForgotPassword, { replace: true })
+            }
             aria-label={t("_pages:auth.confirmEmailError.resend")}
           >
             {t("_pages:auth.confirmEmailError.resend")}

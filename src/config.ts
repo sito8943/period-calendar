@@ -66,8 +66,7 @@ export const config = {
   },
   featureFlags: {
     storageKey:
-      VITE_FEATURE_FLAGS_STORAGE_KEY?.trim() ??
-      "period-calendar:feature-flags",
+      VITE_FEATURE_FLAGS_STORAGE_KEY?.trim() ?? "period-calendar:feature-flags",
     defaults: featureFlagsDefaults,
   },
   supabase: {

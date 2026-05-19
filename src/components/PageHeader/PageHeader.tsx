@@ -17,10 +17,14 @@ export function PageHeader({
         {onBack ? <IconButton onClick={onBack} icon={faArrowLeft} /> : null}
         <h1 className={PAGE_HEADER_CLASSNAMES.title}>{title}</h1>
         {rightContent ? (
-          <div className={PAGE_HEADER_CLASSNAMES.rightContent}>{rightContent}</div>
+          <div className={PAGE_HEADER_CLASSNAMES.rightContent}>
+            {rightContent}
+          </div>
         ) : null}
       </header>
-      {subtitle ? <p className={PAGE_HEADER_CLASSNAMES.subtitle}>{subtitle}</p> : null}
+      {subtitle ? (
+        <p className={PAGE_HEADER_CLASSNAMES.subtitle}>{subtitle}</p>
+      ) : null}
     </div>
   );
 }

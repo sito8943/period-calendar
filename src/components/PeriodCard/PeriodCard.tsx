@@ -13,10 +13,7 @@ import { PERIOD_CARD_CLASSNAMES } from "./constants";
 import type { PeriodCardProps } from "./types";
 
 // utils
-import {
-  getEndedPeriodSubtitle,
-  getPeriodStartLabel,
-} from "./utils";
+import { getEndedPeriodSubtitle, getPeriodStartLabel } from "./utils";
 
 export function PeriodCard({ period }: PeriodCardProps) {
   const { t, i18n } = useTranslation();

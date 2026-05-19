@@ -14,7 +14,10 @@ export class PeriodClient {
         await storageCore.syncPeriodsMirrorWithRemote(periods);
         return periods;
       } catch (error) {
-        console.error("Supabase periods read failed, using offline store", error);
+        console.error(
+          "Supabase periods read failed, using offline store",
+          error,
+        );
       }
     }
 
@@ -61,7 +64,10 @@ export class PeriodClient {
         await storageCore.upsertPeriodInOfflineMirror(updated);
         return updated;
       } catch (error) {
-        console.error("Supabase update period failed, using offline store", error);
+        console.error(
+          "Supabase update period failed, using offline store",
+          error,
+        );
       }
     }
 
@@ -80,7 +86,10 @@ export class PeriodClient {
         await storageCore.removePeriodFromOfflineMirror(id);
         return;
       } catch (error) {
-        console.error("Supabase delete period failed, using offline store", error);
+        console.error(
+          "Supabase delete period failed, using offline store",
+          error,
+        );
       }
     }
 

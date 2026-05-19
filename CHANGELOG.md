@@ -7,10 +7,12 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y
 ## [Unreleased]
 
 ### Added
+
 - Documentacion inicial de proyecto en `README.md`.
 - Registro historico inicial en `CHANGELOG.md`.
 
 ### Changed
+
 - Migracion de persistencia de `periods` y `daily-logs` a clientes offline basados en `IndexedDBClient` (`@sito/dashboard-app`).
 - Nueva base `period-calendar-offline-db` con stores `periods` y `dailyLogs`.
 - Migracion automatica inicial que combina datos legados desde `localStorage` y desde la base IndexedDB previa (`period-calendar-db`).
@@ -19,6 +21,7 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y
 ## [0.0.0] - 2026-04-04
 
 ### Added
+
 - Base de aplicacion React + TypeScript + Vite.
 - Navegacion principal con rutas para Home, registro de periodo, diario diario, historial y perfil.
 - Persistencia local con `localStorage` para periodos, diario diario, configuracion y perfil.

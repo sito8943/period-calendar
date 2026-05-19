@@ -24,10 +24,7 @@ import { AppRoutes, AuthRouteQueryParam } from "lib";
 import { useManager } from "providers";
 
 import type { UpdatePasswordFormType } from "./types";
-import {
-  mapUpdatePasswordErrorKey,
-  normalizeRecoveryTokenType,
-} from "./utils";
+import { mapUpdatePasswordErrorKey, normalizeRecoveryTokenType } from "./utils";
 
 import "../styles.css";
 
@@ -146,9 +143,7 @@ export function UpdatePassword() {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       <form onSubmit={onSubmit} className="auth-form blur-appear">
-        <h1 className="auth-title">
-          {t("_pages:auth.updatePassword.title")}
-        </h1>
+        <h1 className="auth-title">{t("_pages:auth.updatePassword.title")}</h1>
 
         <div className="form-container w-full">
           <Controller

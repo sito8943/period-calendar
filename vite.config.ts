@@ -29,7 +29,8 @@ export default defineConfig({
       manifest: {
         name: "Period Calendar",
         short_name: "Period",
-        description: "Track period cycles, daily logs, and predictions offline.",
+        description:
+          "Track period cycles, daily logs, and predictions offline.",
         start_url: "/",
         scope: "/",
         display: "standalone",

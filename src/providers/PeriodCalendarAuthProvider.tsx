@@ -39,7 +39,8 @@ export const PeriodCalendarAuthProvider = ({
 
   const isInGuestMode = useCallback(() => {
     return (
-      !!fromLocal(config.auth.guestMode, "boolean") && account.token === undefined
+      !!fromLocal(config.auth.guestMode, "boolean") &&
+      account.token === undefined
     );
   }, [account.token]);
 
@@ -47,36 +48,39 @@ export const PeriodCalendarAuthProvider = ({
     toLocal(config.auth.guestMode, value);
   }, []);
 
-  const logUser = useCallback((data: SessionDto, rememberMe?: boolean) => {
-    if (!data) return;
+  const logUser = useCallback(
+    (data: SessionDto, rememberMe?: boolean) => {
+      if (!data) return;
 
-    bumpAuthRevision();
+      bumpAuthRevision();
 
-    const storedRemember = fromLocal(config.auth.remember, "boolean");
-    const resolvedRemember =
-      rememberMe ??
-      (typeof storedRemember === "boolean" ? storedRemember : false);
+      const storedRemember = fromLocal(config.auth.remember, "boolean");
+      const resolvedRemember =
+        rememberMe ??
+        (typeof storedRemember === "boolean" ? storedRemember : false);
 
-    setAccount(data);
-    removeFromLocal(config.auth.guestMode);
-    toLocal(config.auth.user, data.token);
-    toLocal(config.auth.remember, resolvedRemember);
+      setAccount(data);
+      removeFromLocal(config.auth.guestMode);
+      toLocal(config.auth.user, data.token);
+      toLocal(config.auth.remember, resolvedRemember);
 
-    if (typeof data.refreshToken === "string" && data.refreshToken.length) {
-      toLocal(config.auth.refreshTokenKey, data.refreshToken);
-    } else {
-      removeFromLocal(config.auth.refreshTokenKey);
-    }
+      if (typeof data.refreshToken === "string" && data.refreshToken.length) {
+        toLocal(config.auth.refreshTokenKey, data.refreshToken);
+      } else {
+        removeFromLocal(config.auth.refreshTokenKey);
+      }
 
-    if (
-      typeof data.accessTokenExpiresAt === "string" &&
-      data.accessTokenExpiresAt.length
-    ) {
-      toLocal(config.auth.accessTokenExpiresAtKey, data.accessTokenExpiresAt);
-    } else {
-      removeFromLocal(config.auth.accessTokenExpiresAtKey);
-    }
-  }, [bumpAuthRevision]);
+      if (
+        typeof data.accessTokenExpiresAt === "string" &&
+        data.accessTokenExpiresAt.length
+      ) {
+        toLocal(config.auth.accessTokenExpiresAtKey, data.accessTokenExpiresAt);
+      } else {
+        removeFromLocal(config.auth.accessTokenExpiresAtKey);
+      }
+    },
+    [bumpAuthRevision],
+  );
 
   const logoutUser = useCallback(async () => {
     try {

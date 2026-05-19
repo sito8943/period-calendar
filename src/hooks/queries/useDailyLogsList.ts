@@ -16,7 +16,8 @@ export function useDailyLogsList() {
     let isActive = true;
 
     const preloadDailyLogsFromMirror = async () => {
-      const cachedDailyLogs = await periodCalendarManager.DailyLogs.getMirrorSnapshot();
+      const cachedDailyLogs =
+        await periodCalendarManager.DailyLogs.getMirrorSnapshot();
       if (!isActive || cachedDailyLogs.length === 0) return;
 
       queryClient.setQueryData<DailyLog[] | undefined>(

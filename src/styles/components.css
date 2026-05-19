@@ -30,44 +30,84 @@
 
 .ovulation-day-predicted {
   background-color: transparent;
-  color: color-mix(in srgb, var(--color-ovulation) 78%, var(--color-prediction) 22%);
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation) 78%,
+    var(--color-prediction) 22%
+  );
 }
 
 .ovulation-day-predicted:hover {
-  color: color-mix(in srgb, var(--color-ovulation-hover) 78%, var(--color-prediction) 22%);
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation-hover) 78%,
+    var(--color-prediction) 22%
+  );
 }
 
 .ovulation-day-dashed {
   background-color: transparent;
   border: 2px dashed
     color-mix(in srgb, var(--color-ovulation) 72%, var(--color-prediction) 28%);
-  color: color-mix(in srgb, var(--color-ovulation) 78%, var(--color-prediction) 22%);
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation) 78%,
+    var(--color-prediction) 22%
+  );
 }
 
 .ovulation-day-dashed:hover {
-  background-color: color-mix(in srgb, var(--color-prediction) 14%, transparent);
-  color: color-mix(in srgb, var(--color-ovulation-hover) 78%, var(--color-prediction) 22%);
+  background-color: color-mix(
+    in srgb,
+    var(--color-prediction) 14%,
+    transparent
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation-hover) 78%,
+    var(--color-prediction) 22%
+  );
 }
 
 .fertile-day-predicted {
   background-color: transparent;
-  color: color-mix(in srgb, var(--color-fertile) 74%, var(--color-prediction) 26%);
+  color: color-mix(
+    in srgb,
+    var(--color-fertile) 74%,
+    var(--color-prediction) 26%
+  );
 }
 
 .fertile-day-predicted:hover {
-  color: color-mix(in srgb, var(--color-fertile-hover) 72%, var(--color-prediction) 28%);
+  color: color-mix(
+    in srgb,
+    var(--color-fertile-hover) 72%,
+    var(--color-prediction) 28%
+  );
 }
 
 .fertile-day-dashed {
   background-color: transparent;
   border: 2px dashed
     color-mix(in srgb, var(--color-fertile) 68%, var(--color-prediction) 32%);
-  color: color-mix(in srgb, var(--color-fertile) 74%, var(--color-prediction) 26%);
+  color: color-mix(
+    in srgb,
+    var(--color-fertile) 74%,
+    var(--color-prediction) 26%
+  );
 }
 
 .fertile-day-dashed:hover {
-  background-color: color-mix(in srgb, var(--color-prediction) 14%, transparent);
-  color: color-mix(in srgb, var(--color-fertile-hover) 72%, var(--color-prediction) 28%);
+  background-color: color-mix(
+    in srgb,
+    var(--color-prediction) 14%,
+    transparent
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-fertile-hover) 72%,
+    var(--color-prediction) 28%
+  );
 }
 
 .prediction-indicator {

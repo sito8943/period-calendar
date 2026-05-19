@@ -16,7 +16,8 @@ export function usePeriodsList() {
     let isActive = true;
 
     const preloadPeriodsFromMirror = async () => {
-      const cachedPeriods = await periodCalendarManager.Periods.getMirrorSnapshot();
+      const cachedPeriods =
+        await periodCalendarManager.Periods.getMirrorSnapshot();
       if (!isActive || cachedPeriods.length === 0) return;
 
       queryClient.setQueryData<Period[] | undefined>(

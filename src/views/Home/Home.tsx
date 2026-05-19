@@ -145,9 +145,7 @@ export function Home() {
           dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.nextPeriod}
           variant="primary"
           messageClassName={
-            stats.daysUntilNext === null
-              ? "font-medium opacity-85"
-              : undefined
+            stats.daysUntilNext === null ? "font-medium opacity-85" : undefined
           }
         />
         {stats.isInFertileWindowToday ? (

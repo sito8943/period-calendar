@@ -21,7 +21,9 @@ export function isSameDay(a: Date, b: Date): boolean {
 export function diffInDays(a: string, b: string): number {
   const dateA = parseLocalDate(a);
   const dateB = parseLocalDate(b);
-  return Math.round((dateB.getTime() - dateA.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.round(
+    (dateB.getTime() - dateA.getTime()) / (1000 * 60 * 60 * 24),
+  );
 }
 
 export function getDaysInMonth(year: number, month: number): number {

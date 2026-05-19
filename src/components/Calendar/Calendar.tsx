@@ -223,9 +223,7 @@ export function Calendar({
   ]);
 
   return (
-    <div
-      className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell"
-    >
+    <div className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button

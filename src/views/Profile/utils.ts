@@ -4,11 +4,7 @@ import type { TFunction } from "i18next";
 import type { Option } from "@sito/dashboard-app";
 
 // lib
-import {
-  toBaseAppLanguage,
-  type PeriodTheme,
-  type ProfileLanguage,
-} from "lib";
+import { toBaseAppLanguage, type PeriodTheme, type ProfileLanguage } from "lib";
 
 // constants
 import {
@@ -59,7 +55,10 @@ export const getPartnerNameLabel = (
     ? t("_pages:profile.labels.partnerNameGirl")
     : t("_pages:profile.labels.partnerNameBoy");
 
-export function validateProfileName(value: string, t: TFunction): true | string {
+export function validateProfileName(
+  value: string,
+  t: TFunction,
+): true | string {
   const parsedValue = value.trim();
   if (!parsedValue.length) {
     return t("_pages:profile.errors.nameRequired");
@@ -70,7 +69,10 @@ export function validateProfileName(value: string, t: TFunction): true | string 
   return true;
 }
 
-export function validatePartnerName(value: string, t: TFunction): true | string {
+export function validatePartnerName(
+  value: string,
+  t: TFunction,
+): true | string {
   const parsedValue = value.trim();
 
   if (!parsedValue.length) {

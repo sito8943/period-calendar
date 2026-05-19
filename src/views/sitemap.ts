@@ -1,7 +1,11 @@
 import { t } from "i18next";
 
 // @sito/dashboard-app
-import type { FeatureEnabledFn, NamedViewPageType, ViewPageType } from "@sito/dashboard-app";
+import type {
+  FeatureEnabledFn,
+  NamedViewPageType,
+  ViewPageType,
+} from "@sito/dashboard-app";
 
 // lib
 import { AppRoutes, type FeatureFlagKey } from "lib";

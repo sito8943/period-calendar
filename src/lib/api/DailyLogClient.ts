@@ -14,7 +14,10 @@ export class DailyLogClient {
         await storageCore.syncDailyLogsMirrorWithRemote(dailyLogs);
         return dailyLogs;
       } catch (error) {
-        console.error("Supabase daily logs read failed, using offline store", error);
+        console.error(
+          "Supabase daily logs read failed, using offline store",
+          error,
+        );
       }
     }
 
@@ -42,7 +45,10 @@ export class DailyLogClient {
         await storageCore.upsertDailyLogInOfflineMirror(created);
         return created;
       } catch (error) {
-        console.error("Supabase add daily log failed, using offline store", error);
+        console.error(
+          "Supabase add daily log failed, using offline store",
+          error,
+        );
       }
     }
 
@@ -61,7 +67,10 @@ export class DailyLogClient {
         await storageCore.upsertDailyLogInOfflineMirror(updated);
         return updated;
       } catch (error) {
-        console.error("Supabase update daily log failed, using offline store", error);
+        console.error(
+          "Supabase update daily log failed, using offline store",
+          error,
+        );
       }
     }
 
@@ -80,7 +89,10 @@ export class DailyLogClient {
         await storageCore.removeDailyLogFromOfflineMirror(id);
         return;
       } catch (error) {
-        console.error("Supabase delete daily log failed, using offline store", error);
+        console.error(
+          "Supabase delete daily log failed, using offline store",
+          error,
+        );
       }
     }
 
