@@ -1,12 +1,12 @@
 import {
   IManager,
   SupabaseAuthApiClient,
+  SupabaseAuthClient,
   type IAuthApiClient,
 } from "@sito/dashboard-app";
 
 import { config } from "../../config";
 import { supabase } from "../supabase";
-import { PeriodCalendarAuthClient } from "./AuthClient";
 import { createAuthProviderNotConfiguredError } from "./authErrors";
 import { DailyLogClient } from "./DailyLogClient";
 import { PeriodClient } from "./PeriodClient";
@@ -27,6 +27,13 @@ const createAuthApi = (): IAuthApiClient =>
         confirmEmail: async () => throwNotConfigured(),
       };
 
+const createAuth = (): SupabaseAuthClient => {
+  if (!supabase) {
+    throw createAuthProviderNotConfiguredError();
+  }
+  return new SupabaseAuthClient(supabase);
+};
+
 export class PeriodCalendarManager extends IManager {
   authApi: IAuthApiClient = createAuthApi();
   periods: PeriodClient = new PeriodClient();
@@ -41,15 +48,11 @@ export class PeriodCalendarManager extends IManager {
       accessTokenExpiresAtKey: config.auth.accessTokenExpiresAtKey,
     });
 
-    this.auth = new PeriodCalendarAuthClient(config.auth.user, {
-      rememberKey: config.auth.remember,
-      refreshTokenKey: config.auth.refreshTokenKey,
-      accessTokenExpiresAtKey: config.auth.accessTokenExpiresAtKey,
-    });
+    this.auth = createAuth();
   }
 
-  get Auth(): PeriodCalendarAuthClient {
-    return this.auth as PeriodCalendarAuthClient;
+  get Auth(): SupabaseAuthClient {
+    return this.auth as SupabaseAuthClient;
   }
 
   get AuthApi(): IAuthApiClient {
