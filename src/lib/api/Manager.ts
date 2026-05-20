@@ -18,7 +18,8 @@ const throwNotConfigured = (): never => {
   throw createAuthProviderNotConfiguredError();
 };
 
-type PeriodCalendarAuthClient = IAuthClient & Pick<SupabaseAuthClient, "signUp">;
+type PeriodCalendarAuthClient = IAuthClient &
+  Pick<SupabaseAuthClient, "signUp">;
 
 const createAuthApi = (): IAuthApiClient =>
   supabase
