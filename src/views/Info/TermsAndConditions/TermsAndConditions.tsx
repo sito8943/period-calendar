@@ -1,9 +1,13 @@
 import { Trans, useTranslation } from "react-i18next";
 
-// lib
+import {
+  LegalPage,
+  LegalSection,
+  richTextComponents,
+} from "@sito/dashboard-app";
+
 import { AppRoutes } from "lib";
 
-// types
 import type { TermsSection } from "../types";
 
 export function TermsAndConditions() {
@@ -14,48 +18,29 @@ export function TermsAndConditions() {
   }) as TermsSection[];
 
   return (
-    <main className="py-10 px-5 gap-5">
-      <h2 className="text-4xl max-xs:text-2xl">
-        {t("_pages:termsAndConditions.title")}
-      </h2>
-      <div className="text-text mt-2">
+    <LegalPage
+      title={t("_pages:termsAndConditions.title")}
+      intro={
         <Trans
           i18nKey="_pages:termsAndConditions.body"
-          components={{
-            p: <p />,
-            strong: <strong />,
-            code: <code className="bg-default px-1 rounded" />,
-            a: <a className="primary underline font-bold!" />,
-          }}
+          components={richTextComponents}
         />
-      </div>
-
+      }
+    >
       <section className="mt-6 space-y-6">
         {sections.map((section, index) => (
-          <div key={index} className="bg-base p-5 rounded-2xl">
-            <h3 className="text-2xl max-sm:text-xl font-bold">
-              {section.title}
-            </h3>
-            <div className="mt-2 text-text">
-              <Trans
-                i18nKey={`_pages:termsAndConditions.sections.${index}.body`}
-                values={{
-                  privacyPolicyHref: AppRoutes.PrivacyPolicy,
-                  cookiesPolicyHref: AppRoutes.CookiesPolicy,
-                }}
-                components={{
-                  p: <p />,
-                  strong: <strong />,
-                  ul: <ul className="list-disc ml-4 space-y-1" />,
-                  li: <li />,
-                  code: <code className="bg-default px-1 rounded" />,
-                  a: <a className="primary underline font-bold!" />,
-                }}
-              />
-            </div>
-          </div>
+          <LegalSection key={index} title={section.title}>
+            <Trans
+              i18nKey={`_pages:termsAndConditions.sections.${index}.body`}
+              values={{
+                privacyPolicyHref: AppRoutes.PrivacyPolicy,
+                cookiesPolicyHref: AppRoutes.CookiesPolicy,
+              }}
+              components={richTextComponents}
+            />
+          </LegalSection>
         ))}
       </section>
-    </main>
+    </LegalPage>
   );
 }

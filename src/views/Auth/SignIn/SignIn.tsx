@@ -1,19 +1,17 @@
-import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useMemo, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 
 // @sito/dashboard-app
 import {
+  AuthFormShell,
   Button,
-  CheckInput,
   Loading,
-  PasswordInput,
-  State,
-  TextInput,
   getAuthErrorMessage,
-  useOptionalAuthContext,
   useNotification,
+  useOptionalAuthContext,
+  type AuthFormFieldDefinitionType,
 } from "@sito/dashboard-app";
 
 // lib
@@ -55,6 +53,36 @@ export function SignIn() {
     }
   }, [accountToken, navigate]);
 
+  const fields = useMemo<AuthFormFieldDefinitionType<SignInFormType>[]>(
+    () => [
+      {
+        kind: "text",
+        name: "email",
+        id: "sign-in-email",
+        type: "email",
+        label: t("_entities:user.email.label"),
+        required: true,
+        rules: { required: t("_entities:user.email.required") },
+      },
+      {
+        kind: "password",
+        name: "password",
+        id: "sign-in-password",
+        label: t("_entities:user.password.label"),
+        required: true,
+        rules: { required: t("_entities:user.password.required") },
+      },
+      {
+        kind: "checkbox",
+        name: "rememberMe",
+        id: "rememberMe",
+        label: t("_pages:auth.signIn.remember"),
+        containerClassName: "ml-1",
+      },
+    ],
+    [t],
+  );
+
   const onSubmit = handleSubmit(async (values) => {
     rememberMeRef.current = values.rememberMe;
     try {
@@ -79,131 +107,71 @@ export function SignIn() {
     }
   });
 
+  const helperLinks = (
+    <>
+      <p className="auth-form-helper-text">
+        {t("_pages:auth.signIn.toRegister.question")}
+        <Link to={AppRoutes.SignUp} className="auth-form-helper-link">
+          {t("_pages:auth.signIn.toRegister.link")}
+        </Link>
+      </p>
+      <p className="auth-form-helper-text">
+        {t("_pages:auth.signIn.accountRecovery.question")}
+        <Link to={AppRoutes.ForgotPassword} className="auth-form-helper-link">
+          {t("_pages:auth.signIn.accountRecovery.link")}
+        </Link>
+      </p>
+    </>
+  );
+
+  const actions = (
+    <>
+      <Button
+        type="submit"
+        color="primary"
+        variant="submit"
+        className="auth-submit-button"
+        disabled={formState.isSubmitting}
+        aria-label={t("_accessibility:ariaLabels.submit")}
+      >
+        {formState.isSubmitting && (
+          <Loading
+            color="stroke-base"
+            loaderClass="auth-loading-icon"
+            className="auth-loading"
+            strokeWidth="6"
+          />
+        )}
+        {t("_pages:auth.signIn.submit")}
+      </Button>
+
+      <Button
+        type="button"
+        variant="outlined"
+        disabled={formState.isSubmitting}
+        onClick={() => {
+          auth?.setGuestMode(true);
+          navigate(AppRoutes.Home, { replace: true });
+        }}
+        aria-label={t("_accessibility:ariaLabels.startAsGuest")}
+      >
+        {t("_pages:auth.signIn.guest")}
+      </Button>
+    </>
+  );
+
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <form onSubmit={onSubmit} className="auth-form blur-appear">
-        <h1 className="auth-title">{t("_pages:auth.signIn.title")}</h1>
-
-        <div className="form-container w-full">
-          <Controller
-            control={control}
-            name="email"
-            rules={{ required: t("_entities:user.email.required") }}
-            render={({ field, fieldState }) => (
-              <TextInput
-                {...field}
-                type="email"
-                id="sign-in-email"
-                value={field.value ?? ""}
-                inputClassName="peer"
-                label={t("_entities:user.email.label")}
-                required
-                disabled={formState.isSubmitting}
-                helperText={fieldState.error?.message}
-                state={fieldState.error ? State.error : State.default}
-              />
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="password"
-            rules={{ required: t("_entities:user.password.required") }}
-            render={({ field, fieldState }) => (
-              <PasswordInput
-                {...field}
-                id="sign-in-password"
-                value={field.value ?? ""}
-                inputClassName="peer"
-                label={t("_entities:user.password.label")}
-                required
-                disabled={formState.isSubmitting}
-                helperText={fieldState.error?.message}
-                state={fieldState.error ? State.error : State.default}
-              />
-            )}
-          />
-        </div>
-
-        <div className="self-start mt-1">
-          <Controller
-            control={control}
-            name="rememberMe"
-            render={({ field }) => (
-              <CheckInput
-                id="rememberMe"
-                name={field.name}
-                label={t("_pages:auth.signIn.remember")}
-                checked={!!field.value}
-                disabled={formState.isSubmitting}
-                containerClassName="ml-1"
-                onBlur={field.onBlur}
-                onChange={(event) =>
-                  field.onChange(event.currentTarget.checked)
-                }
-              />
-            )}
-          />
-        </div>
-
-        <div className="self-start">
-          <p className="ml-1">
-            {t("_pages:auth.signIn.toRegister.question")}
-            <Link
-              to={AppRoutes.SignUp}
-              className="ml-1 primary text-sm underline text-left"
-            >
-              {t("_pages:auth.signIn.toRegister.link")}
-            </Link>
-          </p>
-        </div>
-
-        <div className="self-start">
-          <p className="ml-1">
-            {t("_pages:auth.signIn.accountRecovery.question")}
-            <Link
-              to={AppRoutes.ForgotPassword}
-              className="ml-1 primary text-sm underline text-left"
-            >
-              {t("_pages:auth.signIn.accountRecovery.link")}
-            </Link>
-          </p>
-        </div>
-
-        <div className="flex max-xs:flex-col gap-3 mt-4 w-full">
-          <Button
-            type="submit"
-            color="primary"
-            variant="submit"
-            className="px-8!"
-            disabled={formState.isSubmitting}
-            aria-label={t("_accessibility:ariaLabels.submit")}
-          >
-            {formState.isSubmitting && (
-              <Loading
-                color="stroke-base"
-                loaderClass="!w-6"
-                className="w-auto!"
-                strokeWidth="6"
-              />
-            )}
-            {t("_pages:auth.signIn.submit")}
-          </Button>
-
-          <Button
-            type="button"
-            variant="outlined"
-            disabled={formState.isSubmitting}
-            onClick={() => {
-              auth?.setGuestMode(true);
-              navigate(AppRoutes.Home, { replace: true });
-            }}
-            aria-label={t("_accessibility:ariaLabels.startAsGuest")}
-          >
-            {t("_pages:auth.signIn.guest")}
-          </Button>
-        </div>
-      </form>
-    </div>
+    <AuthFormShell
+      title={t("_pages:auth.signIn.title")}
+      motion="blur"
+      control={control}
+      fields={fields}
+      disabled={formState.isSubmitting}
+      onSubmit={(event) => {
+        void onSubmit(event);
+      }}
+      helperLinks={helperLinks}
+      actions={actions}
+    />
   );
 }
