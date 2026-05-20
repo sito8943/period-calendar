@@ -4,16 +4,15 @@ import {
   LegalPage,
   LegalSection,
   richTextComponents,
+  type LegalContentSectionType,
 } from "@sito/dashboard-app";
-
-import type { TermsSection } from "../types";
 
 export function PrivacyPolicy() {
   const { t } = useTranslation();
 
   const sections = t("_pages:privacyPolicy.sections", {
     returnObjects: true,
-  }) as TermsSection[];
+  }) as LegalContentSectionType[];
 
   return (
     <LegalPage

@@ -4,18 +4,17 @@ import {
   LegalPage,
   LegalSection,
   richTextComponents,
+  type LegalContentSectionType,
 } from "@sito/dashboard-app";
 
 import { AppRoutes } from "lib";
-
-import type { TermsSection } from "../types";
 
 export function TermsAndConditions() {
   const { t } = useTranslation();
 
   const sections = t("_pages:termsAndConditions.sections", {
     returnObjects: true,
-  }) as TermsSection[];
+  }) as LegalContentSectionType[];
 
   return (
     <LegalPage
