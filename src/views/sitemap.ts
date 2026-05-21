@@ -6,6 +6,11 @@ import type {
   NamedViewPageType,
   ViewPageType,
 } from "@sito/dashboard-app";
+import {
+  createPathMap,
+  filterSitemapByFeatureFlags,
+  flattenSitemap as flattenSitemapBase,
+} from "@sito/dashboard-app";
 
 // lib
 import { AppRoutes, type FeatureFlagKey } from "lib";
@@ -73,43 +78,17 @@ const pageFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
   [PageId.PrivacyPolicy]: "privacyPolicyEnabled",
 };
 
-const isPageFeatureEnabled = (
-  page: ViewPageType<PageId>,
-  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
-): boolean => {
-  const dependency = pageFeatureDependencies[page.key];
-  if (!dependency) return true;
-
-  return isFeatureEnabled(dependency);
-};
-
-const filterSitemapByFeatures = (
-  routes: ViewPageType<PageId>[],
-  isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
-): ViewPageType<PageId>[] => {
-  return routes
-    .filter((route) => isPageFeatureEnabled(route, isFeatureEnabled))
-    .map((route) => ({
-      ...route,
-      children: route.children
-        ? filterSitemapByFeatures(route.children, isFeatureEnabled)
-        : undefined,
-    }));
-};
-
 export const getFeatureFilteredSitemap = (
   isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
 ): ViewPageType<PageId>[] => {
-  return filterSitemapByFeatures(sitemap, isFeatureEnabled);
+  return filterSitemapByFeatureFlags(
+    sitemap,
+    isFeatureEnabled,
+    pageFeatureDependencies,
+  );
 };
 
-const pathMap = sitemap.reduce(
-  (acc, { key, path }) => {
-    acc[key] = path;
-    return acc;
-  },
-  {} as Record<PageId, string>,
-);
+const pathMap = createPathMap(sitemap);
 
 export const getPathByKey = (key: PageId): string | undefined => pathMap[key];
 
@@ -117,16 +96,9 @@ export const flattenSitemap = (
   routes: ViewPageType[],
   basePath = "",
 ): NamedViewPageType[] => {
-  const result = [];
-
-  for (const route of routes) {
-    const fullPath = `${basePath.replace(/\/$/, "")}${route.path}`;
-    const name = t(`_pages:pages.${route.key}`);
-    result.push({ key: route.key, path: fullPath, name });
-
-    if (route.children)
-      result.push(...flattenSitemap(route.children, fullPath));
-  }
-
-  return result;
+  return flattenSitemapBase(
+    routes,
+    (route) => t(`_pages:pages.${route.key}`),
+    basePath,
+  );
 };
