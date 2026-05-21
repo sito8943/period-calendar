@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 // @sito/dashboard-app
-import { Button, useOptionalAuthContext } from "@sito/dashboard-app";
+import {
+  AuthSignUpConfirmationView,
+  useOptionalAuthContext,
+} from "@sito/dashboard-app";
 
 // lib
 import { AppRoutes, RouteQueryParam } from "lib";
-
-// styles
-import "../styles.css";
 
 export function SignUpConfirmation() {
   const { t } = useTranslation();
@@ -26,36 +26,23 @@ export function SignUpConfirmation() {
     }
   }, [accountToken, navigate]);
 
+  const description = email.length
+    ? t("_pages:auth.signUpConfirmation.descriptionWithEmail", {
+        email,
+      })
+    : t("_pages:auth.signUpConfirmation.description");
+
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <form className="auth-form blur-appear">
-        <h1 className="auth-title">
-          {t("_pages:auth.signUpConfirmation.title")}
-        </h1>
-
-        <div className="form-container w-full">
-          <p className="w-full text-sm">
-            {email.length
-              ? t("_pages:auth.signUpConfirmation.descriptionWithEmail", {
-                  email,
-                })
-              : t("_pages:auth.signUpConfirmation.description")}
-          </p>
-        </div>
-
-        <div className="flex max-xs:flex-col gap-3 mt-4 w-full">
-          <Button
-            type="button"
-            color="primary"
-            variant="submit"
-            className="px-8!"
-            onClick={() => navigate(AppRoutes.SignIn, { replace: true })}
-            aria-label={t("_pages:auth.signUpConfirmation.cta")}
-          >
-            {t("_pages:auth.signUpConfirmation.cta")}
-          </Button>
-        </div>
-      </form>
-    </div>
+    <AuthSignUpConfirmationView
+      title={t("_pages:auth.signUpConfirmation.title")}
+      description={description}
+      motion="blur"
+      showBackButton
+      backTo={AppRoutes.SignIn}
+      backButtonLabel={t("_accessibility:buttons.back")}
+      toSignInLabel={t("_pages:auth.signUpConfirmation.cta")}
+      toSignInAriaLabel={t("_pages:auth.signUpConfirmation.cta")}
+      onSignIn={() => navigate(AppRoutes.SignIn, { replace: true })}
+    />
   );
 }

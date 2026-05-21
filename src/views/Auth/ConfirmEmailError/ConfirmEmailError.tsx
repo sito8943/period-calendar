@@ -12,6 +12,9 @@ export function ConfirmEmailError() {
   return (
     <AuthConfirmEmailErrorView
       title={t("_pages:auth.confirmEmailError.title")}
+      showBackButton
+      backTo={AppRoutes.SignIn}
+      backButtonLabel={t("_accessibility:buttons.back")}
       description={t("_pages:auth.confirmEmailError.description")}
       resendLabel={t("_pages:auth.confirmEmailError.resend")}
       resendAriaLabel={t("_pages:auth.confirmEmailError.resend")}

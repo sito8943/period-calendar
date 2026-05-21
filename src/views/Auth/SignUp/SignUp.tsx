@@ -41,6 +41,9 @@ export function SignUp() {
     <AuthSignUpView
       title={t("_pages:auth.signUp.title")}
       motion="blur"
+      showBackButton
+      backTo={AppRoutes.SignIn}
+      backButtonLabel={t("_accessibility:buttons.back")}
       nameLabel={t("_entities:user.name.label")}
       emailLabel={t("_entities:user.email.label")}
       passwordLabel={t("_entities:user.password.label")}

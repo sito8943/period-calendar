@@ -15,6 +15,9 @@ export function ConfirmEmailSuccess() {
     <AuthConfirmEmailSuccessView
       authApi={manager.AuthApi}
       title={t("_pages:auth.confirmEmailSuccess.title")}
+      showBackButton
+      backTo={AppRoutes.SignIn}
+      backButtonLabel={t("_accessibility:buttons.back")}
       description={t("_pages:auth.confirmEmailSuccess.description")}
       toSignInLabel={t("_pages:auth.confirmEmailSuccess.toSignIn")}
       toSignInAriaLabel={t("_pages:auth.confirmEmailSuccess.toSignIn")}
