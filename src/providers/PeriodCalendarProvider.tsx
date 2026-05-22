@@ -43,7 +43,10 @@ export const PeriodCalendarProvider = ({
       location={location}
       linkComponent={Link as ComponentType<BaseLinkPropsType>}
     >
-      <ManagerProvider manager={periodCalendarManager} queryClient={queryClient}>
+      <ManagerProvider
+        manager={periodCalendarManager}
+        queryClient={queryClient}
+      >
         <PeriodCalendarAuthProvider>
           <TranslationProvider t={t} language={i18n.language}>
             <FeatureFlagsProvider>
