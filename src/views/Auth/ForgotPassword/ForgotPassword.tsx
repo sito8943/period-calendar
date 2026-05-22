@@ -70,7 +70,9 @@ export function ForgotPassword() {
       signInTo={AppRoutes.SignIn}
       onSubmit={onSubmit}
       onError={(error, { setError }) => {
-        const messageKey = mapForgotPasswordErrorKey(getAuthErrorMessage(error));
+        const messageKey = mapForgotPasswordErrorKey(
+          getAuthErrorMessage(error),
+        );
         showErrorNotification({ message: t(messageKey) });
         setError("email", {
           type: "manual",

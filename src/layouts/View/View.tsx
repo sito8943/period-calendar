@@ -1,9 +1,7 @@
-import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
-import type { To } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { ComponentType } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -12,7 +10,6 @@ import {
   AppShell,
   BottomNavActionProvider,
   BottomNavigation,
-  ConfigProvider,
   DashboardFooter,
   DashboardHeader,
   Error,
@@ -21,10 +18,7 @@ import {
   toLocal,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
-import type {
-  BottomNavigationItemType,
-  BaseLinkPropsType,
-} from "@sito/dashboard-app";
+import type { BottomNavigationItemType } from "@sito/dashboard-app";
 
 // hooks
 import { PeriodQueryKeys, useProfileSettings } from "hooks";
@@ -56,7 +50,6 @@ import { useFeatureFlags } from "providers";
 export function View() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
   const auth = useOptionalAuthContext();
   const accountQueryScope = resolvePeriodQueryScopeFromAccount(
@@ -179,48 +172,42 @@ export function View() {
   }, [isFeatureEnabled, t]);
 
   return (
-    <ConfigProvider
-      navigate={(route) => navigate(route as To)}
-      location={location}
-      linkComponent={Link as ComponentType<BaseLinkPropsType>}
-    >
-      <NavbarProvider>
-        <BottomNavActionProvider>
-          {showOnboarding && (
-            <PeriodOnboarding
-              onSkip={closeOnboarding}
-              onSignIn={() => navigate(AppRoutes.SignIn)}
-              onStartAsGuest={closeOnboarding}
+    <NavbarProvider>
+      <BottomNavActionProvider>
+        {showOnboarding && (
+          <PeriodOnboarding
+            onSkip={closeOnboarding}
+            onSignIn={() => navigate(AppRoutes.SignIn)}
+            onStartAsGuest={closeOnboarding}
+          />
+        )}
+        <AppShell
+          header={
+            <>
+              <OfflineBanner />
+              <DashboardHeader menuMap={featureFilteredMenuMap} />
+            </>
+          }
+          footer={
+            <DashboardFooter
+              copyrightText={t("_pages:footer.copyright")}
+              bottomNavSpacing
             />
-          )}
-          <AppShell
-            header={
-              <>
-                <OfflineBanner />
-                <DashboardHeader menuMap={featureFilteredMenuMap} />
-              </>
-            }
-            footer={
-              <DashboardFooter
-                copyrightText={t("_pages:footer.copyright")}
-                bottomNavSpacing
-              />
-            }
-            bottomNavigation={
-              <BottomNavigation
-                items={bottomNavigationItems}
-                centerAction={centerAction}
-                isItemActive={isBottomNavItemActive}
-              />
-            }
-            extras={<Tooltip id="tooltip" />}
-          >
-            <ErrorBoundary FallbackComponent={Error}>
-              <Outlet />
-            </ErrorBoundary>
-          </AppShell>
-        </BottomNavActionProvider>
-      </NavbarProvider>
-    </ConfigProvider>
+          }
+          bottomNavigation={
+            <BottomNavigation
+              items={bottomNavigationItems}
+              centerAction={centerAction}
+              isItemActive={isBottomNavItemActive}
+            />
+          }
+          extras={<Tooltip id="tooltip" />}
+        >
+          <ErrorBoundary FallbackComponent={Error}>
+            <Outlet />
+          </ErrorBoundary>
+        </AppShell>
+      </BottomNavActionProvider>
+    </NavbarProvider>
   );
 }

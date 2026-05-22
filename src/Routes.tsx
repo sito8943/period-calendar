@@ -1,11 +1,6 @@
 // layouts
 import { Auth, View } from "./layouts";
-import {
-  BrowserRouter,
-  Navigate,
-  Route,
-  Routes as ReactRoutes,
-} from "react-router-dom";
+import { Navigate, Route, Routes as ReactRoutes } from "react-router-dom";
 import { AppRoutes } from "lib";
 import { useFeatureFlags } from "providers";
 import { routeComponents } from "./views/routes";
@@ -35,8 +30,7 @@ export const Routes = () => {
   } = routeComponents;
 
   return (
-    <BrowserRouter>
-      <ReactRoutes>
+    <ReactRoutes>
         <Route path={AppRoutes.AuthRoot} element={<Auth />}>
           <Route index element={<Navigate to={AppRoutes.SignIn} replace />} />
           <Route path={AppRoutes.SignIn} element={<SignIn />} />
@@ -152,7 +146,6 @@ export const Routes = () => {
           />
           <Route path={AppRoutes.NotFound} element={<NotFound />} />
         </Route>
-      </ReactRoutes>
-    </BrowserRouter>
+    </ReactRoutes>
   );
 };
