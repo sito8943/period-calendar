@@ -249,9 +249,7 @@ export function Profile() {
                 />
               )}
             />
-            <p className="helper-text">
-              {t("_pages:profile.helper.theme")}
-            </p>
+            <p className="helper-text">{t("_pages:profile.helper.theme")}</p>
 
             <Controller
               control={control}
@@ -276,9 +274,7 @@ export function Profile() {
                 />
               )}
             />
-            <p className="helper-text">
-              {t("_pages:profile.helper.language")}
-            </p>
+            <p className="helper-text">{t("_pages:profile.helper.language")}</p>
           </section>
 
           <div className="form-submit-row">

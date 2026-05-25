@@ -53,9 +53,7 @@ export function About() {
       >
         <p>{t("_pages:about.legal.body")}</p>
         <LegalLinksList links={legalLinks} />
-        <p className="legal-updated-text">
-          {t("_pages:about.legal.updated")}
-        </p>
+        <p className="legal-updated-text">{t("_pages:about.legal.updated")}</p>
       </LegalSection>
     </LegalPage>
   );

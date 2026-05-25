@@ -192,9 +192,7 @@ export function Home() {
       {periods.length > 0 && (
         <div className="metric-grid">
           <div className="metric-card-centered">
-            <p className="metric-label">
-              {t("_pages:home.stats.avgCycle")}
-            </p>
+            <p className="metric-label">{t("_pages:home.stats.avgCycle")}</p>
             <p className="metric-value">
               {stats.avgCycleLength
                 ? t("_pages:home.stats.days", { count: stats.avgCycleLength })
@@ -202,9 +200,7 @@ export function Home() {
             </p>
           </div>
           <div className="metric-card-centered">
-            <p className="metric-label">
-              {t("_pages:home.stats.avgDuration")}
-            </p>
+            <p className="metric-label">{t("_pages:home.stats.avgDuration")}</p>
             <p className="metric-value">
               {stats.avgPeriodDuration
                 ? t("_pages:home.stats.days", {
@@ -218,9 +214,7 @@ export function Home() {
 
       {stats.latestCycleVariation && cycleVariationMessage && (
         <div className="metric-card">
-          <p className="metric-label">
-            {t("_pages:home.variation.title")}
-          </p>
+          <p className="metric-label">{t("_pages:home.variation.title")}</p>
           <p className="metric-value">
             {t("_pages:home.variation.latestCycle", {
               days: stats.latestCycleVariation.latestCycleLength,
