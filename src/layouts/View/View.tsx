@@ -12,7 +12,6 @@ import {
   BottomNavigation,
   DashboardFooter,
   DashboardHeader,
-  Error,
   fromLocal,
   NavbarProvider,
   toLocal,
@@ -46,6 +45,7 @@ import { getFeatureFilteredMenuMap } from "../../views/menuMap";
 
 // providers
 import { useFeatureFlags } from "providers";
+import { ErrorBoundaryFallback } from "../ErrorBoundaryFallback";
 
 export function View() {
   const { t, i18n } = useTranslation();
@@ -203,7 +203,7 @@ export function View() {
           }
           extras={<Tooltip id="tooltip" />}
         >
-          <ErrorBoundary FallbackComponent={Error}>
+          <ErrorBoundary FallbackComponent={ErrorBoundaryFallback}>
             <Outlet />
           </ErrorBoundary>
         </AppShell>
