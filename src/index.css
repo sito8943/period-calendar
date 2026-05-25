@@ -305,12 +305,8 @@ button {
   animation: motion-rise-in 480ms cubic-bezier(0.2, 0.8, 0.2, 1) 80ms forwards;
 }
 
-.calendar-nav-button:hover {
-  transform: translateY(-1px);
-}
-
-.calendar-nav-button:active {
-  transform: translateY(0) scale(0.96);
+.calendar-nav-button {
+  @apply hover:-translate-y-px active:translate-y-0 active:scale-95;
 }
 
 .calendar-month-label {
@@ -332,16 +328,8 @@ button {
   animation-name: motion-slide-prev;
 }
 
-.calendar-day-button:hover:enabled {
-  transform: scale(1.05);
-}
-
-.calendar-day-button:active:enabled {
-  transform: scale(0.93);
-}
-
-.calendar-day-button:disabled {
-  transform: none;
+.calendar-day-button {
+  @apply enabled:hover:scale-105 enabled:active:scale-[0.93] disabled:scale-100;
 }
 
 .onboarding-theme-grid > * {
@@ -357,12 +345,8 @@ button {
   animation-delay: 230ms;
 }
 
-.onboarding-theme-option:hover {
-  transform: translateY(-1px);
-}
-
-.onboarding-theme-option:active {
-  transform: translateY(0) scale(0.98);
+.onboarding-theme-option {
+  @apply hover:-translate-y-px active:translate-y-0 active:scale-[0.98];
 }
 
 @keyframes motion-rise-in {

@@ -4,98 +4,31 @@ import type { AddDailyLogDto, DailyLog, UpdateDailyLogDto } from "../types";
 export class DailyLogClient {
   async get(): Promise<DailyLog[]> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const dailyLogs = await storageCore.getDailyLogsFromSupabase(userId);
-        await storageCore.syncDailyLogsMirrorWithRemote(dailyLogs);
-        return dailyLogs;
-      } catch (error) {
-        console.error(
-          "Supabase daily logs read failed, using offline store",
-          error,
-        );
-      }
-    }
-
-    return storageCore.getDailyLogsFromOfflineStore();
-  }
-
-  async getMirrorSnapshot(): Promise<DailyLog[]> {
-    const userId = await storageCore.getCurrentSupabaseUserId();
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-    }
-
-    return storageCore.getDailyLogsFromOfflineStore();
+    if (!userId) return [];
+    return storageCore.getDailyLogsFromSupabase(userId);
   }
 
   async insert(dto: AddDailyLogDto): Promise<DailyLog> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const created = await storageCore.addDailyLogToSupabase(userId, dto);
-        await storageCore.upsertDailyLogInOfflineMirror(created);
-        return created;
-      } catch (error) {
-        console.error(
-          "Supabase add daily log failed, using offline store",
-          error,
-        );
-      }
+    if (!userId) {
+      throw new Error("Authentication required to add a daily log");
     }
-
-    return storageCore.addDailyLogToOfflineStore(dto);
+    return storageCore.addDailyLogToSupabase(userId, dto);
   }
 
   async update(dto: UpdateDailyLogDto): Promise<DailyLog> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const updated = await storageCore.updateDailyLogInSupabase(userId, dto);
-        await storageCore.upsertDailyLogInOfflineMirror(updated);
-        return updated;
-      } catch (error) {
-        console.error(
-          "Supabase update daily log failed, using offline store",
-          error,
-        );
-      }
+    if (!userId) {
+      throw new Error("Authentication required to update a daily log");
     }
-
-    return storageCore.updateDailyLogInOfflineStore(dto);
+    return storageCore.updateDailyLogInSupabase(userId, dto);
   }
 
   async softDelete(id: string): Promise<void> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        await storageCore.deleteDailyLogFromSupabase(id);
-        await storageCore.removeDailyLogFromOfflineMirror(id);
-        return;
-      } catch (error) {
-        console.error(
-          "Supabase delete daily log failed, using offline store",
-          error,
-        );
-      }
+    if (!userId) {
+      throw new Error("Authentication required to delete a daily log");
     }
-
-    await storageCore.deleteDailyLogFromOfflineStore(id);
+    await storageCore.deleteDailyLogFromSupabase(id);
   }
 }
