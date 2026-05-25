@@ -150,23 +150,23 @@ export function Profile() {
   });
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full">
+    <main className="page-content">
       <PageHeader
         title={t("_pages:profile.title")}
         onBack={canGoBack ? () => navigate(-1) : undefined}
       />
 
-      <div className="w-full base-border sm:p-6 p-4 rounded-2xl flex flex-col gap-6">
+      <div className="profile-card">
         <form
-          className="flex flex-col gap-6 form-motion-stagger"
+          className="profile-form form-motion-stagger"
           onSubmit={(event) => {
             event.preventDefault();
             void onSubmit(event);
           }}
         >
-          <section id="personal" className="flex flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <h3 className="text-xs uppercase tracking-wide text-text-muted">
+          <section id="personal" className="form-section-spacious">
+            <div className="form-section-header">
+              <h3 className="form-section-title">
                 {t("_pages:profile.sections.personal")}
               </h3>
             </div>
@@ -249,7 +249,7 @@ export function Profile() {
                 />
               )}
             />
-            <p className="text-sm text-text-muted">
+            <p className="helper-text">
               {t("_pages:profile.helper.theme")}
             </p>
 
@@ -276,17 +276,17 @@ export function Profile() {
                 />
               )}
             />
-            <p className="text-sm text-text-muted">
+            <p className="helper-text">
               {t("_pages:profile.helper.language")}
             </p>
           </section>
 
-          <div className="flex">
+          <div className="form-submit-row">
             <Button
               type="submit"
               variant="submit"
               color="primary"
-              className="max-sm:w-full"
+              className="responsive-full-button"
               disabled={saveDisabled}
             >
               {t("_pages:profile.actions.save")}

@@ -60,8 +60,6 @@ export function SignUp() {
       signInQuestion={t("_pages:auth.signUp.toLogin.question")}
       signInLabel={t("_pages:auth.signUp.toLogin.link")}
       signInTo={AppRoutes.SignIn}
-      guestLabel={t("_pages:auth.signUp.guest")}
-      guestAriaLabel={t("_accessibility:ariaLabels.startAsGuest")}
       onSubmit={async (values) => {
         const confirmEmailRedirectTo = buildAuthRedirectUrl(
           AppRoutes.ConfirmEmailSuccess,
@@ -88,10 +86,6 @@ export function SignUp() {
 
         auth.logUser(result.session, true);
         auth.setGuestMode(false);
-        navigate(AppRoutes.Home, { replace: true });
-      }}
-      onStartAsGuest={() => {
-        auth?.setGuestMode(true);
         navigate(AppRoutes.Home, { replace: true });
       }}
       onPasswordMismatch={() =>

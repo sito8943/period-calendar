@@ -40,17 +40,20 @@ export function About() {
                 href="https://sito8943.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="primary underline font-bold!"
+                className="primary legal-external-link"
               />
             ),
           }}
         />
       }
     >
-      <LegalSection title={t("_pages:about.legal.title")} className="mt-8">
+      <LegalSection
+        title={t("_pages:about.legal.title")}
+        className="legal-section-offset"
+      >
         <p>{t("_pages:about.legal.body")}</p>
         <LegalLinksList links={legalLinks} />
-        <p className="mt-4 text-sm text-text-muted">
+        <p className="legal-updated-text">
           {t("_pages:about.legal.updated")}
         </p>
       </LegalSection>

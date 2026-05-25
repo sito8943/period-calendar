@@ -1,6 +1,8 @@
 // @sito/dashboard-app
 import { useTranslation } from "@sito/dashboard-app";
 
+import { classNames } from "lib";
+
 // types
 import type { CalendarDayProps } from "./types";
 
@@ -23,12 +25,9 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     hasDailyLog,
   } = day;
 
-  const baseClasses =
-    "calendar-day-button w-9 h-9 relative flex items-center justify-center rounded-full text-sm transition-colors";
-
   let colorClasses = "";
   if (!isCurrentMonth) {
-    colorClasses = "text-text-muted/30";
+    colorClasses = "calendar-day-muted";
   } else if (isToday) {
     colorClasses = "today-day";
   } else if (isPeriodDay) {
@@ -44,7 +43,7 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
   } else if (isPredictedDay) {
     colorClasses = "predicted-day";
   } else {
-    colorClasses = "text-text";
+    colorClasses = "calendar-day-default";
   }
 
   const tooltip = isCurrentMonth
@@ -61,9 +60,9 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
     isToday || isPeriodDay || isPredictedDay || isFertileDay || isOvulationDay;
   const interactiveClasses = onClick
     ? isSpecialDay
-      ? "cursor-pointer"
-      : "hover:bg-base-dark/60 cursor-pointer"
-    : "cursor-default";
+      ? "calendar-day-clickable"
+      : "calendar-day-clickable-muted"
+    : "calendar-day-static";
   const dailyLogDotClass = isToday
     ? "daily-log-dot--today"
     : isPeriodDay
@@ -83,34 +82,52 @@ export function CalendarDay({ day, onClick, ariaLabel }: CalendarDayProps) {
       disabled={!onClick}
       aria-label={ariaLabel}
       title={tooltip}
-      className={`${baseClasses} ${colorClasses} ${interactiveClasses}`}
+      className={classNames(
+        "calendar-day-button",
+        colorClasses,
+        interactiveClasses,
+      )}
     >
       {date.getDate()}
       {isPredictedDay && (
         <span
-          className={`prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+          className={classNames(
+            "prediction-indicator",
+            isToday && "prediction-indicator-on-today",
+          )}
           aria-hidden
         />
       )}
       {isFertileDay && !hasReportedPeriodInMonth && (
         <span
-          className={`fertile-prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+          className={classNames(
+            "fertile-prediction-indicator",
+            isToday && "prediction-indicator-on-today",
+          )}
           aria-hidden
         />
       )}
       {isOvulationDay &&
         (hasReportedPeriodInMonth ? (
           <span
-            className={`ovulation-indicator ${isToday ? "ovulation-indicator-on-today" : ""}`}
+            className={classNames(
+              "ovulation-indicator",
+              isToday && "ovulation-indicator-on-today",
+            )}
             aria-hidden
           />
         ) : (
           <span
-            className={`ovulation-prediction-indicator ${isToday ? "prediction-indicator-on-today" : ""}`}
+            className={classNames(
+              "ovulation-prediction-indicator",
+              isToday && "prediction-indicator-on-today",
+            )}
             aria-hidden
           />
         ))}
-      {hasDailyLog && <span className={`daily-log-dot ${dailyLogDotClass}`} />}
+      {hasDailyLog && (
+        <span className={classNames("daily-log-dot", dailyLogDotClass)} />
+      )}
     </button>
   );
 }

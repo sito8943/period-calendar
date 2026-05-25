@@ -14,7 +14,7 @@ export function OfflineBanner({ forceVisible = false }: OfflineBannerProps) {
   return (
     <DashboardAppOfflineBanner
       isOnline={false}
-      className="sticky top-0 z-10"
+      className="offline-banner-shell"
       message={t("_accessibility:offline.banner")}
     />
   );

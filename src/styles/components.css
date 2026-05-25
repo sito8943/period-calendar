@@ -1,6 +1,275 @@
 /* App-specific component styles */
 @reference "./variables.css";
 
+.page-content {
+  @apply flex-1 p-4 max-w-lg mx-auto w-full;
+}
+
+.page-content-stacked {
+  @apply flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4;
+}
+
+.content-stack {
+  @apply flex flex-col gap-3;
+}
+
+.form-stack {
+  @apply flex flex-col gap-4;
+}
+
+.form-stack-compact {
+  @apply flex flex-col gap-3;
+}
+
+.form-section {
+  @apply flex flex-col gap-2;
+}
+
+.form-section-spacious {
+  @apply flex flex-col gap-4;
+}
+
+.form-section-header {
+  @apply flex flex-col gap-1;
+}
+
+.form-section-title {
+  @apply text-xs uppercase tracking-wide text-text-muted;
+}
+
+.form-legend {
+  @apply text-sm font-medium text-text mb-1;
+}
+
+.form-checkbox-grid {
+  @apply grid grid-cols-2 gap-2;
+}
+
+.form-checkbox-card {
+  @apply bg-base-light rounded-lg px-3 py-2 border border-border;
+}
+
+.form-two-column-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.form-inline-appear {
+  animation: motion-rise-in 240ms ease-out both;
+}
+
+.form-actions {
+  @apply flex gap-3 mt-4;
+}
+
+.form-submit-row {
+  @apply flex;
+}
+
+.responsive-full-button {
+  @apply max-sm:w-full;
+}
+
+.helper-text {
+  @apply text-sm text-text-muted;
+}
+
+.desktop-action-row {
+  @apply hidden sm:flex justify-center gap-2 mt-2;
+}
+
+.desktop-action-button {
+  @apply px-6!;
+}
+
+.button-leading-icon {
+  @apply mr-2;
+}
+
+.metric-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.metric-card {
+  @apply bg-base-light rounded-xl p-3 shadow-sm;
+}
+
+.metric-card-centered {
+  @apply bg-base-light rounded-xl p-3 shadow-sm text-center;
+}
+
+.metric-label {
+  @apply text-xs text-text-muted;
+}
+
+.metric-value {
+  @apply text-lg font-semibold text-text;
+}
+
+.metric-detail {
+  @apply text-sm text-text-muted;
+}
+
+.metric-detail-spaced {
+  @apply text-xs text-text-muted mt-1;
+}
+
+.profile-card {
+  @apply w-full border-hover-primary/20 border-1 rounded-2xl sm:p-6 p-4 flex flex-col gap-6;
+}
+
+.profile-form {
+  @apply flex flex-col gap-6;
+}
+
+.history-empty-text {
+  @apply text-lg;
+}
+
+.history-empty-container {
+  @apply flex flex-col items-center justify-center py-16 text-text-muted;
+}
+
+.history-list-container {
+  @apply flex flex-col gap-3;
+}
+
+.page-header-root {
+  @apply mb-6;
+}
+
+.page-header-main {
+  @apply flex items-center gap-3;
+}
+
+.page-header-title {
+  @apply text-xl font-semibold text-text;
+}
+
+.page-header-right-content {
+  @apply ml-auto;
+}
+
+.page-header-subtitle {
+  @apply text-sm text-text-muted mt-1;
+}
+
+.prediction-card {
+  @apply relative rounded-xl p-4 pr-10 shadow-md touch-pan-y select-none will-change-transform;
+}
+
+.prediction-card-title {
+  @apply text-sm font-medium opacity-80;
+}
+
+.prediction-card-message {
+  @apply max-sm:text-sm font-bold mt-1;
+}
+
+.prediction-card-message-muted {
+  @apply font-medium opacity-85;
+}
+
+.prediction-card-close-button {
+  @apply absolute top-2 right-2 size-7 !bg-transparent !text-inherit rounded-full flex items-center justify-center transition-colors transition-opacity opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+}
+
+.prediction-card-primary {
+  @apply bg-primary text-white;
+}
+
+.prediction-card-fertile {
+  @apply bg-fertile border-2 border-base-light text-base-light;
+}
+
+.prediction-card-error {
+  @apply bg-bg-error text-white;
+}
+
+.prediction-card-close-button-primary {
+  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-primary;
+}
+
+.prediction-card-close-button-fertile {
+  @apply hover:!bg-fertile/10 focus-visible:ring-fertile/40 focus-visible:ring-offset-base-light;
+}
+
+.prediction-card-close-button-error {
+  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-error;
+}
+
+.onboarding-theme-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-2 w-full;
+}
+
+.onboarding-theme-option {
+  @apply border border-border rounded-lg px-3 py-2 text-left transition-colors;
+}
+
+.onboarding-theme-option-selected {
+  @apply bg-primary text-white border-primary;
+}
+
+.onboarding-theme-option-idle {
+  @apply bg-base-light text-text hover:bg-base-dark;
+}
+
+.onboarding-theme-description {
+  @apply text-sm opacity-90;
+}
+
+.period-card {
+  @apply flex items-center justify-between p-4 bg-base-light rounded-xl shadow-sm hover:shadow-md transition-shadow;
+}
+
+.period-card-content {
+  @apply flex flex-col gap-1;
+}
+
+.period-card-date-row {
+  @apply flex items-center gap-2;
+}
+
+.period-card-date-dot {
+  @apply w-2.5 h-2.5 rounded-full bg-primary inline-block;
+}
+
+.period-card-date {
+  @apply font-medium text-text;
+}
+
+.period-card-subtitle {
+  @apply text-sm text-text-muted ml-4.5;
+}
+
+.period-card-ongoing {
+  @apply text-primary font-medium;
+}
+
+.period-card-chevron {
+  @apply text-text-muted/50;
+}
+
+.offline-banner-shell {
+  @apply sticky top-0 z-10;
+}
+
+.legal-external-link {
+  @apply underline;
+  font-weight: 700;
+}
+
+.legal-section-spaced {
+  @apply mt-6 space-y-6;
+}
+
+.legal-section-offset {
+  @apply mt-8;
+}
+
+.legal-updated-text {
+  @apply mt-4 text-sm text-text-muted;
+}
+
 .today-day {
   @apply bg-primary text-white font-semibold hover:bg-hover-primary;
 }
@@ -15,6 +284,30 @@
       white 20%
     );
   }
+}
+
+.calendar-day-button {
+  @apply w-9 h-9 relative flex items-center justify-center rounded-full text-sm transition-colors;
+}
+
+.calendar-day-muted {
+  @apply text-text-muted/30;
+}
+
+.calendar-day-default {
+  @apply text-text;
+}
+
+.calendar-day-clickable {
+  @apply cursor-pointer;
+}
+
+.calendar-day-clickable-muted {
+  @apply hover:bg-base-dark/60 cursor-pointer;
+}
+
+.calendar-day-static {
+  @apply cursor-default;
 }
 
 .predicted-day {
@@ -165,6 +458,14 @@
   @apply relative inline-block rounded-full shrink-0;
 }
 
+.legend-dot-standard {
+  @apply w-3 h-3;
+}
+
+.legend-dot-small {
+  @apply w-2 h-2 rounded-full bg-primary inline-block;
+}
+
 .legend-dot-today {
   @apply bg-primary;
 }
@@ -290,4 +591,76 @@
 
 .calendar-day-legend-dropdown {
   @apply p-0 border-none shadow-none;
+}
+
+.calendar-shell {
+  @apply bg-base-light rounded-xl p-4 shadow-sm;
+}
+
+.calendar-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.calendar-nav-button {
+  @apply p-2 rounded-full hover:bg-base-dark transition-colors;
+}
+
+.calendar-nav-icon {
+  @apply text-text-muted;
+}
+
+.calendar-month-label {
+  @apply text-lg font-semibold capitalize text-text;
+}
+
+.calendar-weekday-grid {
+  @apply grid grid-cols-7 gap-1 mb-2;
+}
+
+.calendar-weekday {
+  @apply text-center text-xs font-medium text-text-muted;
+}
+
+.calendar-days-grid {
+  @apply grid grid-cols-7 gap-1;
+}
+
+.calendar-day-cell {
+  @apply flex items-center justify-center;
+}
+
+.calendar-disclaimer {
+  @apply mt-2 text-xs text-text-muted;
+}
+
+.calendar-disclaimer-spaced {
+  @apply mt-1 text-xs text-text-muted;
+}
+
+.daily-log-delete-confirm {
+  @apply flex flex-col gap-2 p-3 bg-bg-error/10 rounded-lg border border-error/30;
+}
+
+.daily-log-delete-title {
+  @apply text-sm text-text text-center;
+}
+
+.daily-log-delete-actions {
+  @apply flex gap-2;
+}
+
+.daily-log-delete-action {
+  @apply flex-1;
+}
+
+.daily-log-delete-confirm-button {
+  @apply flex-1 px-4 py-2 bg-bg-error text-error rounded-lg font-medium hover:opacity-90 transition-opacity;
+}
+
+.daily-log-delete-trigger {
+  @apply flex items-center justify-center gap-2 text-text-muted hover:text-error transition-colors py-2;
+}
+
+.period-log-delete-button {
+  @apply px-10;
 }

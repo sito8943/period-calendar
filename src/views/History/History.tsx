@@ -24,7 +24,7 @@ export function History() {
   const hasNoPeriods = isHistoryEmpty(periods);
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full">
+    <main className="page-content">
       <PageHeader
         title={t("_pages:history.title")}
         onBack={canGoBack ? () => navigate(-1) : undefined}
@@ -32,7 +32,7 @@ export function History() {
 
       {hasNoPeriods ? (
         <div className={HISTORY_EMPTY_CONTAINER_CLASSNAME}>
-          <p className="text-lg">{t("_pages:history.empty")}</p>
+          <p className="history-empty-text">{t("_pages:history.empty")}</p>
         </div>
       ) : (
         <div className={HISTORY_LIST_CONTAINER_CLASSNAME}>

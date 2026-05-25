@@ -53,8 +53,6 @@ export function SignIn() {
       recoveryQuestion={t("_pages:auth.signIn.accountRecovery.question")}
       recoveryLabel={t("_pages:auth.signIn.accountRecovery.link")}
       recoveryTo={AppRoutes.ForgotPassword}
-      guestLabel={t("_pages:auth.signIn.guest")}
-      guestAriaLabel={t("_accessibility:ariaLabels.startAsGuest")}
       onSubmit={async (values) => {
         const session = await manager.Auth.login(values);
 
@@ -65,10 +63,6 @@ export function SignIn() {
 
         auth.logUser(session, values.rememberMe);
         auth.setGuestMode(false);
-        navigate(AppRoutes.Home, { replace: true });
-      }}
-      onStartAsGuest={() => {
-        auth?.setGuestMode(true);
         navigate(AppRoutes.Home, { replace: true });
       }}
       onError={(error, { setError }) => {

@@ -5,6 +5,8 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 import { IconButton } from "@sito/dashboard-app";
 
+import { classNames } from "lib";
+
 import { AnimatedDropdown } from "../../AnimatedDropdown";
 import { CALENDAR_LEGEND_DROPDOWN_CLOSE_DELAY_MS } from "../constants";
 import type { CalendarLegendDropdownProps } from "./types";
@@ -91,39 +93,43 @@ export function CalendarLegendDropdown({
           </p>
           <div className="calendar-legend-list">
             <div className="calendar-legend-row">
-              <span className="w-3 h-3 legend-dot legend-dot-today" />
+              <span className="legend-dot legend-dot-standard legend-dot-today" />
               <span>{t("_pages:calendar.today")}</span>
             </div>
             <div className="calendar-legend-row">
-              <span className="w-3 h-3 legend-dot legend-dot-period" />
+              <span className="legend-dot legend-dot-standard legend-dot-period" />
               <span>{t("_pages:calendar.period")}</span>
             </div>
             <div className="calendar-legend-row">
               <span
-                className={`w-3 h-3 legend-dot ${
+                className={classNames(
+                  "legend-dot",
+                  "legend-dot-standard",
                   monthHasReportedPeriod
                     ? "legend-dot-ovulation-dashed"
-                    : "legend-dot-ovulation-predicted"
-                }`}
+                    : "legend-dot-ovulation-predicted",
+                )}
               />
               <span>{t("_pages:calendar.ovulation")}</span>
             </div>
             <div className="calendar-legend-row">
               <span
-                className={`w-3 h-3 legend-dot ${
+                className={classNames(
+                  "legend-dot",
+                  "legend-dot-standard",
                   monthHasReportedPeriod
                     ? "legend-dot-fertile-dashed"
-                    : "legend-dot-fertile-predicted"
-                }`}
+                    : "legend-dot-fertile-predicted",
+                )}
               />
               <span>{t("_pages:calendar.fertileDays")}</span>
             </div>
             <div className="calendar-legend-row">
-              <span className="w-3 h-3 legend-dot legend-dot-prediction" />
+              <span className="legend-dot legend-dot-standard legend-dot-prediction" />
               <span>{t("_pages:calendar.prediction")}</span>
             </div>
             <div className="calendar-legend-row">
-              <span className="w-2 h-2 rounded-full bg-primary inline-block" />
+              <span className="legend-dot-small" />
               <span>{t("_pages:calendar.dailyLog")}</span>
             </div>
           </div>

@@ -135,9 +135,9 @@ export function Home() {
     selectedCalendarDate !== null && calendarActionAnchorEl !== null;
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4 home-enter-stagger">
+    <main className="page-content-stacked home-enter-stagger">
       {/* Prediction cards */}
-      <div className="flex flex-col gap-3">
+      <div className="content-stack">
         <PredictionCard
           title={t("_pages:home.nextPeriod")}
           message={nextPeriodMessage}
@@ -145,7 +145,9 @@ export function Home() {
           dismissStorageKey={HOME_PREDICTION_CARD_DISMISS_KEYS.nextPeriod}
           variant="primary"
           messageClassName={
-            stats.daysUntilNext === null ? "font-medium opacity-85" : undefined
+            stats.daysUntilNext === null
+              ? "prediction-card-message-muted"
+              : undefined
           }
         />
         {stats.isInFertileWindowToday ? (
@@ -188,22 +190,22 @@ export function Home() {
 
       {/* Stats row */}
       {periods.length > 0 && (
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-base-light rounded-xl p-3 shadow-sm text-center">
-            <p className="text-xs text-text-muted">
+        <div className="metric-grid">
+          <div className="metric-card-centered">
+            <p className="metric-label">
               {t("_pages:home.stats.avgCycle")}
             </p>
-            <p className="text-lg font-semibold text-text">
+            <p className="metric-value">
               {stats.avgCycleLength
                 ? t("_pages:home.stats.days", { count: stats.avgCycleLength })
                 : t("_pages:home.stats.noData")}
             </p>
           </div>
-          <div className="bg-base-light rounded-xl p-3 shadow-sm text-center">
-            <p className="text-xs text-text-muted">
+          <div className="metric-card-centered">
+            <p className="metric-label">
               {t("_pages:home.stats.avgDuration")}
             </p>
-            <p className="text-lg font-semibold text-text">
+            <p className="metric-value">
               {stats.avgPeriodDuration
                 ? t("_pages:home.stats.days", {
                     count: stats.avgPeriodDuration,
@@ -215,18 +217,18 @@ export function Home() {
       )}
 
       {stats.latestCycleVariation && cycleVariationMessage && (
-        <div className="bg-base-light rounded-xl p-3 shadow-sm">
-          <p className="text-xs text-text-muted">
+        <div className="metric-card">
+          <p className="metric-label">
             {t("_pages:home.variation.title")}
           </p>
-          <p className="text-lg font-semibold text-text">
+          <p className="metric-value">
             {t("_pages:home.variation.latestCycle", {
               days: stats.latestCycleVariation.latestCycleLength,
             })}
           </p>
-          <p className="text-sm text-text-muted">{cycleVariationMessage}</p>
+          <p className="metric-detail">{cycleVariationMessage}</p>
           {stats.cycleLengthStdDev !== null && (
-            <p className="text-xs text-text-muted mt-1">
+            <p className="metric-detail-spaced">
               {t("_pages:home.variation.variability", {
                 value: stats.cycleLengthStdDev,
               })}
@@ -236,21 +238,21 @@ export function Home() {
       )}
 
       {/* Log period button (desktop) */}
-      <div className="hidden sm:flex justify-center gap-2 mt-2">
+      <div className="desktop-action-row">
         <Button
           variant="submit"
           color="primary"
           onClick={goToLog}
-          className="px-6!"
+          className="desktop-action-button"
         >
-          <FontAwesomeIcon icon={faPlus} className="mr-2" />
+          <FontAwesomeIcon icon={faPlus} className="button-leading-icon" />
           {t("_pages:home.logPeriod")}
         </Button>
         <Button
           variant="submit"
           color="primary"
           onClick={goToTodayDailyLog}
-          className="px-6!"
+          className="desktop-action-button"
         >
           {t("_pages:home.logToday")}
         </Button>

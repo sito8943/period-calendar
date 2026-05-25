@@ -128,7 +128,7 @@ export function PeriodLog() {
   };
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full">
+    <main className="page-content">
       <PageHeader
         title={
           isEditing
@@ -140,7 +140,7 @@ export function PeriodLog() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 form-motion-stagger"
+        className="form-stack form-motion-stagger"
       >
         {/* Start date */}
         <Controller
@@ -205,7 +205,7 @@ export function PeriodLog() {
         />
 
         {/* Actions */}
-        <div className="flex gap-3 mt-4">
+        <div className="form-actions">
           <Button type="submit" variant="submit" color="primary">
             {t("_pages:periodLog.save")}
           </Button>
@@ -217,7 +217,7 @@ export function PeriodLog() {
                 onClick={() => setShowDeleteConfirm(true)}
                 variant="outlined"
                 color="error"
-                className="px-10"
+                className="period-log-delete-button"
               >
                 <FontAwesomeIcon icon={faTrash} />
                 {t("_pages:periodLog.delete")}

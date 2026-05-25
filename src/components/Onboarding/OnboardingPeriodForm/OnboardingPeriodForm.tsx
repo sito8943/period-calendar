@@ -61,7 +61,7 @@ export function OnboardingPeriodForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-3 form-motion-stagger"
+      className="form-stack-compact form-motion-stagger"
     >
       <Controller
         control={control}
@@ -128,12 +128,12 @@ export function OnboardingPeriodForm() {
         )}
       />
 
-      <div className="flex">
+      <div className="form-submit-row">
         <Button
           type="submit"
           variant="submit"
           color="primary"
-          className="max-sm:w-full"
+          className="responsive-full-button"
           disabled={formDisabled}
         >
           {t("_pages:periodLog.save")}

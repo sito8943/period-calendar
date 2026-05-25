@@ -24,7 +24,7 @@ export function PrivacyPolicy() {
         />
       }
     >
-      <section className="mt-6 space-y-6">
+      <section className="legal-section-spaced">
         {sections.map((section, index) => (
           <LegalSection key={index} title={section.title}>
             <Trans

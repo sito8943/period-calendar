@@ -8,6 +8,7 @@ import {
 
 // lib
 import {
+  classNames,
   getMonthDays,
   isSameDay,
   isDateInPeriod,
@@ -223,54 +224,56 @@ export function Calendar({
   ]);
 
   return (
-    <div className="bg-base-light rounded-xl p-4 shadow-sm calendar-shell">
+    <div className="calendar-shell">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="calendar-header">
         <button
           type="button"
           onClick={goToPreviousMonth}
-          className="p-2 rounded-full hover:bg-base-dark transition-colors calendar-nav-button"
+          className="calendar-nav-button"
           aria-label={t("_accessibility:calendar.previousMonth")}
         >
-          <FontAwesomeIcon icon={faChevronLeft} className="text-text-muted" />
+          <FontAwesomeIcon icon={faChevronLeft} className="calendar-nav-icon" />
         </button>
-        <h2
-          key={monthName}
-          className="text-lg font-semibold capitalize text-text calendar-month-label"
-        >
+        <h2 key={monthName} className="calendar-month-label">
           {monthName}
         </h2>
         <button
           type="button"
           onClick={goToNextMonth}
-          className="p-2 rounded-full hover:bg-base-dark transition-colors calendar-nav-button"
+          className="calendar-nav-button"
           aria-label={t("_accessibility:calendar.nextMonth")}
         >
-          <FontAwesomeIcon icon={faChevronRight} className="text-text-muted" />
+          <FontAwesomeIcon
+            icon={faChevronRight}
+            className="calendar-nav-icon"
+          />
         </button>
       </div>
 
       <div
         key={monthTransitionKey}
         {...bindMonthSwipe()}
-        className={`calendar-month-panel ${monthTransitionDirection === "next" ? "calendar-month-next" : "calendar-month-prev"}`}
+        className={classNames(
+          "calendar-month-panel",
+          monthTransitionDirection === "next"
+            ? "calendar-month-next"
+            : "calendar-month-prev",
+        )}
       >
         {/* Weekday headers */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
+        <div className="calendar-weekday-grid">
           {weekdays.map((day) => (
-            <div
-              key={day}
-              className="text-center text-xs font-medium text-text-muted"
-            >
+            <div key={day} className="calendar-weekday">
               {day}
             </div>
           ))}
         </div>
 
         {/* Days grid */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="calendar-days-grid">
           {calendarDays.map((day, index) => (
-            <div key={index} className="flex items-center justify-center">
+            <div key={index} className="calendar-day-cell">
               <CalendarDay
                 day={day}
                 onClick={
@@ -293,12 +296,12 @@ export function Calendar({
       </div>
 
       <CalendarLegendDropdown monthHasReportedPeriod={monthHasReportedPeriod} />
-      <p className="mt-2 text-xs text-text-muted">
+      <p className="calendar-disclaimer">
         {t("_pages:calendar.fertilityDisclaimer")}
       </p>
       {monthFertilityPrediction &&
         monthFertilityPrediction.variabilityPaddingDays > 0 && (
-          <p className="mt-1 text-xs text-text-muted">
+          <p className="calendar-disclaimer-spaced">
             {t("_pages:calendar.fertilityWindowWithMargin", {
               days: monthFertilityPrediction.variabilityPaddingDays,
             })}
