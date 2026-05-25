@@ -12,7 +12,8 @@ export function useAddPeriod() {
   const queryScope = usePeriodQueryScope();
 
   return useMutation({
-    mutationFn: async (dto: AddPeriodDto) => periodCalendarManager.Periods.insert(dto),
+    mutationFn: async (dto: AddPeriodDto) =>
+      periodCalendarManager.Periods.insert(dto),
     onSuccess: () => {
       queryClient.invalidateQueries(PeriodQueryKeys.all(queryScope));
     },

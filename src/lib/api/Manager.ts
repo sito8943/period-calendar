@@ -1,15 +1,50 @@
-import { IManager } from "@sito/dashboard-app";
+import {
+  IManager,
+  SupabaseAuthApiClient,
+  SupabaseAuthClient,
+  type IAuthApiClient,
+  type IAuthClient,
+} from "@sito/dashboard-app";
 
 import { config } from "../../config";
-import { PeriodCalendarAuthApiClient } from "./AuthApiClient";
-import { PeriodCalendarAuthClient } from "./AuthClient";
+import { supabase } from "../supabase";
+import { createAuthProviderNotConfiguredError } from "./authErrors";
 import { DailyLogClient } from "./DailyLogClient";
 import { PeriodClient } from "./PeriodClient";
 import { ProfileClient } from "./ProfileClient";
 import { SettingsClient } from "./SettingsClient";
 
+const throwNotConfigured = (): never => {
+  throw createAuthProviderNotConfiguredError();
+};
+
+type PeriodCalendarAuthClient = IAuthClient &
+  Pick<SupabaseAuthClient, "signUp">;
+
+const createAuthApi = (): IAuthApiClient =>
+  supabase
+    ? new SupabaseAuthApiClient(supabase)
+    : {
+        forgotPassword: async () => throwNotConfigured(),
+        resetPassword: async () => throwNotConfigured(),
+        resendConfirmEmail: async () => throwNotConfigured(),
+        confirmEmail: async () => throwNotConfigured(),
+      };
+
+const createAuth = (): PeriodCalendarAuthClient =>
+  supabase
+    ? new SupabaseAuthClient(supabase)
+    : {
+        login: async () => throwNotConfigured(),
+        refresh: async () => throwNotConfigured(),
+        register: async () => throwNotConfigured(),
+        signUp: async () => throwNotConfigured(),
+        getSession: async () => throwNotConfigured(),
+        logout: async () => throwNotConfigured(),
+      };
+
 export class PeriodCalendarManager extends IManager {
-  authApi: PeriodCalendarAuthApiClient = new PeriodCalendarAuthApiClient();
+  authApi: IAuthApiClient = createAuthApi();
   periods: PeriodClient = new PeriodClient();
   dailyLogs: DailyLogClient = new DailyLogClient();
   profiles: ProfileClient = new ProfileClient();
@@ -22,18 +57,14 @@ export class PeriodCalendarManager extends IManager {
       accessTokenExpiresAtKey: config.auth.accessTokenExpiresAtKey,
     });
 
-    this.auth = new PeriodCalendarAuthClient(config.auth.user, {
-      rememberKey: config.auth.remember,
-      refreshTokenKey: config.auth.refreshTokenKey,
-      accessTokenExpiresAtKey: config.auth.accessTokenExpiresAtKey,
-    });
+    this.auth = createAuth();
   }
 
   get Auth(): PeriodCalendarAuthClient {
     return this.auth as PeriodCalendarAuthClient;
   }
 
-  get AuthApi(): PeriodCalendarAuthApiClient {
+  get AuthApi(): IAuthApiClient {
     return this.authApi;
   }
 

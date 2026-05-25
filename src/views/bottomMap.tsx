@@ -7,7 +7,11 @@ import { AppRoutes, type FeatureFlagKey } from "lib";
 import { PageId } from "./sitemap";
 
 // @sito/dashboard-app
-import type { BottomNavItemType, FeatureEnabledFn } from "@sito/dashboard-app";
+import {
+  filterNavigationByFeatureFlags,
+  type BottomNavItemType,
+  type FeatureEnabledFn,
+} from "@sito/dashboard-app";
 
 export const bottomMap: BottomNavItemType<PageId>[] = [
   {
@@ -33,10 +37,9 @@ const bottomFeatureDependencies: Partial<Record<PageId, FeatureFlagKey>> = {
 export const getFeatureFilteredBottomMap = (
   isFeatureEnabled: FeatureEnabledFn<FeatureFlagKey>,
 ): BottomNavItemType<PageId>[] => {
-  return bottomMap.filter((item) => {
-    const dependency = bottomFeatureDependencies[item.page];
-    if (!dependency) return true;
-
-    return isFeatureEnabled(dependency);
-  });
+  return filterNavigationByFeatureFlags(
+    bottomMap,
+    isFeatureEnabled,
+    bottomFeatureDependencies,
+  );
 };

@@ -4,86 +4,31 @@ import type { AddPeriodDto, Period, UpdatePeriodDto } from "../types";
 export class PeriodClient {
   async get(): Promise<Period[]> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const periods = await storageCore.getPeriodsFromSupabase(userId);
-        await storageCore.syncPeriodsMirrorWithRemote(periods);
-        return periods;
-      } catch (error) {
-        console.error("Supabase periods read failed, using offline store", error);
-      }
-    }
-
-    return storageCore.getPeriodsFromOfflineStore();
-  }
-
-  async getMirrorSnapshot(): Promise<Period[]> {
-    const userId = await storageCore.getCurrentSupabaseUserId();
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-    }
-
-    return storageCore.getPeriodsFromOfflineStore();
+    if (!userId) return [];
+    return storageCore.getPeriodsFromSupabase(userId);
   }
 
   async insert(dto: AddPeriodDto): Promise<Period> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const created = await storageCore.addPeriodToSupabase(userId, dto);
-        await storageCore.upsertPeriodInOfflineMirror(created);
-        return created;
-      } catch (error) {
-        console.error("Supabase add period failed, using offline store", error);
-      }
+    if (!userId) {
+      throw new Error("Authentication required to add a period");
     }
-
-    return storageCore.addPeriodToOfflineStore(dto);
+    return storageCore.addPeriodToSupabase(userId, dto);
   }
 
   async update(dto: UpdatePeriodDto): Promise<Period> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        const updated = await storageCore.updatePeriodInSupabase(dto);
-        await storageCore.upsertPeriodInOfflineMirror(updated);
-        return updated;
-      } catch (error) {
-        console.error("Supabase update period failed, using offline store", error);
-      }
+    if (!userId) {
+      throw new Error("Authentication required to update a period");
     }
-
-    return storageCore.updatePeriodInOfflineStore(dto);
+    return storageCore.updatePeriodInSupabase(dto);
   }
 
   async softDelete(id: string): Promise<void> {
     const userId = await storageCore.getCurrentSupabaseUserId();
-
-    if (userId) {
-      await storageCore.ensureMirrorUserScope(userId);
-
-      try {
-        await storageCore.ensureSupabaseSeedFromOffline(userId);
-        await storageCore.deletePeriodFromSupabase(id);
-        await storageCore.removePeriodFromOfflineMirror(id);
-        return;
-      } catch (error) {
-        console.error("Supabase delete period failed, using offline store", error);
-      }
+    if (!userId) {
+      throw new Error("Authentication required to delete a period");
     }
-
-    await storageCore.deletePeriodFromOfflineStore(id);
+    await storageCore.deletePeriodFromSupabase(id);
   }
 }

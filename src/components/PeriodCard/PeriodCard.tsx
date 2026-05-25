@@ -13,10 +13,7 @@ import { PERIOD_CARD_CLASSNAMES } from "./constants";
 import type { PeriodCardProps } from "./types";
 
 // utils
-import {
-  getEndedPeriodSubtitle,
-  getPeriodStartLabel,
-} from "./utils";
+import { getEndedPeriodSubtitle, getPeriodStartLabel } from "./utils";
 
 export function PeriodCard({ period }: PeriodCardProps) {
   const { t, i18n } = useTranslation();
@@ -27,10 +24,10 @@ export function PeriodCard({ period }: PeriodCardProps) {
       to={getPeriodLogDetailRoute(period.id)}
       className={PERIOD_CARD_CLASSNAMES.root}
     >
-      <div className="flex flex-col gap-1">
+      <div className={PERIOD_CARD_CLASSNAMES.content}>
         <div className={PERIOD_CARD_CLASSNAMES.dateRow}>
           <span className={PERIOD_CARD_CLASSNAMES.dateDot} />
-          <span className="font-medium text-text">
+          <span className={PERIOD_CARD_CLASSNAMES.date}>
             {getPeriodStartLabel(period.startDate, i18n.language)}
           </span>
         </div>

@@ -1,68 +1,60 @@
 import { Trans, useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 
-// lib
+import {
+  LegalLinksList,
+  LegalPage,
+  LegalSection,
+  richTextComponents,
+} from "@sito/dashboard-app";
+
 import { AppRoutes } from "lib";
 
 export function About() {
   const { t } = useTranslation();
 
+  const legalLinks = [
+    {
+      to: AppRoutes.TermsAndConditions,
+      label: t("_pages:about.legal.links.terms"),
+    },
+    {
+      to: AppRoutes.PrivacyPolicy,
+      label: t("_pages:about.legal.links.privacy"),
+    },
+    {
+      to: AppRoutes.CookiesPolicy,
+      label: t("_pages:about.legal.links.cookies"),
+    },
+  ];
+
   return (
-    <main className="py-10 px-5 gap-5">
-      <h2 className="text-4xl max-xs:text-2xl">{t("_pages:about.title")}</h2>
-      <div className="text-text mt-2">
+    <LegalPage
+      title={t("_pages:about.title")}
+      intro={
         <Trans
           i18nKey="_pages:about.body"
           components={{
-            p: <p />,
-            strong: <strong />,
+            ...richTextComponents,
             a: (
               <a
                 href="https://sito8943.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="primary underline font-bold!"
+                className="primary legal-external-link"
               />
             ),
           }}
         />
-      </div>
-
-      <section className="mt-8 bg-base p-5 rounded-2xl">
-        <h3 className="text-2xl max-sm:text-xl font-bold">
-          {t("_pages:about.legal.title")}
-        </h3>
-        <p className="mt-2">{t("_pages:about.legal.body")}</p>
-        <ul className="mt-4 list-disc list-inside space-y-1">
-          <li>
-            <Link
-              to={AppRoutes.TermsAndConditions}
-              className="primary underline font-bold!"
-            >
-              {t("_pages:about.legal.links.terms")}
-            </Link>
-          </li>
-          <li>
-            <Link
-              to={AppRoutes.PrivacyPolicy}
-              className="primary underline font-bold!"
-            >
-              {t("_pages:about.legal.links.privacy")}
-            </Link>
-          </li>
-          <li>
-            <Link
-              to={AppRoutes.CookiesPolicy}
-              className="primary underline font-bold!"
-            >
-              {t("_pages:about.legal.links.cookies")}
-            </Link>
-          </li>
-        </ul>
-        <p className="mt-4 text-sm text-text-muted">
-          {t("_pages:about.legal.updated")}
-        </p>
-      </section>
-    </main>
+      }
+    >
+      <LegalSection
+        title={t("_pages:about.legal.title")}
+        className="legal-section-offset"
+      >
+        <p>{t("_pages:about.legal.body")}</p>
+        <LegalLinksList links={legalLinks} />
+        <p className="legal-updated-text">{t("_pages:about.legal.updated")}</p>
+      </LegalSection>
+    </LegalPage>
   );
 }

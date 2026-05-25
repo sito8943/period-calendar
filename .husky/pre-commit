@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+set -e
+
+if ! command -v npm >/dev/null 2>&1; then
+  if [ -f ".nvmrc" ]; then
+    NVMRC_VERSION="$(tr -d '[:space:]' < .nvmrc)"
+    for NVM_BIN_DIR in "$HOME/.nvm/versions/node/v${NVMRC_VERSION}"*/bin; do
+      if [ -x "$NVM_BIN_DIR/npm" ]; then
+        PATH="$NVM_BIN_DIR:$PATH"
+        export PATH
+        break
+      fi
+    done
+  fi
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+  echo "pre-commit: npm not found in PATH. Run 'nvm use' and retry." >&2
+  exit 127
+fi
+
+npm run format
+npm run lint:fix

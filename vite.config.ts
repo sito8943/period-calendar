@@ -7,6 +7,10 @@ import path from "path";
 const projectRoot = path.resolve(__dirname);
 const appReactRoot = path.resolve(projectRoot, "node_modules/react");
 const appReactDomRoot = path.resolve(projectRoot, "node_modules/react-dom");
+const appReactQueryRoot = path.resolve(
+  projectRoot,
+  "node_modules/@tanstack/react-query",
+);
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -25,7 +29,8 @@ export default defineConfig({
       manifest: {
         name: "Period Calendar",
         short_name: "Period",
-        description: "Track period cycles, daily logs, and predictions offline.",
+        description:
+          "Track period cycles, daily logs, and predictions offline.",
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -89,12 +94,17 @@ export default defineConfig({
   },
   resolve: {
     preserveSymlinks: true,
-    dedupe: ["react", "react-dom"],
+    dedupe: ["react", "react-dom", "@tanstack/react-query"],
     alias: [
       { find: /^react$/, replacement: appReactRoot },
       { find: /^react\/(.*)$/, replacement: `${appReactRoot}/$1` },
       { find: /^react-dom$/, replacement: appReactDomRoot },
       { find: /^react-dom\/(.*)$/, replacement: `${appReactDomRoot}/$1` },
+      { find: /^@tanstack\/react-query$/, replacement: appReactQueryRoot },
+      {
+        find: /^@tanstack\/react-query\/(.*)$/,
+        replacement: `${appReactQueryRoot}/$1`,
+      },
       { find: "assets", replacement: path.resolve(__dirname, "./src/assets") },
       {
         find: "components",

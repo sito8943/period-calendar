@@ -10,6 +10,8 @@ import {
 // @sito/dashboard-app
 import type { BaseDto, ActionPropsType } from "@sito/dashboard-app";
 import { Actions } from "@sito/dashboard-app";
+
+import { classNames } from "lib";
 import type { CalendarDayData } from "components";
 import { AnimatedDropdown } from "components";
 import {
@@ -140,7 +142,7 @@ export function CalendarDayActionsDropdown({
         <div className="day-info-section">
           {dayInfoItems.map((item) => (
             <div key={item.dotClass} className="day-info-row">
-              <span className={`day-info-dot ${item.dotClass}`} />
+              <span className={classNames("day-info-dot", item.dotClass)} />
               <span className="day-info-label">{item.label}</span>
             </div>
           ))}

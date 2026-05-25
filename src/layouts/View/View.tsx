@@ -1,35 +1,30 @@
-import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
-import type { To } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { ComponentType } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { useQueryClient } from "@tanstack/react-query";
 
 // @sito/dashboard-app
 import {
+  AppShell,
   BottomNavActionProvider,
   BottomNavigation,
-  ConfigProvider,
+  DashboardFooter,
+  DashboardHeader,
   fromLocal,
   NavbarProvider,
-  Notification,
   toLocal,
   useOptionalAuthContext,
 } from "@sito/dashboard-app";
-import type {
-  BottomNavigationItemType,
-  BaseLinkPropsType,
-} from "@sito/dashboard-app";
+import type { BottomNavigationItemType } from "@sito/dashboard-app";
 
 // hooks
 import { PeriodQueryKeys, useProfileSettings } from "hooks";
 import { resolvePeriodQueryScopeFromAccount } from "../../hooks/queries";
 
 // components
-import Header from "./Header";
-import Footer from "./Footer";
-import { PeriodOnboarding } from "components";
+import { OfflineBanner, PeriodOnboarding } from "components";
 
 // config
 import { config } from "../../config";
@@ -46,14 +41,15 @@ import {
 
 // menu
 import { getFeatureFilteredBottomMap } from "../../views/bottomMap";
+import { getFeatureFilteredMenuMap } from "../../views/menuMap";
 
 // providers
 import { useFeatureFlags } from "providers";
+import { ErrorBoundaryFallback } from "../ErrorBoundaryFallback";
 
 export function View() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
   const auth = useOptionalAuthContext();
   const accountQueryScope = resolvePeriodQueryScopeFromAccount(
@@ -136,6 +132,11 @@ export function View() {
     setShowOnboarding(false);
   }, []);
 
+  const featureFilteredMenuMap = useMemo(
+    () => getFeatureFilteredMenuMap(isFeatureEnabled, i18n.resolvedLanguage),
+    [i18n.resolvedLanguage, isFeatureEnabled],
+  );
+
   const bottomNavigationItems = useMemo<BottomNavigationItemType[]>(
     () =>
       getFeatureFilteredBottomMap(isFeatureEnabled).map((item) => {
@@ -171,32 +172,42 @@ export function View() {
   }, [isFeatureEnabled, t]);
 
   return (
-    <ConfigProvider
-      navigate={(route) => navigate(route as To)}
-      location={location}
-      linkComponent={Link as ComponentType<BaseLinkPropsType>}
-    >
-      <NavbarProvider>
-        <BottomNavActionProvider>
-          {showOnboarding && (
-            <PeriodOnboarding
-              onSkip={closeOnboarding}
-              onSignIn={() => navigate(AppRoutes.SignIn)}
-              onStartAsGuest={closeOnboarding}
-            />
-          )}
-          <Header />
-          <Outlet />
-          <Footer />
-          <BottomNavigation
-            items={bottomNavigationItems}
-            centerAction={centerAction}
-            isItemActive={isBottomNavItemActive}
+    <NavbarProvider>
+      <BottomNavActionProvider>
+        {showOnboarding && (
+          <PeriodOnboarding
+            onSkip={closeOnboarding}
+            onSignIn={() => navigate(AppRoutes.SignIn)}
+            onStartAsGuest={closeOnboarding}
           />
-          <Tooltip id="tooltip" />
-          <Notification />
-        </BottomNavActionProvider>
-      </NavbarProvider>
-    </ConfigProvider>
+        )}
+        <AppShell
+          header={
+            <>
+              <OfflineBanner />
+              <DashboardHeader menuMap={featureFilteredMenuMap} />
+            </>
+          }
+          footer={
+            <DashboardFooter
+              copyrightText={t("_pages:footer.copyright")}
+              bottomNavSpacing
+            />
+          }
+          bottomNavigation={
+            <BottomNavigation
+              items={bottomNavigationItems}
+              centerAction={centerAction}
+              isItemActive={isBottomNavItemActive}
+            />
+          }
+          extras={<Tooltip id="tooltip" />}
+        >
+          <ErrorBoundary FallbackComponent={ErrorBoundaryFallback}>
+            <Outlet />
+          </ErrorBoundary>
+        </AppShell>
+      </BottomNavActionProvider>
+    </NavbarProvider>
   );
 }

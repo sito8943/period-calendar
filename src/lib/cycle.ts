@@ -65,7 +65,8 @@ export function calculateCycleLengthStdDev(periods: Period[]): number | null {
   const cycleLengths = getCycleLengths(periods);
   if (cycleLengths.length < 2) return null;
 
-  const mean = cycleLengths.reduce((sum, value) => sum + value, 0) / cycleLengths.length;
+  const mean =
+    cycleLengths.reduce((sum, value) => sum + value, 0) / cycleLengths.length;
   const variance =
     cycleLengths.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
     cycleLengths.length;
@@ -73,7 +74,9 @@ export function calculateCycleLengthStdDev(periods: Period[]): number | null {
   return Math.round(Math.sqrt(variance) * 10) / 10;
 }
 
-export function getLatestCycleVariation(periods: Period[]): CycleVariation | null {
+export function getLatestCycleVariation(
+  periods: Period[],
+): CycleVariation | null {
   const cycleLengths = getCycleLengths(periods);
   if (cycleLengths.length === 0) return null;
 
@@ -245,7 +248,10 @@ export function getFertilityPredictionForMonth(
   const avgCycle = calculateAverageCycleLength(periods) ?? defaultCycleLength;
   if (avgCycle <= 0) return null;
 
-  const firstPredictedStart = predictNextPeriodStart(periods, defaultCycleLength);
+  const firstPredictedStart = predictNextPeriodStart(
+    periods,
+    defaultCycleLength,
+  );
   if (!firstPredictedStart) return null;
 
   const variabilityPaddingDays = getVariabilityPaddingDays(periods);
@@ -340,7 +346,10 @@ export function getPredictedPeriodDaysForMonth(
 
   if (hasReportedPeriodInMonth(periods, year, month)) return null;
 
-  const firstPredictedStart = predictNextPeriodStart(periods, defaultCycleLength);
+  const firstPredictedStart = predictNextPeriodStart(
+    periods,
+    defaultCycleLength,
+  );
   if (!firstPredictedStart) return null;
 
   const predictedStart = new Date(firstPredictedStart);

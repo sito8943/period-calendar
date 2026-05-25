@@ -284,7 +284,7 @@ export function DailyLog() {
   );
 
   return (
-    <main className="flex-1 p-4 max-w-lg mx-auto w-full">
+    <main className="page-content">
       <PageHeader
         title={
           existingDailyLog
@@ -300,7 +300,7 @@ export function DailyLog() {
           event.preventDefault();
           void onSubmit(event);
         }}
-        className="flex flex-col gap-4 form-motion-stagger"
+        className="form-stack form-motion-stagger"
       >
         <Controller
           control={control}
@@ -361,11 +361,11 @@ export function DailyLog() {
           control={control}
           name="symptoms"
           render={({ field }) => (
-            <fieldset className="flex flex-col gap-2">
-              <legend className="text-sm font-medium text-text mb-1">
+            <fieldset className="form-section">
+              <legend className="form-legend">
                 {t("_pages:dailyLog.symptoms")}
               </legend>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="form-checkbox-grid">
                 {SYMPTOM_KEYS.map((symptom) => {
                   const checked = field.value.includes(symptom);
                   return (
@@ -375,7 +375,7 @@ export function DailyLog() {
                       label={t(`_pages:dailyLog.symptomOptions.${symptom}`)}
                       checked={checked}
                       disabled={formDisabled}
-                      containerClassName="bg-base-light rounded-lg px-3 py-2 border border-border"
+                      containerClassName="form-checkbox-card"
                       onChange={(event) => {
                         const isChecked = (event.target as HTMLInputElement)
                           .checked;
@@ -395,8 +395,8 @@ export function DailyLog() {
           )}
         />
 
-        <fieldset className="flex flex-col gap-2">
-          <legend className="text-sm font-medium text-text mb-1">
+        <fieldset className="form-section">
+          <legend className="form-legend">
             {t("_pages:dailyLog.sexualActivity")}
           </legend>
 
@@ -418,7 +418,7 @@ export function DailyLog() {
           />
 
           {hadSex && (
-            <div className="motion-inline-appear">
+            <div className="form-inline-appear">
               <Controller
                 control={control}
                 name="protection"
@@ -440,7 +440,7 @@ export function DailyLog() {
           )}
         </fieldset>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="form-two-column-grid">
           <Controller
             control={control}
             name="mood"
@@ -535,7 +535,7 @@ export function DailyLog() {
           )}
         />
 
-        <div className="flex gap-3 mt-4">
+        <div className="form-actions">
           <Button type="submit" variant="submit" color="primary">
             {t("_pages:dailyLog.save")}
           </Button>
@@ -552,23 +552,23 @@ export function DailyLog() {
           {existingDailyLog && (
             <>
               {showDeleteConfirm ? (
-                <div className="flex flex-col gap-2 p-3 bg-bg-error/10 rounded-lg border border-error/30">
-                  <p className="text-sm text-text text-center">
+                <div className="daily-log-delete-confirm">
+                  <p className="daily-log-delete-title">
                     {t("_pages:dailyLog.deleteDialog.title")}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="daily-log-delete-actions">
                     <Button
                       variant="submit"
                       color="primary"
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="flex-1"
+                      className="daily-log-delete-action"
                     >
                       {t("_pages:dailyLog.deleteDialog.cancel")}
                     </Button>
                     <button
                       type="button"
                       onClick={() => void handleDelete()}
-                      className="flex-1 px-4 py-2 bg-bg-error text-error rounded-lg font-medium hover:opacity-90 transition-opacity"
+                      className="daily-log-delete-confirm-button"
                     >
                       {t("_pages:dailyLog.deleteDialog.confirm")}
                     </button>
@@ -578,7 +578,7 @@ export function DailyLog() {
                 <button
                   type="button"
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="flex items-center justify-center gap-2 text-text-muted hover:text-error transition-colors py-2"
+                  className="daily-log-delete-trigger"
                 >
                   <FontAwesomeIcon icon={faTrash} />
                   {t("_pages:dailyLog.delete")}

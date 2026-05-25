@@ -1,348 +1,666 @@
 /* App-specific component styles */
+@reference "./variables.css";
 
-.today-day {
-  background-color: var(--color-primary);
-  color: #fff;
-  font-weight: 600;
+.page-content {
+  @apply flex-1 p-4 max-w-lg mx-auto w-full;
 }
 
-.today-day:hover {
-  background-color: var(--color-hover-primary);
+.page-content-stacked {
+  @apply flex-1 p-4 max-w-lg mx-auto w-full flex flex-col gap-4;
+}
+
+.content-stack {
+  @apply flex flex-col gap-3;
+}
+
+.form-stack {
+  @apply flex flex-col gap-4;
+}
+
+.form-stack-compact {
+  @apply flex flex-col gap-3;
+}
+
+.form-section {
+  @apply flex flex-col gap-2;
+}
+
+.form-section-spacious {
+  @apply flex flex-col gap-4;
+}
+
+.form-section-header {
+  @apply flex flex-col gap-1;
+}
+
+.form-section-title {
+  @apply text-xs uppercase tracking-wide text-text-muted;
+}
+
+.form-legend {
+  @apply text-sm font-medium text-text mb-1;
+}
+
+.form-checkbox-grid {
+  @apply grid grid-cols-2 gap-2;
+}
+
+.form-checkbox-card {
+  @apply bg-base-light rounded-lg px-3 py-2 border border-border;
+}
+
+.form-two-column-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.form-inline-appear {
+  animation: motion-rise-in 240ms ease-out both;
+}
+
+.form-actions {
+  @apply flex gap-3 mt-4;
+}
+
+.form-submit-row {
+  @apply flex;
+}
+
+.responsive-full-button {
+  @apply max-sm:w-full;
+}
+
+.helper-text {
+  @apply text-sm text-text-muted;
+}
+
+.desktop-action-row {
+  @apply hidden sm:flex justify-center gap-2 mt-2;
+}
+
+.desktop-action-button {
+  @apply px-6!;
+}
+
+.button-leading-icon {
+  @apply mr-2;
+}
+
+.metric-grid {
+  @apply grid grid-cols-2 gap-3;
+}
+
+.metric-card {
+  @apply bg-base-light rounded-xl p-3 shadow-sm;
+}
+
+.metric-card-centered {
+  @apply bg-base-light rounded-xl p-3 shadow-sm text-center;
+}
+
+.metric-label {
+  @apply text-xs text-text-muted;
+}
+
+.metric-value {
+  @apply text-lg font-semibold text-text;
+}
+
+.metric-detail {
+  @apply text-sm text-text-muted;
+}
+
+.metric-detail-spaced {
+  @apply text-xs text-text-muted mt-1;
+}
+
+.profile-card {
+  @apply w-full border-hover-primary/20 border-1 rounded-2xl sm:p-6 p-4 flex flex-col gap-6;
+}
+
+.profile-form {
+  @apply flex flex-col gap-6;
+}
+
+.history-empty-text {
+  @apply text-lg;
+}
+
+.history-empty-container {
+  @apply flex flex-col items-center justify-center py-16 text-text-muted;
+}
+
+.history-list-container {
+  @apply flex flex-col gap-3;
+}
+
+.page-header-root {
+  @apply mb-6;
+}
+
+.page-header-main {
+  @apply flex items-center gap-3;
+}
+
+.page-header-title {
+  @apply text-xl font-semibold text-text;
+}
+
+.page-header-right-content {
+  @apply ml-auto;
+}
+
+.page-header-subtitle {
+  @apply text-sm text-text-muted mt-1;
+}
+
+.prediction-card {
+  @apply relative rounded-xl p-4 pr-10 shadow-md touch-pan-y select-none will-change-transform;
+}
+
+.prediction-card-title {
+  @apply text-sm font-medium opacity-80;
+}
+
+.prediction-card-message {
+  @apply max-sm:text-sm font-bold mt-1;
+}
+
+.prediction-card-message-muted {
+  @apply font-medium opacity-85;
+}
+
+.prediction-card-close-button {
+  @apply absolute top-2 right-2 size-7 !bg-transparent !text-inherit rounded-full flex items-center justify-center transition-colors transition-opacity opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+}
+
+.prediction-card-primary {
+  @apply bg-primary text-white;
+}
+
+.prediction-card-fertile {
+  @apply bg-fertile border-2 border-base-light text-base-light;
+}
+
+.prediction-card-error {
+  @apply bg-bg-error text-white;
+}
+
+.prediction-card-close-button-primary {
+  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-primary;
+}
+
+.prediction-card-close-button-fertile {
+  @apply hover:!bg-fertile/10 focus-visible:ring-fertile/40 focus-visible:ring-offset-base-light;
+}
+
+.prediction-card-close-button-error {
+  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-error;
+}
+
+.onboarding-theme-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-2 w-full;
+}
+
+.onboarding-theme-option {
+  @apply border border-border rounded-lg px-3 py-2 text-left transition-colors;
+}
+
+.onboarding-theme-option-selected {
+  @apply bg-primary text-white border-primary;
+}
+
+.onboarding-theme-option-idle {
+  @apply bg-base-light text-text hover:bg-base-dark;
+}
+
+.onboarding-theme-description {
+  @apply text-sm opacity-90;
+}
+
+.period-card {
+  @apply flex items-center justify-between p-4 bg-base-light rounded-xl shadow-sm hover:shadow-md transition-shadow;
+}
+
+.period-card-content {
+  @apply flex flex-col gap-1;
+}
+
+.period-card-date-row {
+  @apply flex items-center gap-2;
+}
+
+.period-card-date-dot {
+  @apply w-2.5 h-2.5 rounded-full bg-primary inline-block;
+}
+
+.period-card-date {
+  @apply font-medium text-text;
+}
+
+.period-card-subtitle {
+  @apply text-sm text-text-muted ml-4.5;
+}
+
+.period-card-ongoing {
+  @apply text-primary font-medium;
+}
+
+.period-card-chevron {
+  @apply text-text-muted/50;
+}
+
+.offline-banner-shell {
+  @apply sticky top-0 z-10;
+}
+
+.legal-external-link {
+  @apply underline;
+  font-weight: 700;
+}
+
+.legal-section-spaced {
+  @apply mt-6 space-y-6;
+}
+
+.legal-section-offset {
+  @apply mt-8;
+}
+
+.legal-updated-text {
+  @apply mt-4 text-sm text-text-muted;
+}
+
+.today-day {
+  @apply bg-primary text-white font-semibold hover:bg-hover-primary;
 }
 
 .period-day {
-  background-color: var(--color-period-soft);
-  color: var(--color-text);
+  @apply bg-period-soft text-text;
+
+  @variant hover {
+    background-color: color-mix(
+      in srgb,
+      var(--color-period-soft) 80%,
+      white 20%
+    );
+  }
 }
 
-.period-day:hover {
-  background-color: color-mix(in srgb, var(--color-period-soft) 80%, white 20%);
+.calendar-day-button {
+  @apply w-9 h-9 relative flex items-center justify-center rounded-full text-sm transition-colors;
+}
+
+.calendar-day-muted {
+  @apply text-text-muted/30;
+}
+
+.calendar-day-default {
+  @apply text-text;
+}
+
+.calendar-day-clickable {
+  @apply cursor-pointer;
+}
+
+.calendar-day-clickable-muted {
+  @apply hover:bg-base-dark/60 cursor-pointer;
+}
+
+.calendar-day-static {
+  @apply cursor-default;
 }
 
 .predicted-day {
-  background-color: transparent;
-  color: var(--color-text);
-}
-
-.predicted-day:hover {
-  color: var(--color-prediction-hover);
+  @apply bg-transparent text-text hover:text-prediction-hover;
 }
 
 .ovulation-day-predicted {
-  background-color: transparent;
-  color: color-mix(in srgb, var(--color-ovulation) 78%, var(--color-prediction) 22%);
-}
+  @apply bg-transparent;
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation) 78%,
+    var(--color-prediction) 22%
+  );
 
-.ovulation-day-predicted:hover {
-  color: color-mix(in srgb, var(--color-ovulation-hover) 78%, var(--color-prediction) 22%);
+  @variant hover {
+    color: color-mix(
+      in srgb,
+      var(--color-ovulation-hover) 78%,
+      var(--color-prediction) 22%
+    );
+  }
 }
 
 .ovulation-day-dashed {
-  background-color: transparent;
-  border: 2px dashed
-    color-mix(in srgb, var(--color-ovulation) 72%, var(--color-prediction) 28%);
-  color: color-mix(in srgb, var(--color-ovulation) 78%, var(--color-prediction) 22%);
-}
+  @apply bg-transparent border-2 border-dashed;
+  border-color: color-mix(
+    in srgb,
+    var(--color-ovulation) 72%,
+    var(--color-prediction) 28%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-ovulation) 78%,
+    var(--color-prediction) 22%
+  );
 
-.ovulation-day-dashed:hover {
-  background-color: color-mix(in srgb, var(--color-prediction) 14%, transparent);
-  color: color-mix(in srgb, var(--color-ovulation-hover) 78%, var(--color-prediction) 22%);
+  @variant hover {
+    background-color: color-mix(
+      in srgb,
+      var(--color-prediction) 14%,
+      transparent
+    );
+    color: color-mix(
+      in srgb,
+      var(--color-ovulation-hover) 78%,
+      var(--color-prediction) 22%
+    );
+  }
 }
 
 .fertile-day-predicted {
-  background-color: transparent;
-  color: color-mix(in srgb, var(--color-fertile) 74%, var(--color-prediction) 26%);
-}
+  @apply bg-transparent;
+  color: color-mix(
+    in srgb,
+    var(--color-fertile) 74%,
+    var(--color-prediction) 26%
+  );
 
-.fertile-day-predicted:hover {
-  color: color-mix(in srgb, var(--color-fertile-hover) 72%, var(--color-prediction) 28%);
+  @variant hover {
+    color: color-mix(
+      in srgb,
+      var(--color-fertile-hover) 72%,
+      var(--color-prediction) 28%
+    );
+  }
 }
 
 .fertile-day-dashed {
-  background-color: transparent;
-  border: 2px dashed
-    color-mix(in srgb, var(--color-fertile) 68%, var(--color-prediction) 32%);
-  color: color-mix(in srgb, var(--color-fertile) 74%, var(--color-prediction) 26%);
-}
+  @apply bg-transparent border-2 border-dashed;
+  border-color: color-mix(
+    in srgb,
+    var(--color-fertile) 68%,
+    var(--color-prediction) 32%
+  );
+  color: color-mix(
+    in srgb,
+    var(--color-fertile) 74%,
+    var(--color-prediction) 26%
+  );
 
-.fertile-day-dashed:hover {
-  background-color: color-mix(in srgb, var(--color-prediction) 14%, transparent);
-  color: color-mix(in srgb, var(--color-fertile-hover) 72%, var(--color-prediction) 28%);
+  @variant hover {
+    background-color: color-mix(
+      in srgb,
+      var(--color-prediction) 14%,
+      transparent
+    );
+    color: color-mix(
+      in srgb,
+      var(--color-fertile-hover) 72%,
+      var(--color-prediction) 28%
+    );
+  }
 }
 
 .prediction-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 0.27rem;
-  width: 0.7rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translateX(-50%);
-  background-color: var(--color-prediction);
+  @apply absolute left-1/2 bottom-[0.27rem] w-[0.7rem] h-[0.14rem] rounded-full -translate-x-1/2 bg-prediction;
 }
 
 .fertile-prediction-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 0.27rem;
-  width: 0.7rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translateX(-50%);
-  background-color: var(--color-fertile);
+  @apply absolute left-1/2 bottom-[0.27rem] w-[0.7rem] h-[0.14rem] rounded-full -translate-x-1/2 bg-fertile;
 }
 
 .ovulation-prediction-indicator {
-  position: absolute;
-  left: 50%;
-  bottom: 0.27rem;
-  width: 0.7rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translateX(-50%);
-  background-color: var(--color-ovulation);
+  @apply absolute left-1/2 bottom-[0.27rem] w-[0.7rem] h-[0.14rem] rounded-full -translate-x-1/2 bg-ovulation;
 }
 
 .prediction-indicator-on-today {
-  background-color: #fff;
+  @apply bg-white;
 }
 
 .ovulation-indicator {
-  position: absolute;
-  top: 0.3rem;
-  right: 0.3rem;
-  width: 0.3rem;
-  height: 0.3rem;
-  border-radius: 9999px;
-  border: 1px solid var(--color-ovulation);
-  background-color: var(--color-prediction);
+  @apply absolute top-[0.3rem] right-[0.3rem] w-[0.3rem] h-[0.3rem] rounded-full border border-ovulation bg-prediction;
 }
 
 .ovulation-indicator-on-today {
-  background-color: #fff;
+  @apply bg-white;
 }
 
 .daily-log-dot {
-  position: absolute;
-  left: 50%;
-  bottom: 25px;
-  width: 0.375rem;
-  height: 0.375rem;
-  border-radius: 9999px;
-  transform: translateX(-50%);
+  @apply absolute left-1/2 bottom-[25px] w-1.5 h-1.5 rounded-full -translate-x-1/2;
 }
 
 .daily-log-dot--default {
-  background-color: var(--color-primary);
+  @apply bg-primary;
 }
 
 .daily-log-dot--today {
-  background-color: #fff;
+  @apply bg-white;
 }
 
 .daily-log-dot--period {
-  background-color: var(--color-bg-primary);
+  @apply bg-bg-primary;
 }
 
 .daily-log-dot--ovulation {
-  background-color: var(--color-ovulation);
+  @apply bg-ovulation;
 }
 
 .daily-log-dot--fertile {
-  background-color: var(--color-fertile);
+  @apply bg-fertile;
 }
 
 .daily-log-dot--prediction {
-  background-color: var(--color-prediction);
+  @apply bg-prediction;
 }
 
 .legend-dot {
-  position: relative;
-  display: inline-block;
-  border-radius: 9999px;
-  flex-shrink: 0;
+  @apply relative inline-block rounded-full shrink-0;
+}
+
+.legend-dot-standard {
+  @apply w-3 h-3;
+}
+
+.legend-dot-small {
+  @apply w-2 h-2 rounded-full bg-primary inline-block;
 }
 
 .legend-dot-today {
-  background-color: var(--color-primary);
+  @apply bg-primary;
 }
 
 .legend-dot-period {
-  background-color: var(--color-period-soft);
+  @apply bg-period-soft;
 }
 
 .legend-dot-prediction {
-  background-color: transparent;
+  @apply bg-transparent;
 }
 
 .legend-dot-prediction::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0.65rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-prediction);
+  @apply absolute top-1/2 left-1/2 w-[0.65rem] h-[0.14rem] rounded-full -translate-x-1/2 -translate-y-1/2 bg-prediction;
 }
 
 .legend-dot-ovulation-predicted {
-  background-color: transparent;
+  @apply bg-transparent;
 }
 
 .legend-dot-ovulation-predicted::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0.65rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-ovulation);
+  @apply absolute top-1/2 left-1/2 w-[0.65rem] h-[0.14rem] rounded-full -translate-x-1/2 -translate-y-1/2 bg-ovulation;
 }
 
 .legend-dot-ovulation-dashed {
-  background-color: transparent;
-  border: 2px dashed
-    color-mix(in srgb, var(--color-ovulation) 72%, var(--color-prediction) 28%);
+  @apply bg-transparent border-2 border-dashed;
+  border-color: color-mix(
+    in srgb,
+    var(--color-ovulation) 72%,
+    var(--color-prediction) 28%
+  );
 }
 
 .legend-dot-ovulation-dashed::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0.3rem;
-  height: 0.3rem;
-  border-radius: 9999px;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--color-ovulation);
-  background-color: var(--color-prediction);
+  @apply absolute top-1/2 left-1/2 w-[0.3rem] h-[0.3rem] rounded-full -translate-x-1/2 -translate-y-1/2 border border-ovulation bg-prediction;
 }
 
 .legend-dot-fertile-predicted {
-  background-color: transparent;
+  @apply bg-transparent;
 }
 
 .legend-dot-fertile-predicted::after {
   content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0.65rem;
-  height: 0.14rem;
-  border-radius: 9999px;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-fertile);
+  @apply absolute top-1/2 left-1/2 w-[0.65rem] h-[0.14rem] rounded-full -translate-x-1/2 -translate-y-1/2 bg-fertile;
 }
 
 .legend-dot-fertile-dashed {
-  background-color: transparent;
-  border: 2px dashed
-    color-mix(in srgb, var(--color-fertile) 68%, var(--color-prediction) 32%);
+  @apply bg-transparent border-2 border-dashed;
+  border-color: color-mix(
+    in srgb,
+    var(--color-fertile) 68%,
+    var(--color-prediction) 32%
+  );
 }
 
 .calendar-legend-trigger {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.75rem;
+  @apply flex justify-end mt-3;
 }
 
 .calendar-legend-info-button {
-  color: var(--color-text-muted);
-}
-
-.calendar-legend-info-button:hover {
-  color: var(--color-text);
+  @apply text-text-muted hover:text-text;
 }
 
 .calendar-legend-dropdown {
-  min-width: 13.5rem;
-  max-width: 15.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  background-color: var(--color-base-light);
+  @apply min-w-[13.5rem] max-w-[15.5rem] border border-border rounded-xl bg-base-light px-3 py-[0.7rem];
   box-shadow:
     0 12px 24px color-mix(in srgb, var(--color-text) 18%, transparent),
     0 2px 8px color-mix(in srgb, var(--color-text) 10%, transparent);
-  padding: 0.7rem 0.75rem;
 }
 
 .calendar-legend-title {
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-text);
+  @apply m-0 text-xs font-semibold text-text;
 }
 
 .calendar-legend-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  margin-top: 0.5rem;
+  @apply flex flex-col gap-[0.45rem] mt-2;
 }
 
 .calendar-legend-row {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+  @apply flex items-center gap-[0.4rem] text-xs text-text-muted;
 }
 
 /* Calendar day info section (dropdown) */
 
 .day-info-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: 8px;
+  @apply flex flex-col gap-[0.35rem] px-3 py-2 border-b border-border mb-2;
 }
 
 .day-info-row {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  @apply flex items-center gap-[0.4rem];
 }
 
 .day-info-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 9999px;
-  flex-shrink: 0;
+  @apply w-2 h-2 rounded-full shrink-0;
 }
 
 .day-info-dot--period {
-  background-color: var(--color-period-soft);
+  @apply bg-period-soft;
 }
 
 .day-info-dot--prediction {
-  background-color: var(--color-prediction);
+  @apply bg-prediction;
 }
 
 .day-info-dot--fertile {
-  background-color: var(--color-fertile);
+  @apply bg-fertile;
 }
 
 .day-info-dot--ovulation {
-  background-color: var(--color-ovulation);
+  @apply bg-ovulation;
 }
 
 .day-info-dot--daily-log {
-  background-color: var(--color-primary);
+  @apply bg-primary;
 }
 
 .day-info-label {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
+  @apply text-xs text-text-muted;
 }
 
 .calendar-day-legend-dropdown {
-  padding: 0;
-  border: none;
-  box-shadow: none;
+  @apply p-0 border-none shadow-none;
+}
+
+.calendar-shell {
+  @apply bg-base-light rounded-xl p-4 shadow-sm;
+}
+
+.calendar-header {
+  @apply flex items-center justify-between mb-4;
+}
+
+.calendar-nav-button {
+  @apply p-2 rounded-full hover:bg-base-dark transition-colors;
+}
+
+.calendar-nav-icon {
+  @apply text-text-muted;
+}
+
+.calendar-month-label {
+  @apply text-lg font-semibold capitalize text-text;
+}
+
+.calendar-weekday-grid {
+  @apply grid grid-cols-7 gap-1 mb-2;
+}
+
+.calendar-weekday {
+  @apply text-center text-xs font-medium text-text-muted;
+}
+
+.calendar-days-grid {
+  @apply grid grid-cols-7 gap-1;
+}
+
+.calendar-day-cell {
+  @apply flex items-center justify-center;
+}
+
+.calendar-disclaimer {
+  @apply mt-2 text-xs text-text-muted;
+}
+
+.calendar-disclaimer-spaced {
+  @apply mt-1 text-xs text-text-muted;
+}
+
+.daily-log-delete-confirm {
+  @apply flex flex-col gap-2 p-3 bg-bg-error/10 rounded-lg border border-error/30;
+}
+
+.daily-log-delete-title {
+  @apply text-sm text-text text-center;
+}
+
+.daily-log-delete-actions {
+  @apply flex gap-2;
+}
+
+.daily-log-delete-action {
+  @apply flex-1;
+}
+
+.daily-log-delete-confirm-button {
+  @apply flex-1 px-4 py-2 bg-bg-error text-error rounded-lg font-medium hover:opacity-90 transition-opacity;
+}
+
+.daily-log-delete-trigger {
+  @apply flex items-center justify-center gap-2 text-text-muted hover:text-error transition-colors py-2;
+}
+
+.period-log-delete-button {
+  @apply px-10;
 }

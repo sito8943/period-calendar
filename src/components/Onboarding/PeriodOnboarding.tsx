@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-// @sito/dashboard-app
-import { Onboarding, type OnboardingStepType } from "@sito/dashboard-app";
+import { Onboarding } from "@sito/dashboard-app";
+import type { OnboardingStepType } from "@sito/dashboard-app";
 
 // components
 import { OnboardingPeriodForm } from "./OnboardingPeriodForm";
@@ -12,6 +12,7 @@ import type { PeriodOnboardingProps } from "./types";
 
 // lib
 import {
+  classNames,
   getAppliedPeriodTheme,
   getStoredPeriodTheme,
   getThemedLanguage,
@@ -73,28 +74,38 @@ export const PeriodOnboarding = (props: PeriodOnboardingProps) => {
         title: t("_pages:onboarding.profile.title"),
         body: t("_pages:onboarding.profile.body"),
         content: (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full onboarding-theme-grid">
+          <div className="onboarding-theme-grid">
             <button
               type="button"
               onClick={() => handleThemeSelect("girl")}
-              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "girl" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
+              className={classNames(
+                "onboarding-theme-option",
+                selectedTheme === "girl"
+                  ? "onboarding-theme-option-selected"
+                  : "onboarding-theme-option-idle",
+              )}
             >
               <strong>
                 {t("_pages:onboarding.profile.options.girl.title")}
               </strong>
-              <p className="text-sm opacity-90">
+              <p className="onboarding-theme-description">
                 {t("_pages:onboarding.profile.options.girl.body")}
               </p>
             </button>
             <button
               type="button"
               onClick={() => handleThemeSelect("boy")}
-              className={`onboarding-theme-option border border-border rounded-lg px-3 py-2 text-left transition-colors ${selectedTheme === "boy" ? "bg-primary text-white border-primary" : "bg-base-light text-text hover:bg-base-dark"}`}
+              className={classNames(
+                "onboarding-theme-option",
+                selectedTheme === "boy"
+                  ? "onboarding-theme-option-selected"
+                  : "onboarding-theme-option-idle",
+              )}
             >
               <strong>
                 {t("_pages:onboarding.profile.options.boy.title")}
               </strong>
-              <p className="text-sm opacity-90">
+              <p className="onboarding-theme-description">
                 {t("_pages:onboarding.profile.options.boy.body")}
               </p>
             </button>
@@ -122,5 +133,5 @@ export const PeriodOnboarding = (props: PeriodOnboardingProps) => {
     [handleThemeSelect, selectedTheme, t],
   );
 
-  return <Onboarding {...props} steps={onboardingSteps} />;
+  return <Onboarding {...props} remountStepOnChange steps={onboardingSteps} />;
 };

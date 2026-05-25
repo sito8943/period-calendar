@@ -1,13 +1,3 @@
-import { AuthRouteQueryParamType } from "lib";
-
-export const normalizeRecoveryTokenType = (
-  value: string | null,
-): "recovery" | null => {
-  const normalizedType = value?.toLowerCase() ?? null;
-  if (normalizedType !== AuthRouteQueryParamType.Recovery) return null;
-  return normalizedType;
-};
-
 export const mapUpdatePasswordErrorKey = (message: string): string => {
   const normalized = message.toLowerCase();
 

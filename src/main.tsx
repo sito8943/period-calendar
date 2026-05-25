@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
 import "react-tooltip/dist/react-tooltip.css";
 
 // app
@@ -23,7 +24,9 @@ import "./i18";
 initPeriodTheme();
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <PeriodCalendarProvider>
-    <App />
-  </PeriodCalendarProvider>,
+  <BrowserRouter>
+    <PeriodCalendarProvider>
+      <App />
+    </PeriodCalendarProvider>
+  </BrowserRouter>,
 );

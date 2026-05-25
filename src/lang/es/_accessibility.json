@@ -7,7 +7,8 @@
     "submit": "Enviar",
     "ok": "Aceptar",
     "cancel": "Cancelar",
-    "closeDialog": "Cerrar dialogo"
+    "closeDialog": "Cerrar dialogo",
+    "back": "Atras"
   },
   "ariaLabels": {
     "skip": "Omitir paso",
@@ -18,7 +19,8 @@
     "ok": "Aceptar",
     "cancel": "Cancelar",
     "closeDialog": "Cerrar dialogo",
-    "closePredictionCard": "Cerrar alerta de prediccion"
+    "closePredictionCard": "Cerrar alerta de prediccion",
+    "back": "Atras"
   },
   "messages": {
     "signUpEmailConfirmation": "Revisa tu correo para confirmar tu cuenta.",
@@ -58,5 +60,8 @@
     "home": "Ir a inicio",
     "history": "Ver historial",
     "logPeriod": "Registrar periodo"
+  },
+  "offline": {
+    "banner": "Estas sin conexion. Los cambios se sincronizaran cuando vuelva la conexion."
   }
 }

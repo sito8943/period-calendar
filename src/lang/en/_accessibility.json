@@ -7,7 +7,8 @@
     "submit": "Submit",
     "ok": "OK",
     "cancel": "Cancel",
-    "closeDialog": "Close dialog"
+    "closeDialog": "Close dialog",
+    "back": "Go back"
   },
   "ariaLabels": {
     "skip": "Skip step",
@@ -18,7 +19,8 @@
     "ok": "Confirm action",
     "cancel": "Cancel action",
     "closeDialog": "Close dialog",
-    "closePredictionCard": "Close prediction alert"
+    "closePredictionCard": "Close prediction alert",
+    "back": "Go back"
   },
   "messages": {
     "signUpEmailConfirmation": "Check your inbox to confirm your account.",
@@ -58,5 +60,8 @@
     "home": "Go to home",
     "history": "View history",
     "logPeriod": "Log period"
+  },
+  "offline": {
+    "banner": "You are offline. Changes will sync when the connection is restored."
   }
 }

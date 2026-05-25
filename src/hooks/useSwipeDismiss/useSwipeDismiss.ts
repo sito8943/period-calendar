@@ -59,9 +59,7 @@ export function useSwipeDismiss({
 
   const dragStyle: CSSProperties = {
     transform: `translate3d(${offsetX}px, 0, 0)`,
-    transition: isDragging
-      ? "none"
-      : `transform ${snapBackDurationMs}ms ease`,
+    transition: isDragging ? "none" : `transform ${snapBackDurationMs}ms ease`,
   };
 
   return {
