@@ -93,7 +93,6 @@ export default defineConfig({
     },
   },
   resolve: {
-    preserveSymlinks: true,
     dedupe: ["react", "react-dom", "@tanstack/react-query"],
     alias: [
       { find: /^react$/, replacement: appReactRoot },
