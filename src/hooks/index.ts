@@ -15,6 +15,7 @@ export {
   PeriodQueryKeys,
 } from "./queries";
 export { useCanGoBack } from "./useCanGoBack";
+export { useEscapeBack } from "./useEscapeBack";
 export { useSwipe } from "./useSwipe";
 export { useSwipeDismiss } from "./useSwipeDismiss";
 export * from "./useOnlineStatus";

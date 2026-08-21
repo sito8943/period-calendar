@@ -15,6 +15,7 @@ import {
 // hooks
 import {
   useCanGoBack,
+  useEscapeBack,
   useProfileSettings,
   useUpdateProfileSettings,
 } from "hooks";
@@ -53,6 +54,8 @@ export function Profile() {
 
   const navigate = useNavigate();
   const canGoBack = useCanGoBack();
+
+  useEscapeBack(canGoBack ? () => navigate(-1) : undefined);
 
   const profileQuery = useProfileSettings();
   const updateProfile = useUpdateProfileSettings();

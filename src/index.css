@@ -195,7 +195,7 @@ main {
 }
 
 .base-border {
-  @apply border-hover-primary/20 border-1 rounded-xl;
+  @apply border-hover-primary/20 border rounded-xl;
 }
 
 .horizontal-center {
@@ -306,7 +306,7 @@ button {
 }
 
 .calendar-nav-button {
-  @apply hover:-translate-y-px active:translate-y-0 active:scale-95;
+  @apply active:scale-95;
 }
 
 .calendar-month-label {
@@ -329,7 +329,7 @@ button {
 }
 
 .calendar-day-button {
-  @apply enabled:hover:scale-105 enabled:active:scale-[0.93] disabled:scale-100;
+  @apply enabled:active:scale-[0.93] disabled:scale-100;
 }
 
 .onboarding-theme-grid > * {
@@ -346,7 +346,7 @@ button {
 }
 
 .onboarding-theme-option {
-  @apply hover:-translate-y-px active:translate-y-0 active:scale-[0.98];
+  @apply active:scale-[0.98];
 }
 
 @keyframes motion-rise-in {

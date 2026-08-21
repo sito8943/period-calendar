@@ -24,6 +24,7 @@ import {
   useDailyLogByDate,
   useUpdateDailyLog,
   useCanGoBack,
+  useEscapeBack,
 } from "hooks";
 
 // components
@@ -69,6 +70,10 @@ export function DailyLog() {
   const deleteDailyLog = useDeleteDailyLog();
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  useEscapeBack(canGoBack ? () => navigate(-1) : undefined, {
+    enabled: !showDeleteConfirm,
+  });
 
   const {
     control,
