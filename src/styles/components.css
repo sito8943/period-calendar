@@ -602,7 +602,7 @@
 }
 
 .calendar-nav-button {
-  @apply p-2 rounded-full hover:bg-base-dark transition-colors;
+  @apply size-10 inline-flex items-center justify-center rounded-full hover:bg-base-dark transition-colors;
 }
 
 .calendar-nav-icon {
