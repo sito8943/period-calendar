@@ -114,7 +114,7 @@
 }
 
 .profile-card {
-  @apply w-full border-hover-primary/20 border-1 rounded-2xl sm:p-6 p-4 flex flex-col gap-6;
+  @apply w-full border-hover-primary/20 border rounded-2xl sm:p-6 p-4 flex flex-col gap-6;
 }
 
 .profile-form {
@@ -170,7 +170,7 @@
 }
 
 .prediction-card-close-button {
-  @apply absolute top-2 right-2 size-7 !bg-transparent !text-inherit rounded-full flex items-center justify-center transition-colors transition-opacity opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  @apply absolute top-2 right-2 size-7 bg-transparent! text-inherit! rounded-full flex items-center justify-center transition-all opacity-80 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
 }
 
 .prediction-card-primary {
@@ -186,15 +186,15 @@
 }
 
 .prediction-card-close-button-primary {
-  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-primary;
+  @apply hover:bg-white/20! focus-visible:ring-white/70 focus-visible:ring-offset-bg-primary;
 }
 
 .prediction-card-close-button-fertile {
-  @apply hover:!bg-fertile/10 focus-visible:ring-fertile/40 focus-visible:ring-offset-base-light;
+  @apply hover:bg-fertile/10! focus-visible:ring-fertile/40 focus-visible:ring-offset-base-light;
 }
 
 .prediction-card-close-button-error {
-  @apply hover:!bg-white/20 focus-visible:ring-white/70 focus-visible:ring-offset-bg-error;
+  @apply hover:bg-white/20! focus-visible:ring-white/70 focus-visible:ring-offset-bg-error;
 }
 
 .onboarding-theme-grid {

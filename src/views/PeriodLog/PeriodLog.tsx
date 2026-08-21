@@ -21,6 +21,7 @@ import {
   useUpdatePeriod,
   useDeletePeriod,
   useCanGoBack,
+  useEscapeBack,
 } from "hooks";
 
 // components
@@ -53,6 +54,10 @@ export function PeriodLog() {
   const existingPeriod = id ? periods.find((p) => p.id === id) : undefined;
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  useEscapeBack(canGoBack ? () => navigate(-1) : undefined, {
+    enabled: !showDeleteConfirm,
+  });
 
   const todayStr = toISODateString(new Date());
   const startDateFromSearch = searchParams.get(RouteQueryParam.PeriodStartDate);
