@@ -188,7 +188,8 @@
   "profile": {
     "title": "Perfil",
     "sections": {
-      "personal": "Personal"
+      "personal": "Personal",
+      "appearance": "Apariencia"
     },
     "actions": {
       "save": "Guardar cambios"
@@ -198,11 +199,13 @@
       "partnerNameBoy": "Nombre del chico",
       "partnerNameGirl": "Nombre de la chica",
       "language": "Idioma",
-      "theme": "Perfil"
+      "theme": "Perfil",
+      "colorTheme": "Tema"
     },
     "helper": {
       "language": "Elige el idioma de la aplicacion para tu perfil.",
-      "theme": "Define si quieres usar el perfil de chica o de chico."
+      "theme": "Define si quieres usar el perfil de chica o de chico.",
+      "colorTheme": "Se guarda en este dispositivo. \"Sistema\" sigue la configuración de tu dispositivo."
     },
     "messages": {
       "updated": "Perfil actualizado correctamente",
@@ -212,7 +215,12 @@
       "languageSpanish": "Español",
       "languageEnglish": "Ingles",
       "themeGirl": "Chica",
-      "themeBoy": "Chico"
+      "themeBoy": "Chico",
+      "colorTheme": {
+        "system": "Sistema",
+        "light": "Claro",
+        "dark": "Oscuro"
+      }
     },
     "errors": {
       "nameRequired": "El nombre es requerido",

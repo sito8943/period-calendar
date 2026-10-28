@@ -62,3 +62,46 @@
 main {
   min-height: calc(100vh - 88px);
 }
+
+/* Native <option> lists paint with UA colors unless told otherwise. */
+select > option {
+  color: var(--color-text) !important;
+  background-color: var(--color-base-light);
+}
+
+/* Dark mode: page canvas (the light theme relies on the UA white). */
+.dark body {
+  background-color: var(--color-base);
+  color: var(--color-text);
+}
+
+/* Dark mode: @sito/dashboard-app paints text on brand fills with
+   `--color-base-light`, which is a dark surface in this theme. Point those
+   foregrounds at `--color-on-brand` instead. */
+.dark .header,
+.dark .header h1,
+.dark .header .icon-button,
+.dark .navbar-menu,
+.dark .navbar-right .actions-container .actions-container-item .action,
+.dark .page-header,
+.dark .page-header .action,
+.dark .page-header-back,
+.dark .page-header-actions-mobile .actions-dropdown-trigger,
+.dark .top-banner--primary,
+.dark .top-banner--secondary,
+.dark .top-banner--tertiary,
+.dark .top-banner--quaternary,
+.dark .chip-main.chip-primary,
+.dark .chip-main.chip-secondary,
+.dark .button.submit.primary,
+.dark .button.submit.secondary,
+.dark .icon-button.submit.primary,
+.dark .icon-button.submit.secondary {
+  color: var(--color-on-brand);
+}
+
+/* Spinner inside primary submit buttons (`color="stroke-base"` in the lib):
+   `--color-base` is dark in this theme, so it vanished on the brand fill. */
+.dark .stroke-base {
+  stroke: var(--color-on-brand);
+}

@@ -53,6 +53,23 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Period Calendar | Seguimiento de ciclo menstrual</title>
+    <script>
+      // Apply the stored theme before first paint (no light flash in dark
+      // mode). Key/values mirror src/lib/themeMode/constants.ts.
+      (function () {
+        try {
+          var mode = localStorage.getItem("period-calendar:color-theme");
+          var dark =
+            mode === "dark" ||
+            (mode !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) {
+            document.documentElement.classList.add("dark");
+            document.documentElement.style.colorScheme = "dark";
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body>

@@ -11,6 +11,7 @@ Aplicacion web para registrar periodos, llevar un diario diario y visualizar pre
 - Historial de periodos con acceso a edicion.
 - Perfil con nombre, nombre de pareja, idioma (`es`/`en`) y tema (`girl`/`boy`).
 - Onboarding inicial con seleccion de tema.
+- Modo oscuro (`Sistema`/`Claro`/`Oscuro`) por dispositivo, desde Perfil > Apariencia.
 - Interfaz responsive con navegacion inferior para mobile.
 
 ## Stack Tecnico
@@ -52,7 +53,7 @@ Servidor local por defecto: `http://localhost:5173`.
 - `/log/:id`: edicion de periodo existente.
 - `/daily-log/:date`: diario de una fecha (`YYYY-MM-DD`).
 - `/history`: historial de periodos.
-- `/profile`: datos de perfil, idioma y tema.
+- `/profile`: datos de perfil, idioma, tema y apariencia (modo oscuro).
 - `/auth/sign-in`: inicio de sesion con Supabase.
 - `/auth/sign-up`: registro con Supabase.
 - `/sign-out`: cierre de sesion.
@@ -78,6 +79,7 @@ Preferencias y estado liviano (`localStorage`):
 - `period-calendar:profile`
 - `period-calendar:onboarding`
 - `period-calendar:theme`
+- `period-calendar:color-theme` (modo claro/oscuro; ausente = sigue al sistema)
 - `period-calendar:indexeddb-client-migrated:v2` (marca de migracion)
 
 ## Internacionalizacion
