@@ -29,9 +29,15 @@ importers:
       '@loadable/component':
         specifier: 5.16.7
         version: 5.16.7(react@19.1.1)
+      '@sito/dashboard':
+        specifier: 0.4.2
+        version: 0.4.2(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@sito/dashboard-app':
-        specifier: 0.2.0
-        version: 0.2.0(@fortawesome/fontawesome-svg-core@7.0.0)(@fortawesome/free-regular-svg-icons@7.0.0)(@fortawesome/free-solid-svg-icons@7.0.0)(@fortawesome/react-fontawesome@3.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(react@19.1.1))(@supabase/supabase-js@2.112.3)(@tanstack/react-query@5.95.2(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react-hook-form@7.72.0(react@19.1.1))(react@19.1.1)
+        specifier: 0.3.0
+        version: 0.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(@fortawesome/free-regular-svg-icons@7.0.0)(@fortawesome/free-solid-svg-icons@7.0.0)(@fortawesome/react-fontawesome@3.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(react@19.1.1))(@sito/dashboard@0.4.2(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@supabase/supabase-js@2.112.3)(@tanstack/react-query@5.95.2(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react-hook-form@7.72.0(react@19.1.1))(react@19.1.1)
+      '@sito/ui':
+        specifier: 0.10.1
+        version: 0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@supabase/supabase-js':
         specifier: ^2.100.0
         version: 2.112.3
@@ -1088,14 +1094,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sito/dashboard-app@0.2.0':
-    resolution: {integrity: sha512-WORIKLCfVqiZCATqv/1PPnyKoaVjI2tcM7osK6BUrcD/DTx37fXSbXVmrFjO/BV4pkkFePw2Gs+r8g9hXBkxhA==}
+  '@sito/dashboard-app@0.3.0':
+    resolution: {integrity: sha512-UPcdgovvgKM3EuM37T/FXtpkkwBzfmGWfKrjGZP0DOjD6iGqZmUDiDQy5JvUWYUeItq3K5Jmn6VYVRS9/IwYtw==}
     engines: {node: ^22.13.0}
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': '>=7.0.0 <8'
       '@fortawesome/free-regular-svg-icons': '>=7.0.0 <8'
       '@fortawesome/free-solid-svg-icons': '>=7.0.0 <8'
       '@fortawesome/react-fontawesome': '>=3.1.1 <4'
+      '@sito/dashboard': ^0.4.2
+      '@sito/ui': ^0.10.1
       '@supabase/supabase-js': '>=2.100.0 <3'
       '@tanstack/react-query': '>=5.83.0 <6'
       react: ^19.0.0
@@ -1105,16 +1113,16 @@ packages:
       '@supabase/supabase-js':
         optional: true
 
-  '@sito/dashboard@0.3.0':
-    resolution: {integrity: sha512-gaIFxuLtLQft4d7tPEHdIlH+7YLH1cvtnLK12pdWur5hOUORJI+p09N+dVOF/S/7WDVnVmaSGwbzZ0DkjtjITw==}
+  '@sito/dashboard@0.4.2':
+    resolution: {integrity: sha512-+/W3JoUlcmEDjYfYvWRC+84uzcDTFYShFGpROIp+LnWNUJ/gV7C9/3K/m9Ah9/78VTJhx2ToT/NPJ8bGKzUeRw==}
     engines: {node: ^22.13.0}
     peerDependencies:
-      '@sito/ui': '>=0.3.2 <0.4.0'
+      '@sito/ui': '>=0.3.2 <0.11.0'
       react: ^19.0.0
       react-dom: ^19.0.0
 
-  '@sito/ui@0.3.3':
-    resolution: {integrity: sha512-kItJChJetoXH4eCjkgSyPwv2wrFkoofpN2T+wVXTEtiuR0P6QxkAUR6XZE6DGq22iR4RX6Qh8InoXCq9EVykCw==}
+  '@sito/ui@0.10.1':
+    resolution: {integrity: sha512-WMhiswb5ohOgJatYh1TUGyqbxbjARCrnNd3Xv6szP8To7c+CHRCIokBCJpRizE23sJGW4lk2YL1BTa4mbs0zeA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
     peerDependencies:
       react: ^19.0.0
@@ -4004,14 +4012,14 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.64.12':
     optional: true
 
-  '@sito/dashboard-app@0.2.0(@fortawesome/fontawesome-svg-core@7.0.0)(@fortawesome/free-regular-svg-icons@7.0.0)(@fortawesome/free-solid-svg-icons@7.0.0)(@fortawesome/react-fontawesome@3.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(react@19.1.1))(@supabase/supabase-js@2.112.3)(@tanstack/react-query@5.95.2(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react-hook-form@7.72.0(react@19.1.1))(react@19.1.1)':
+  '@sito/dashboard-app@0.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(@fortawesome/free-regular-svg-icons@7.0.0)(@fortawesome/free-solid-svg-icons@7.0.0)(@fortawesome/react-fontawesome@3.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(react@19.1.1))(@sito/dashboard@0.4.2(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(@supabase/supabase-js@2.112.3)(@tanstack/react-query@5.95.2(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react-hook-form@7.72.0(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@fortawesome/fontawesome-svg-core': 7.0.0
       '@fortawesome/free-regular-svg-icons': 7.0.0
       '@fortawesome/free-solid-svg-icons': 7.0.0
       '@fortawesome/react-fontawesome': 3.3.0(@fortawesome/fontawesome-svg-core@7.0.0)(react@19.1.1)
-      '@sito/dashboard': 0.3.0(@sito/ui@0.3.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@sito/ui': 0.3.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@sito/dashboard': 0.4.2(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@sito/ui': 0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@tanstack/react-query': 5.95.2(react@19.1.1)
       '@use-gesture/react': 10.3.1(react@19.1.1)
       react: 19.1.1
@@ -4021,13 +4029,13 @@ snapshots:
     optionalDependencies:
       '@supabase/supabase-js': 2.112.3
 
-  '@sito/dashboard@0.3.0(@sito/ui@0.3.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@sito/dashboard@0.4.2(@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
-      '@sito/ui': 0.3.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@sito/ui': 0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
 
-  '@sito/ui@0.3.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
+  '@sito/ui@0.10.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
