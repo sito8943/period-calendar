@@ -188,7 +188,8 @@
   "profile": {
     "title": "Profile",
     "sections": {
-      "personal": "Personal"
+      "personal": "Personal",
+      "appearance": "Appearance"
     },
     "actions": {
       "save": "Save changes"
@@ -198,11 +199,13 @@
       "partnerNameBoy": "Boy's name",
       "partnerNameGirl": "Girl's name",
       "language": "Language",
-      "theme": "Profile"
+      "theme": "Profile",
+      "colorTheme": "Theme"
     },
     "helper": {
       "language": "Choose the app language for your profile.",
-      "theme": "Choose whether you want the girl or boy profile."
+      "theme": "Choose whether you want the girl or boy profile.",
+      "colorTheme": "Saved on this device. \"System\" follows your device settings."
     },
     "messages": {
       "updated": "Profile updated successfully",
@@ -212,7 +215,12 @@
       "languageSpanish": "Spanish",
       "languageEnglish": "English",
       "themeGirl": "Girl",
-      "themeBoy": "Boy"
+      "themeBoy": "Boy",
+      "colorTheme": {
+        "system": "System",
+        "light": "Light",
+        "dark": "Dark"
+      }
     },
     "errors": {
       "nameRequired": "Name is required",

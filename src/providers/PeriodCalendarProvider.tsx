@@ -16,6 +16,7 @@ import type { BasicProviderPropTypes } from "./types";
 import { periodCalendarManager } from "../lib/api";
 import { FeatureFlagsProvider } from "./FeatureFlags";
 import { PeriodCalendarAuthProvider } from "./PeriodCalendarAuthProvider";
+import { ThemeProvider } from "./Theme";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,23 +39,25 @@ export const PeriodCalendarProvider = ({
   );
 
   return (
-    <ConfigProvider
-      navigate={navigateFn}
-      location={location}
-      linkComponent={Link as ComponentType<BaseLinkPropsType>}
-    >
-      <ManagerProvider
-        manager={periodCalendarManager}
-        queryClient={queryClient}
+    <ThemeProvider>
+      <ConfigProvider
+        navigate={navigateFn}
+        location={location}
+        linkComponent={Link as ComponentType<BaseLinkPropsType>}
       >
-        <PeriodCalendarAuthProvider>
-          <TranslationProvider t={t} language={i18n.language}>
-            <FeatureFlagsProvider>
-              <NotificationProvider>{children}</NotificationProvider>
-            </FeatureFlagsProvider>
-          </TranslationProvider>
-        </PeriodCalendarAuthProvider>
-      </ManagerProvider>
-    </ConfigProvider>
+        <ManagerProvider
+          manager={periodCalendarManager}
+          queryClient={queryClient}
+        >
+          <PeriodCalendarAuthProvider>
+            <TranslationProvider t={t} language={i18n.language}>
+              <FeatureFlagsProvider>
+                <NotificationProvider>{children}</NotificationProvider>
+              </FeatureFlagsProvider>
+            </TranslationProvider>
+          </PeriodCalendarAuthProvider>
+        </ManagerProvider>
+      </ConfigProvider>
+    </ThemeProvider>
   );
 };

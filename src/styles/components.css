@@ -174,11 +174,11 @@
 }
 
 .prediction-card-primary {
-  @apply bg-primary text-white;
+  @apply bg-primary text-on-brand;
 }
 
 .prediction-card-fertile {
-  @apply bg-fertile border-2 border-base-light text-base-light;
+  @apply bg-fertile border-2 border-base-light text-on-brand;
 }
 
 .prediction-card-error {
@@ -186,7 +186,7 @@
 }
 
 .prediction-card-close-button-primary {
-  @apply hover:bg-white/20! focus-visible:ring-white/70 focus-visible:ring-offset-bg-primary;
+  @apply hover:bg-on-brand/20! focus-visible:ring-on-brand/70 focus-visible:ring-offset-bg-primary;
 }
 
 .prediction-card-close-button-fertile {
@@ -206,7 +206,7 @@
 }
 
 .onboarding-theme-option-selected {
-  @apply bg-primary text-white border-primary;
+  @apply bg-primary text-on-brand border-primary;
 }
 
 .onboarding-theme-option-idle {
@@ -242,7 +242,7 @@
 }
 
 .period-card-ongoing {
-  @apply text-primary font-medium;
+  @apply text-text-primary font-medium;
 }
 
 .period-card-chevron {
@@ -271,7 +271,7 @@
 }
 
 .today-day {
-  @apply bg-primary text-white font-semibold hover:bg-hover-primary;
+  @apply bg-primary text-on-brand font-semibold hover:bg-hover-primary;
 }
 
 .period-day {
@@ -284,6 +284,11 @@
       white 20%
     );
   }
+}
+
+/* Mixing 20% white lifts the dark rose fill too close to the light text. */
+.dark .period-day:hover {
+  background-color: color-mix(in srgb, var(--color-period-soft) 88%, white 12%);
 }
 
 .calendar-day-button {
@@ -415,7 +420,7 @@
 }
 
 .prediction-indicator-on-today {
-  @apply bg-white;
+  @apply bg-on-brand;
 }
 
 .ovulation-indicator {
@@ -423,7 +428,7 @@
 }
 
 .ovulation-indicator-on-today {
-  @apply bg-white;
+  @apply bg-on-brand;
 }
 
 .daily-log-dot {
@@ -435,7 +440,7 @@
 }
 
 .daily-log-dot--today {
-  @apply bg-white;
+  @apply bg-on-brand;
 }
 
 .daily-log-dot--period {
@@ -537,6 +542,13 @@
   box-shadow:
     0 12px 24px color-mix(in srgb, var(--color-text) 18%, transparent),
     0 2px 8px color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
+/* `--color-text` is light in dark mode: keep the shadow black there. */
+.dark .calendar-legend-dropdown {
+  box-shadow:
+    0 12px 24px rgb(0 0 0 / 0.5),
+    0 2px 8px rgb(0 0 0 / 0.35);
 }
 
 .calendar-legend-title {
@@ -663,4 +675,8 @@
 
 .period-log-delete-button {
   @apply px-10;
+}
+
+.profile-appearance-card {
+  @apply mt-4;
 }

@@ -10,6 +10,9 @@ El formato se basa en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) y
 
 - Documentacion inicial de proyecto en `README.md`.
 - Registro historico inicial en `CHANGELOG.md`.
+- Modo oscuro con preferencia `Sistema` / `Claro` / `Oscuro` guardada por dispositivo (`localStorage`, clave `period-calendar:color-theme`). Nuevo `ThemeProvider` (`src/providers/Theme`) que alterna la clase `.dark` en `<html>`, sigue los cambios del sistema en vivo y actualiza `<meta name="theme-color">`; un script inline en `index.html` aplica el tema guardado antes de montar React (sin destello claro).
+- Paleta oscura en `src/styles/variables.css` con los mismos nombres de tokens (superficies neutras, marca chica/chico, colores del calendario: periodo, fertil, ovulacion, prediccion), mas los tokens `--color-on-brand` (texto sobre rellenos de marca) y `--color-text-primary` (marca usada como texto). Overrides `.dark` en `dashboard.css` para los selectores de `@sito/dashboard-app` que usan `base-light` como color de texto.
+- Seccion "Apariencia" en Perfil con selector de tema (es/en); se aplica al instante, sin boton de guardar. Es independiente del perfil chica/chico.
 
 ### Changed
 

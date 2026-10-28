@@ -32,6 +32,10 @@
   --color-text: #0d0d0d;
   --color-border: hsl(0 0% 80%);
   --color-text-muted: hsl(0 0% 30%);
+  /* brand used as text/accent on page surfaces (links, highlights) */
+  --color-text-primary: #d4477a;
+  /* text on brand-filled surfaces (header, submit buttons, today, cards) */
+  --color-on-brand: hsl(0 0% 100%);
   /** Notification colors **/
   --color-bg-info: #0070ba;
   --color-info: #fbfbfb;
@@ -51,6 +55,7 @@
   --color-secondary: #ef7ba7;
   --color-bg-secondary: #b64372;
   --color-hover-secondary: #f3a3c2;
+  --color-text-primary: #d4477a;
 }
 
 :root[data-period-theme="boy"] {
@@ -60,4 +65,80 @@
   --color-secondary: #5ca6ff;
   --color-bg-secondary: #2f6fbd;
   --color-hover-secondary: #86bcff;
+  --color-text-primary: #2d75f0;
+}
+
+/* Class-based dark mode: `dark:` utilities follow `<html class="dark">`
+   (toggled by ThemeProvider), not the OS media query. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/** Dark theme — same token names, so every `bg-*`/`text-*` utility and the
+    @sito/dashboard-app theme flip automatically. Brand fills stay mid-tone
+    (light text on top, see `--color-on-brand` + dashboard.css); brand used as
+    text goes through `--color-text-primary`, which is lighter here.
+    Surfaces are neutral so they work with both the girl and boy palettes. **/
+.dark {
+  --color-tertiary: #0a8a70;
+  --color-bg-tertiary: #08705b;
+  --color-hover-tertiary: #12a585;
+  --color-quaternary: #b87a1f;
+  --color-bg-quaternary: #9a6619;
+  --color-hover-quaternary: #d08e2a;
+  /** Calendar semantic colors: fills darker, colors used as text lighter **/
+  --color-period: #d9608f;
+  --color-period-hover: #e57aa3;
+  --color-period-soft: #7d3352;
+  --color-fertile: #109a7c;
+  --color-fertile-hover: #2bb894;
+  --color-fertile-soft: #1ab89a;
+  --color-ovulation: #e57399;
+  --color-ovulation-hover: #f08fb0;
+  --color-ovulation-soft: #6e2c42;
+  --color-prediction: #b996a5;
+  --color-prediction-hover: #d4b8c4;
+  --color-on-brand: #fdf2f7;
+  /* surfaces: base-dark = recessed, base = page, base-light = raised */
+  --color-base-dark: #0b0b0d;
+  --color-base: #121214;
+  --color-base-light: #1c1c20;
+  --color-text: #e8e8ec;
+  --color-border: #36363c;
+  --color-text-muted: #a5a5ad;
+  /** Notification colors (text stays light on mid-tone fills) **/
+  --color-bg-info: #1f6fb0;
+  --color-info: #f1f5fb;
+  --color-bg-success: #1f8a55;
+  --color-success: #f1f5fb;
+  --color-bg-warning: #e8a33a;
+  --color-warning: #111111;
+  --color-bg-error: #c24a4a;
+  --color-error: #f1f5fb;
+  /* @sito/ui (dialogs) maps most of its tokens to ours; these two it doesn't */
+  --sito-ui-color-scheme: dark;
+  --sito-ui-color-text-muted: var(--color-text-muted);
+  --sito-ui-color-primary-text: var(--color-on-brand);
+  --sito-ui-color-secondary-text: var(--color-on-brand);
+}
+
+/* Brand palettes in dark. `:root.dark[...]` outranks the light
+   `:root[data-period-theme=...]` blocks above. */
+.dark,
+:root.dark[data-period-theme="girl"] {
+  --color-primary: #b83d6b;
+  --color-bg-primary: #9c3159;
+  --color-hover-primary: #c94d7b;
+  --color-secondary: #c75583;
+  --color-bg-secondary: #9a3a60;
+  --color-hover-secondary: #d9719a;
+  --color-text-primary: #f48fb6;
+}
+
+:root.dark[data-period-theme="boy"] {
+  --color-primary: #2a62c9;
+  --color-bg-primary: #1f4fa8;
+  --color-hover-primary: #3b74db;
+  --color-secondary: #3d7fd6;
+  --color-bg-secondary: #2a5ea8;
+  --color-hover-secondary: #5b98e6;
+  --color-text-primary: #8ab4f8;
 }

@@ -22,6 +22,7 @@ import {
 
 // components
 import { PageHeader } from "components";
+import { AppearanceSettings } from "./components";
 
 // lib
 import {
@@ -293,6 +294,8 @@ export function Profile() {
           </div>
         </form>
       </div>
+
+      <AppearanceSettings />
     </main>
   );
 }
