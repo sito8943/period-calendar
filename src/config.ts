@@ -12,6 +12,8 @@ const {
   VITE_FEATURE_TERMS_AND_CONDITIONS_ENABLED_DEFAULT,
   VITE_FEATURE_COOKIES_POLICY_ENABLED_DEFAULT,
   VITE_FEATURE_PRIVACY_POLICY_ENABLED_DEFAULT,
+  VITE_USAGE_URL,
+  VITE_USAGE_KEY,
 } = import.meta.env;
 
 const supabaseUrl = VITE_SUPABASE_URL?.trim() ?? "";
@@ -73,5 +75,15 @@ export const config = {
     enabled: isSupabaseEnabled,
     url: supabaseUrl,
     anonKey: supabaseAnonKey,
+  },
+  /** Consent for optional technologies (privacy notice). */
+  consent: {
+    storageKey: "period-calendar:consent",
+  },
+  /** Anonymous feature usage (sito-feature-usage). Empty URL: off. Needs consent. */
+  featureUsage: {
+    app: "period-calendar",
+    url: (VITE_USAGE_URL as string | undefined)?.trim() ?? "",
+    key: (VITE_USAGE_KEY as string | undefined)?.trim() ?? "",
   },
 };

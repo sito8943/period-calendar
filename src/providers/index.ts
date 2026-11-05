@@ -7,4 +7,6 @@ export {
 export { FeatureFlagsProvider, useFeatureFlags } from "./FeatureFlags";
 export { ThemeProvider, useTheme } from "./Theme";
 export { useManager } from "./useManager";
+export * from "./Consent";
+export * from "./FeatureUsage";
 export type { BasicProviderPropTypes } from "./types";

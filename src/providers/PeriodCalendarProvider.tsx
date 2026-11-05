@@ -17,6 +17,8 @@ import { periodCalendarManager } from "../lib/api";
 import { FeatureFlagsProvider } from "./FeatureFlags";
 import { PeriodCalendarAuthProvider } from "./PeriodCalendarAuthProvider";
 import { ThemeProvider } from "./Theme";
+import { ConsentProvider } from "./Consent";
+import { FeatureUsageProvider } from "./FeatureUsage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,7 +54,11 @@ export const PeriodCalendarProvider = ({
           <PeriodCalendarAuthProvider>
             <TranslationProvider t={t} language={i18n.language}>
               <FeatureFlagsProvider>
-                <NotificationProvider>{children}</NotificationProvider>
+                <ConsentProvider>
+                  <FeatureUsageProvider>
+                    <NotificationProvider>{children}</NotificationProvider>
+                  </FeatureUsageProvider>
+                </ConsentProvider>
               </FeatureFlagsProvider>
             </TranslationProvider>
           </PeriodCalendarAuthProvider>

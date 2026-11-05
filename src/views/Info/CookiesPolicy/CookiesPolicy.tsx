@@ -1,6 +1,7 @@
 import { Trans, useTranslation } from "react-i18next";
 
 import {
+  Button,
   LegalPage,
   LegalSection,
   richTextComponents,
@@ -9,8 +10,12 @@ import {
 
 import { AppRoutes } from "lib";
 
+// providers
+import { useConsent } from "providers";
+
 export function CookiesPolicy() {
   const { t } = useTranslation();
+  const { openBanner } = useConsent();
 
   const sections = t("_pages:cookiesPolicy.sections", {
     returnObjects: true,
@@ -40,6 +45,16 @@ export function CookiesPolicy() {
           </LegalSection>
         ))}
       </section>
+      <div className="legal-section-spaced">
+        <Button
+          type="button"
+          variant="outlined"
+          color="primary"
+          onClick={openBanner}
+        >
+          {t("_pages:cookieBanner.change")}
+        </Button>
+      </div>
     </LegalPage>
   );
 }
