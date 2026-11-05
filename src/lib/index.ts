@@ -10,3 +10,5 @@ export * from "./supabase";
 export * from "./constants";
 export * from "./api";
 export * from "./classNames";
+export * from "./featureUsage";
+export * from "./consent";

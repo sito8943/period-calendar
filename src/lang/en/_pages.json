@@ -189,7 +189,8 @@
     "title": "Profile",
     "sections": {
       "personal": "Personal",
-      "appearance": "Appearance"
+      "appearance": "Appearance",
+      "privacy": "Privacy"
     },
     "actions": {
       "save": "Save changes"
@@ -200,12 +201,14 @@
       "partnerNameGirl": "Girl's name",
       "language": "Language",
       "theme": "Profile",
-      "colorTheme": "Theme"
+      "colorTheme": "Theme",
+      "analytics": "Anonymous usage analytics"
     },
     "helper": {
       "language": "Choose the app language for your profile.",
       "theme": "Choose whether you want the girl or boy profile.",
-      "colorTheme": "Saved on this device. \"System\" follows your device settings."
+      "colorTheme": "Saved on this device. \"System\" follows your device settings.",
+      "analytics": "Counts which screens are used, with no data about you, your cycle or your device. You can change it at any time."
     },
     "messages": {
       "updated": "Profile updated successfully",
@@ -220,6 +223,10 @@
         "system": "System",
         "light": "Light",
         "dark": "Dark"
+      },
+      "analytics": {
+        "allowed": "Allowed",
+        "denied": "Not allowed"
       }
     },
     "errors": {
@@ -394,23 +401,23 @@
   },
   "cookiesPolicy": {
     "title": "Cookies Policy",
-    "body": "<p>This policy explains how cookies and local storage technologies are used in <strong>Period Calendar</strong>.</p><p><strong>Last updated:</strong> April 12, 2026.</p>",
+    "body": "<p>This policy explains how cookies and local storage technologies are used in <strong>Period Calendar</strong>.</p><p><strong>Last updated:</strong> November 5, 2026.</p>",
     "sections": [
       {
         "title": "1. Technologies used",
-        "body": "<ul><li><strong>Technical cookies</strong> for basic session functions when applicable.</li><li><strong>localStorage</strong> for preferences and app state.</li><li><strong>IndexedDB</strong> for local persistence and offline functionality.</li></ul>"
+        "body": "<ul><li><strong>Technical cookies</strong> for basic session functions when applicable.</li><li><strong>localStorage</strong> for preferences and app state.</li><li><strong>IndexedDB</strong> for local persistence and offline functionality.</li><li><strong>Anonymous usage analytics (optional, only with your consent):</strong> counts of which screens are used and on which day, sent to our own service (sito-feature-usage) with no user, account, device, IP, dates or anything you log about your cycle. The app keeps unsent counts and your choice in localStorage.</li></ul>"
       },
       {
         "title": "2. Purpose",
-        "body": "<ul><li>Keep sessions and preferences.</li><li>Enable offline mode and later synchronization.</li><li>Improve technical stability and user experience.</li></ul>"
+        "body": "<ul><li>Keep sessions and preferences.</li><li>Enable offline mode and later synchronization.</li><li>Improve technical stability and user experience.</li><li>With your consent: knowing which screens are used to improve the app, as anonymous daily totals.</li></ul>"
       },
       {
         "title": "3. Legal basis",
-        "body": "<p>Technologies required to deliver the requested service are used under the applicable legal basis for essential technical functionality.</p>"
+        "body": "<p>Technologies required to deliver the requested service are used under the applicable legal basis for essential technical functionality.</p><p>Anonymous usage analytics is not strictly necessary: it is only turned on if you accept it in the privacy notice, and you can withdraw it at any time.</p>"
       },
       {
         "title": "4. User control",
-        "body": "<p>You can clear or block cookies and local storage from your browser settings.</p>"
+        "body": "<p>You can clear or block cookies and local storage from your browser settings.</p><p>You can accept, reject or change anonymous analytics from the privacy notice (“Change privacy preferences” button on this page) or in Profile → Privacy. Withdrawing it is as easy as giving it and deletes the pending counts kept on your device.</p>"
       },
       {
         "title": "5. More information",
@@ -472,5 +479,13 @@
       "cookiesPolicy": "cookies policy",
       "privacyPolicy": "privacy policy"
     }
+  },
+  "cookieBanner": {
+    "title": "Your privacy",
+    "body": "We use local storage that is needed for your session, your preferences and offline mode. With your permission, we also count anonymously which screens are used, never your cycle, your logs or any data about you, to improve the app.",
+    "policy": "Cookies policy",
+    "accept": "Accept",
+    "reject": "Reject",
+    "change": "Change privacy preferences"
   }
 }

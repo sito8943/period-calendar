@@ -189,7 +189,8 @@
     "title": "Perfil",
     "sections": {
       "personal": "Personal",
-      "appearance": "Apariencia"
+      "appearance": "Apariencia",
+      "privacy": "Privacidad"
     },
     "actions": {
       "save": "Guardar cambios"
@@ -200,12 +201,14 @@
       "partnerNameGirl": "Nombre de la chica",
       "language": "Idioma",
       "theme": "Perfil",
-      "colorTheme": "Tema"
+      "colorTheme": "Tema",
+      "analytics": "Estadísticas de uso anónimas"
     },
     "helper": {
       "language": "Elige el idioma de la aplicacion para tu perfil.",
       "theme": "Define si quieres usar el perfil de chica o de chico.",
-      "colorTheme": "Se guarda en este dispositivo. \"Sistema\" sigue la configuración de tu dispositivo."
+      "colorTheme": "Se guarda en este dispositivo. \"Sistema\" sigue la configuración de tu dispositivo.",
+      "analytics": "Cuenta qué pantallas se usan, sin datos sobre ti, tu ciclo ni tu dispositivo. Puedes cambiarlo cuando quieras."
     },
     "messages": {
       "updated": "Perfil actualizado correctamente",
@@ -220,6 +223,10 @@
         "system": "Sistema",
         "light": "Claro",
         "dark": "Oscuro"
+      },
+      "analytics": {
+        "allowed": "Permitidas",
+        "denied": "No permitidas"
       }
     },
     "errors": {
@@ -394,23 +401,23 @@
   },
   "cookiesPolicy": {
     "title": "Politica de Cookies",
-    "body": "<p>Esta politica explica el uso de cookies y almacenamiento local en <strong>Period Calendar</strong>.</p><p><strong>Ultima actualizacion:</strong> 12 de abril de 2026.</p>",
+    "body": "<p>Esta politica explica el uso de cookies y almacenamiento local en <strong>Period Calendar</strong>.</p><p><strong>Ultima actualizacion:</strong> 5 de noviembre de 2026.</p>",
     "sections": [
       {
         "title": "1. Tecnologias utilizadas",
-        "body": "<ul><li><strong>Cookies tecnicas</strong> para funciones basicas de sesion cuando aplica.</li><li><strong>localStorage</strong> para preferencias y estado de la app.</li><li><strong>IndexedDB</strong> para persistencia local y funcionamiento offline.</li></ul>"
+        "body": "<ul><li><strong>Cookies tecnicas</strong> para funciones basicas de sesion cuando aplica.</li><li><strong>localStorage</strong> para preferencias y estado de la app.</li><li><strong>IndexedDB</strong> para persistencia local y funcionamiento offline.</li><li><strong>Estadísticas de uso anónimas (opcional, solo con tu consentimiento):</strong> conteos de qué pantallas se usan y qué día, enviados a nuestro propio servicio (sito-feature-usage) sin usuario, cuenta, dispositivo, IP, fechas ni nada de lo que registras sobre tu ciclo. La app guarda los conteos no enviados y tu elección en localStorage.</li></ul>"
       },
       {
         "title": "2. Finalidad",
-        "body": "<ul><li>Mantener sesion y preferencias.</li><li>Permitir uso offline y posterior sincronizacion.</li><li>Mejorar estabilidad tecnica y experiencia de uso.</li></ul>"
+        "body": "<ul><li>Mantener sesion y preferencias.</li><li>Permitir uso offline y posterior sincronizacion.</li><li>Mejorar estabilidad tecnica y experiencia de uso.</li><li>Con tu consentimiento: saber qué pantallas se usan para mejorar la app, como totales diarios anónimos.</li></ul>"
       },
       {
         "title": "3. Base legal",
-        "body": "<p>Las tecnologias necesarias para prestar el servicio solicitado se usan bajo la base legal aplicable para funciones tecnicas esenciales.</p>"
+        "body": "<p>Las tecnologias necesarias para prestar el servicio solicitado se usan bajo la base legal aplicable para funciones tecnicas esenciales.</p><p>Las estadísticas de uso anónimas no son estrictamente necesarias: solo se activan si las aceptas en el aviso de privacidad, y puedes retirarlas en cualquier momento.</p>"
       },
       {
         "title": "4. Gestion por parte del usuario",
-        "body": "<p>Puedes borrar o bloquear cookies y almacenamiento local desde la configuracion de tu navegador.</p>"
+        "body": "<p>Puedes borrar o bloquear cookies y almacenamiento local desde la configuracion de tu navegador.</p><p>Puedes aceptar, rechazar o cambiar las estadísticas anónimas desde el aviso de privacidad (botón «Cambiar preferencias de privacidad» de esta página) o en Perfil → Privacidad. Retirarlas es tan fácil como darlas y borra los conteos pendientes guardados en tu dispositivo.</p>"
       },
       {
         "title": "5. Mas informacion",
@@ -472,5 +479,13 @@
       "cookiesPolicy": "politica de cookies",
       "privacyPolicy": "politica de privacidad"
     }
+  },
+  "cookieBanner": {
+    "title": "Tu privacidad",
+    "body": "Usamos almacenamiento local necesario para tu sesión, tus preferencias y el modo sin conexión. Con tu permiso, también contamos de forma anónima qué pantallas se usan, nunca tu ciclo, tus registros ni datos sobre ti, para mejorar la app.",
+    "policy": "Política de cookies",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "change": "Cambiar preferencias de privacidad"
   }
 }

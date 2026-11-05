@@ -7,3 +7,4 @@ export { AnimatedDropdown } from "./AnimatedDropdown";
 export { PeriodOnboarding } from "./Onboarding";
 export { UpdateDialog } from "./UpdateDialog";
 export { OfflineBanner } from "./OfflineBanner";
+export { DataChoices } from "./DataChoices";

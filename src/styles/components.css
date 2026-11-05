@@ -680,3 +680,28 @@
 .profile-appearance-card {
   @apply mt-4;
 }
+
+/* Privacy notice (DataChoices). No "cookie" in class names: ad blockers hide them. */ /* Above the mobile bottom navigation, below dialogs. */
+.data-choices {
+  @apply fixed inset-x-3 bottom-20 z-[45] mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl border border-border bg-base-light p-4 text-text shadow-lg sm:bottom-4 sm:flex-row sm:items-center;
+}
+
+.data-choices-text {
+  @apply flex flex-1 flex-col gap-1 text-sm;
+}
+
+.data-choices-title {
+  @apply text-base text-text;
+}
+
+.data-choices-link {
+  @apply underline;
+}
+
+.data-choices-actions {
+  @apply flex gap-2;
+}
+
+.data-choices-button {
+  @apply flex-1 justify-center whitespace-nowrap sm:flex-none;
+}

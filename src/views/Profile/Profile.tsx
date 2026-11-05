@@ -22,7 +22,7 @@ import {
 
 // components
 import { PageHeader } from "components";
-import { AppearanceSettings } from "./components";
+import { AppearanceSettings, PrivacySettings } from "./components";
 
 // lib
 import {
@@ -296,6 +296,7 @@ export function Profile() {
       </div>
 
       <AppearanceSettings />
+      <PrivacySettings />
     </main>
   );
 }

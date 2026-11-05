@@ -7,13 +7,14 @@ import { SplashScreen } from "@sito/dashboard-app";
 import { Routes } from "./Routes";
 
 // components
-import { UpdateDialog } from "components";
+import { DataChoices, UpdateDialog } from "components";
 
 function App() {
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes />
       <UpdateDialog />
+      <DataChoices />
     </Suspense>
   );
 }
