@@ -3,13 +3,10 @@ import { useTranslation } from "react-i18next";
 
 // @sito/dashboard-app
 import type { Option } from "@sito/dashboard-app";
-import { SelectInput } from "@sito/dashboard-app";
+import { SelectInput, THEME_MODES, isThemeMode } from "@sito/dashboard-app";
 
 // providers
 import { useTheme } from "providers";
-
-// lib
-import { THEME_MODES, isThemeMode } from "lib";
 
 // Device-local preference (localStorage), applied instantly: no save button.
 // Independent from the girl/boy palette, which is part of the profile form.

@@ -8,15 +8,16 @@ import {
   ConfigProvider,
   ManagerProvider,
   NotificationProvider,
+  ThemeProvider,
   TranslationProvider,
 } from "@sito/dashboard-app";
 import type { BaseLinkPropsType } from "@sito/dashboard-app";
 
 import type { BasicProviderPropTypes } from "./types";
 import { periodCalendarManager } from "../lib/api";
+import { THEME_COLOR_META, THEME_STORAGE_KEY } from "../lib/themeMode";
 import { FeatureFlagsProvider } from "./FeatureFlags";
 import { PeriodCalendarAuthProvider } from "./PeriodCalendarAuthProvider";
-import { ThemeProvider } from "./Theme";
 import { ConsentProvider } from "./Consent";
 import { FeatureUsageProvider } from "./FeatureUsage";
 
@@ -41,7 +42,10 @@ export const PeriodCalendarProvider = ({
   );
 
   return (
-    <ThemeProvider>
+    <ThemeProvider
+      storageKey={THEME_STORAGE_KEY}
+      themeColors={THEME_COLOR_META}
+    >
       <ConfigProvider
         navigate={navigateFn}
         location={location}
