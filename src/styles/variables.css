@@ -1,4 +1,13 @@
-@import "tailwindcss";
+/* `@import "tailwindcss"` split up so the theme is NOT in `@layer theme`.
+   @sito/dashboard-app's bundled CSS declares its light defaults unlayered
+   (`:where(:root) { --color-*: ... }`), and any unlayered rule beats a layered
+   one, so tokens emitted in `@layer theme` would lose to the lib defaults.
+   Unlayered, our `:root, :host` (0,1,0) beats `:where(:root)` (0,0,0), and the
+   `.dark` block below (same specificity, later) still overrides it. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css";
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 
 @theme {
   --color-primary: #d4477a;

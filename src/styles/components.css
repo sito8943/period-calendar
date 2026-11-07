@@ -1,5 +1,7 @@
 /* App-specific component styles */
-@reference "./variables.css";
+/* No `@reference` here: this file is @import-ed by src/index.css, which
+   already loads variables.css. Re-referencing it marks every @theme token as
+   reference-only, so Tailwind emits an empty `@layer theme`. */
 
 .page-content {
   @apply flex-1 p-4 max-w-lg mx-auto w-full;
