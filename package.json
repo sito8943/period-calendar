@@ -24,7 +24,7 @@
     "@fortawesome/react-fontawesome": "3.3.0",
     "@loadable/component": "5.16.7",
     "@sito/dashboard": "0.4.2",
-    "@sito/dashboard-app": "0.3.4",
+    "@sito/dashboard-app": "0.3.5",
     "@sito/feature-usage": "github:sito8943/sito-feature-usage-js#v0.1.0-alpha.2",
     "@sito/ui": "0.10.1",
     "@supabase/supabase-js": "^2.100.0",
