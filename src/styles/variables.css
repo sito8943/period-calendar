@@ -123,11 +123,6 @@
   --color-warning: #111111;
   --color-bg-error: #b84040;
   --color-error: #f1f5fb;
-  /* @sito/ui (dialogs) maps most of its tokens to ours; these two it doesn't */
-  --sito-ui-color-scheme: dark;
-  --sito-ui-color-text-muted: var(--color-text-muted);
-  --sito-ui-color-primary-text: var(--color-on-brand);
-  --sito-ui-color-secondary-text: var(--color-on-brand);
 }
 
 /* Brand palettes in dark. `:root.dark[...]` outranks the light
