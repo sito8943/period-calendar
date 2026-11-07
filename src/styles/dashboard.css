@@ -75,22 +75,10 @@ select > option {
   color: var(--color-text);
 }
 
-/* Dark mode: @sito/dashboard-app paints text on brand fills with
-   `--color-base-light`, which is a dark surface in this theme. Point those
-   foregrounds at `--color-on-brand` instead. */
-.dark .header,
-.dark .header h1,
-.dark .header .icon-button,
-.dark .navbar-menu,
-.dark .navbar-right .actions-container .actions-container-item .action,
-.dark .page-header,
-.dark .page-header .action,
-.dark .page-header-back,
-.dark .page-header-actions-mobile .actions-dropdown-trigger,
-.dark .top-banner--primary,
-.dark .top-banner--secondary,
-.dark .top-banner--tertiary,
-.dark .top-banner--quaternary,
+/* Dark mode: brand fills the lib does not route through `--color-on-brand`
+   (chips, submit buttons) still use `--color-base-light`, a dark surface in
+   this theme. Header, page header, navbar, back/icon buttons and brand
+   banners are handled by @sito/dashboard-app >= 0.3.4. */
 .dark .chip-main.chip-primary,
 .dark .chip-main.chip-secondary,
 .dark .button.submit.primary,

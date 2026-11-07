@@ -55,18 +55,19 @@
     <title>Period Calendar | Seguimiento de ciclo menstrual</title>
     <script>
       // Apply the stored theme before first paint (no light flash in dark
-      // mode). Key/values mirror src/lib/themeMode/constants.ts.
+      // mode). Same output as `getThemeBootScript({ storageKey })` from
+      // @sito/dashboard-app; key mirrors src/lib/themeMode/constants.ts.
       (function () {
         try {
-          var mode = localStorage.getItem("period-calendar:color-theme");
-          var dark =
-            mode === "dark" ||
-            (mode !== "light" &&
+          var m = localStorage.getItem("period-calendar:color-theme");
+          if (m !== "system" && m !== "light" && m !== "dark") m = "system";
+          var d =
+            m === "dark" ||
+            (m === "system" &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
-          if (dark) {
-            document.documentElement.classList.add("dark");
-            document.documentElement.style.colorScheme = "dark";
-          }
+          var r = document.documentElement;
+          if (d) r.classList.add("dark");
+          r.style.colorScheme = d ? "dark" : "light";
         } catch (e) {}
       })();
     </script>

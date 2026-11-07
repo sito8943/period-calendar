@@ -1,18 +1,16 @@
-import type { ResolvedTheme, ThemeMode } from "./types";
+import type { ThemeColors } from "@sito/dashboard-app";
+
+// Light/dark logic lives in `@sito/dashboard-app` (`ThemeProvider`); these are
+// the app-specific values it is configured with.
 
 // Keep in sync with the inline boot script in `index.html` (avoids a flash of
-// the wrong theme before React mounts).
+// the wrong theme before React mounts). Kept from the former local provider so
+// saved preferences survive.
 // Not to be confused with `config.storage.theme` (girl/boy palette).
 export const THEME_STORAGE_KEY = "period-calendar:color-theme";
 
-export const THEME_MODES: readonly ThemeMode[] = ["system", "light", "dark"];
-
-export const DARK_THEME_CLASS = "dark";
-
-export const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
-
 /** `<meta name="theme-color">` per theme (browser chrome / PWA status bar). */
-export const THEME_COLOR_META: Record<ResolvedTheme, string> = {
+export const THEME_COLOR_META: ThemeColors = {
   light: "#d4477a",
   dark: "#121214",
 };

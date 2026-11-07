@@ -32,14 +32,15 @@
   --color-text: #0d0d0d;
   --color-border: hsl(0 0% 80%);
   --color-text-muted: hsl(0 0% 30%);
-  /* brand used as text/accent on page surfaces (links, highlights) */
-  --color-text-primary: #d4477a;
+  /* brand used as text/accent on page surfaces (links, highlights); darker
+     than the brand fill so it reaches 4.5:1 on white and base */
+  --color-text-primary: #c03a6c;
   /* text on brand-filled surfaces (header, submit buttons, today, cards) */
   --color-on-brand: hsl(0 0% 100%);
   /** Notification colors **/
   --color-bg-info: #0070ba;
   --color-info: #fbfbfb;
-  --color-bg-success: hsl(149.76, 68%, 36%);
+  --color-bg-success: #167a48;
   --color-success: #fbfbfb;
   --color-bg-warning: #ffa500;
   --color-warning: #000000;
@@ -55,7 +56,7 @@
   --color-secondary: #ef7ba7;
   --color-bg-secondary: #b64372;
   --color-hover-secondary: #f3a3c2;
-  --color-text-primary: #d4477a;
+  --color-text-primary: #c03a6c;
 }
 
 :root[data-period-theme="boy"] {
@@ -65,7 +66,7 @@
   --color-secondary: #5ca6ff;
   --color-bg-secondary: #2f6fbd;
   --color-hover-secondary: #86bcff;
-  --color-text-primary: #2d75f0;
+  --color-text-primary: #1f63d6;
 }
 
 /* Class-based dark mode: `dark:` utilities follow `<html class="dark">`
@@ -107,11 +108,11 @@
   /** Notification colors (text stays light on mid-tone fills) **/
   --color-bg-info: #1f6fb0;
   --color-info: #f1f5fb;
-  --color-bg-success: #1f8a55;
+  --color-bg-success: #1a7a4c;
   --color-success: #f1f5fb;
   --color-bg-warning: #e8a33a;
   --color-warning: #111111;
-  --color-bg-error: #c24a4a;
+  --color-bg-error: #b84040;
   --color-error: #f1f5fb;
   /* @sito/ui (dialogs) maps most of its tokens to ours; these two it doesn't */
   --sito-ui-color-scheme: dark;
