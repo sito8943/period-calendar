@@ -20,7 +20,8 @@
     "cancel": "Cancelar",
     "closeDialog": "Cerrar dialogo",
     "closePredictionCard": "Cerrar alerta de prediccion",
-    "back": "Atras"
+    "back": "Atras",
+    "closeNotification": "Cerrar notificación"
   },
   "messages": {
     "signUpEmailConfirmation": "Revisa tu correo para confirmar tu cuenta.",
@@ -63,5 +64,8 @@
   },
   "offline": {
     "banner": "Estas sin conexion. Los cambios se sincronizaran cuando vuelva la conexion."
+  },
+  "labels": {
+    "notifications": "Notificaciones"
   }
 }

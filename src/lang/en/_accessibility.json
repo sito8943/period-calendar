@@ -20,7 +20,8 @@
     "cancel": "Cancel action",
     "closeDialog": "Close dialog",
     "closePredictionCard": "Close prediction alert",
-    "back": "Go back"
+    "back": "Go back",
+    "closeNotification": "Close notification"
   },
   "messages": {
     "signUpEmailConfirmation": "Check your inbox to confirm your account.",
@@ -63,5 +64,8 @@
   },
   "offline": {
     "banner": "You are offline. Changes will sync when the connection is restored."
+  },
+  "labels": {
+    "notifications": "Notifications"
   }
 }
