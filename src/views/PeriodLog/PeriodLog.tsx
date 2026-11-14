@@ -28,12 +28,7 @@ import {
 import { PageHeader } from "components";
 
 // lib
-import {
-  AppRoutes,
-  RouteQueryParam,
-  toISODateString,
-  ISO_DATE_PATTERN,
-} from "lib";
+import { AppRoutes, RouteQueryParam, ISO_DATE_PATTERN } from "lib";
 
 // types
 import type { FormValues } from "./types";
@@ -59,13 +54,11 @@ export function PeriodLog() {
     enabled: !showDeleteConfirm,
   });
 
-  const todayStr = toISODateString(new Date());
   const startDateFromSearch = searchParams.get(RouteQueryParam.PeriodStartDate);
   const preselectedStartDate =
     !isEditing &&
     startDateFromSearch &&
-    ISO_DATE_PATTERN.test(startDateFromSearch) &&
-    startDateFromSearch <= todayStr
+    ISO_DATE_PATTERN.test(startDateFromSearch)
       ? startDateFromSearch
       : "";
 
@@ -158,7 +151,6 @@ export function PeriodLog() {
             <TextInput
               id="startDate"
               type="date"
-              max={todayStr}
               label={`${t("_pages:periodLog.startDate")}*`}
               value={field.value ?? ""}
               state={fieldState.error ? State.error : State.default}
@@ -192,7 +184,6 @@ export function PeriodLog() {
             <TextInput
               id="endDate"
               type="date"
-              max={todayStr}
               label={t("_pages:periodLog.endDate")}
               value={field.value ?? ""}
               state={fieldState.error ? State.error : State.default}
