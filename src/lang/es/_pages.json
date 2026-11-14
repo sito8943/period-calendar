@@ -303,6 +303,7 @@
   "pwaUpdate": {
     "title": "Nueva versión disponible",
     "description": "Se desplego una nueva versión de la app. Actualiza para usar los cambios.",
+    "offlineReady": "La app ya funciona sin conexión.",
     "actions": {
       "later": "Mas tarde",
       "update": "Actualizar"

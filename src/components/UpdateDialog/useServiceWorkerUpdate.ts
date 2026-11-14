@@ -1,13 +1,27 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-import { isPageControlledBySW } from "./utils";
+// @sito/dashboard-app
+import { useNotification } from "@sito/dashboard-app";
+
+import { isPageControlledBySW, scheduleUpdateChecks } from "./utils";
 
 export function useServiceWorkerUpdate() {
+  const { t } = useTranslation();
+  const { showSuccessNotification } = useNotification();
+  const [updating, setUpdating] = useState(false);
+
   const {
     needRefresh: [needRefresh, setNeedRefresh],
+    offlineReady: [offlineReady, setOfflineReady],
     updateServiceWorker,
-  } = useRegisterSW();
+  } = useRegisterSW({
+    onRegisteredSW: scheduleUpdateChecks,
+    onRegisterError: (error) => {
+      console.error(error);
+    },
+  });
 
   const isControlled = isPageControlledBySW();
 
@@ -21,16 +35,25 @@ export function useServiceWorkerUpdate() {
     void updateServiceWorker();
   }, [needRefresh, isControlled, setNeedRefresh, updateServiceWorker]);
 
+  useEffect(() => {
+    if (!offlineReady) return;
+    showSuccessNotification({ message: t("_pages:pwaUpdate.offlineReady") });
+    setOfflineReady(false);
+  }, [offlineReady, setOfflineReady, showSuccessNotification, t]);
+
   const dismissUpdate = () => {
     setNeedRefresh(false);
   };
 
-  const applyUpdate = () => {
-    void updateServiceWorker();
+  const applyUpdate = async () => {
+    setUpdating(true);
+    // Activates the waiting worker; the page reloads when it takes control
+    await updateServiceWorker(true);
   };
 
   return {
     needRefresh: needRefresh && isControlled,
+    updating,
     dismissUpdate,
     applyUpdate,
   };

@@ -1,22 +1,45 @@
 import { useTranslation } from "react-i18next";
 
-import { PwaUpdateDialog } from "@sito/dashboard-app";
+// icons
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
+
+// @sito/ui
+import { Dialog, DialogActions } from "@sito/ui";
 
 import { useServiceWorkerUpdate } from "./useServiceWorkerUpdate";
 
+/**
+ * Asks the user to reload when a new version of the app is installed in the
+ * background, and confirms once the app can work offline.
+ */
 export function UpdateDialog() {
   const { t } = useTranslation();
-  const { needRefresh, dismissUpdate, applyUpdate } = useServiceWorkerUpdate();
+  const { needRefresh, updating, dismissUpdate, applyUpdate } =
+    useServiceWorkerUpdate();
 
   return (
-    <PwaUpdateDialog
+    <Dialog
+      closeIcon={<FontAwesomeIcon icon={faXmark} />}
       open={needRefresh}
-      onDismiss={dismissUpdate}
-      onUpdate={applyUpdate}
       title={t("_pages:pwaUpdate.title")}
-      description={t("_pages:pwaUpdate.description")}
-      dismissLabel={t("_pages:pwaUpdate.actions.later")}
-      updateLabel={t("_pages:pwaUpdate.actions.update")}
-    />
+      onClose={dismissUpdate}
+      closeLabel={t("_accessibility:ariaLabels.closeDialog")}
+      closeOnBackdropClick={!updating}
+      closeOnEscape={!updating}
+      showCloseButton={!updating}
+    >
+      <p className="mb-4">{t("_pages:pwaUpdate.description")}</p>
+      <DialogActions
+        alignEnd
+        primaryText={t("_pages:pwaUpdate.actions.update")}
+        cancelText={t("_pages:pwaUpdate.actions.later")}
+        onPrimaryClick={() => void applyUpdate()}
+        onCancel={dismissUpdate}
+        isLoading={updating}
+        disabled={updating}
+        primaryProps={{ color: "primary", variant: "submit" }}
+      />
+    </Dialog>
   );
 }
