@@ -93,3 +93,9 @@ select > option {
 .dark .stroke-base {
   stroke: var(--color-on-brand);
 }
+
+/* theme.css paints error labels with the secondary brand (pink here);
+   keep label, border and helper text on the same error red */
+.input-label-error {
+  color: var(--color-bg-error);
+}
