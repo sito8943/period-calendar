@@ -1,4 +1,7 @@
 @import "./styles/variables.css";
+/* Color layer for @sito/dashboard's headless components (input states,
+   selects, chips...). Processed by our Tailwind build, as in wallet. */
+@import "@sito/dashboard-app/theme.css";
 @import "./styles/dashboard.css";
 @import "./styles/components.css";
 
